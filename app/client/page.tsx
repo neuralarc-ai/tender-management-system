@@ -3,17 +3,20 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { RiBuilding2Line, RiAddLine, RiFolderOpenLine, RiArchiveLine } from 'react-icons/ri';
+import { RiBuilding2Line, RiAddLine, RiFolderOpenLine, RiArchiveLine, RiLogoutBoxRLine } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { NewTenderModal } from '@/components/client/NewTenderModal';
 import { ReviewModal } from '@/components/client/ReviewModal';
 import { TenderList } from '@/components/client/TenderList';
+import { ProtectedRoute } from '@/components/auth/protected-route';
+import { useAuth } from '@/contexts/auth-context';
 import { Tender } from '@/types';
 
 export default function ClientPortal() {
   const [activeTab, setActiveTab] = useState<'active' | 'all'>('active');
   const [isNewTenderModalOpen, setIsNewTenderModalOpen] = useState(false);
   const [reviewTenderId, setReviewTenderId] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   const { data: tenders = [], isLoading } = useQuery({
     queryKey: ['tenders'],
@@ -28,7 +31,8 @@ export default function ClientPortal() {
   const displayTenders = activeTab === 'active' ? activeTenders : tenders;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-6 font-sans">
+    <ProtectedRoute allowedRoles={['client']}>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 p-6 font-sans">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="bg-white rounded-2xl p-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
@@ -36,14 +40,25 @@ export default function ClientPortal() {
             <RiBuilding2Line />
             TCS/DCS Client Portal
           </h1>
-          <Button 
-            onClick={() => setIsNewTenderModalOpen(true)} 
-            className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200"
-            size="lg"
-          >
-            <RiAddLine className="mr-2 h-5 w-5" />
-            Submit New Tender
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button 
+              onClick={() => setIsNewTenderModalOpen(true)} 
+              className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-200"
+              size="lg"
+            >
+              <RiAddLine className="mr-2 h-5 w-5" />
+              Submit New Tender
+            </Button>
+            <Button
+              onClick={logout}
+              variant="outline"
+              size="lg"
+              className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+            >
+              <RiLogoutBoxRLine className="mr-2 h-5 w-5" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Content */}
@@ -96,7 +111,8 @@ export default function ClientPortal() {
         onClose={() => setReviewTenderId(null)} 
         tenderId={reviewTenderId}
       />
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }
 

@@ -3,13 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { RiBrainLine, RiShieldCheckLine, RiInboxArchiveLine } from 'react-icons/ri';
+import { RiBrainLine, RiShieldCheckLine, RiInboxArchiveLine, RiLogoutBoxRLine } from 'react-icons/ri';
+import { Button } from '@/components/ui/button';
 import { TenderSidebar } from '@/components/admin/TenderSidebar';
 import { TenderDetail } from '@/components/admin/TenderDetail';
+import { ProtectedRoute } from '@/components/auth/protected-route';
+import { useAuth } from '@/contexts/auth-context';
 import { Tender } from '@/types';
 
 export default function AdminPortal() {
   const [selectedTenderId, setSelectedTenderId] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   const { data: tenders = [], isLoading } = useQuery({
     queryKey: ['tenders'],
@@ -30,7 +34,8 @@ export default function AdminPortal() {
   const selectedTender = tenders.find(t => t.id === selectedTenderId);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-slate-900 p-6 font-sans">
+    <ProtectedRoute allowedRoles={['admin']}>
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 to-slate-900 p-6 font-sans">
       <div className="max-w-[1800px] mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white rounded-2xl p-6 shadow-xl flex justify-between items-center">
@@ -38,9 +43,20 @@ export default function AdminPortal() {
             <RiBrainLine className="text-blue-600" />
             Neural Arc Inc - Admin Portal
           </h1>
-          <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold text-sm">
-            <RiShieldCheckLine />
-            Tender Applicant
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold text-sm">
+              <RiShieldCheckLine />
+              Tender Applicant
+            </div>
+            <Button
+              onClick={logout}
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+            >
+              <RiLogoutBoxRLine className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
           </div>
         </div>
 
@@ -78,7 +94,8 @@ export default function AdminPortal() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }
 
