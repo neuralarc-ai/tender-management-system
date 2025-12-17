@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCS/DCS Client Portal - Tender Management</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e7ff;
+            color: #667eea;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .uploaded-files {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tender-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .tender-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .tender-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .tender-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .tender-meta {
+            display: flex;
+            gap: 20px;
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .tender-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .countdown {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .countdown.urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .countdown.expired {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-draft {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .status-submitted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-under_review {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-accepted {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .proposal-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .proposal-content {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .proposal-field {
+            margin-bottom: 20px;
+        }
+
+        .proposal-field h4 {
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .proposal-field p {
+            color: #6b7280;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #111827;
+            font-size: 24px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .feedback-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i data-lucide="building-2"></i>
+                TCS/DCS Client Portal
+            </h1>
+            <button class="btn btn-primary" onclick="showNewTenderModal()">
+                <i data-lucide="plus"></i>
+                Submit New Tender
+            </button>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('active')">
+                    <i data-lucide="folder-open"></i>
+                    Active Tenders
+                </button>
+                <button class="tab" onclick="switchTab('all')">
+                    <i data-lucide="archive"></i>
+                    All Tenders
+                </button>
+            </div>
+
+            <div id="active-tab" class="tab-content active">
+                <div id="active-tenders"></div>
+            </div>
+
+            <div id="all-tab" class="tab-content">
+                <div id="all-tenders"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Tender Modal -->
+    <div id="newTenderModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Submit New Tender Requirement</h2>
+                <button class="close-modal" onclick="closeNewTenderModal()">×</button>
+            </div>
+            <form id="tenderForm" onsubmit="submitTender(event)">
+                <div class="form-group">
+                    <label>Tender Title *</label>
+                    <input type="text" name="title" required placeholder="e.g., AI-Powered Customer Service Platform">
+                </div>
+
+                <div class="form-group">
+                    <label>Detailed Description *</label>
+                    <textarea name="description" required placeholder="Provide a comprehensive description of the project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Scope of Work *</label>
+                    <textarea name="scopeOfWork" required placeholder="Define the scope, deliverables, and boundaries..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Technical Requirements *</label>
+                    <textarea name="technicalRequirements" required placeholder="List all technical specifications, technologies, integrations..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Functional Requirements *</label>
+                    <textarea name="functionalRequirements" required placeholder="Describe functional capabilities, features, user workflows..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Submission Deadline *</label>
+                    <input type="datetime-local" name="submissionDeadline" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Eligibility Criteria *</label>
+                    <textarea name="eligibilityCriteria" required placeholder="Specify vendor qualifications, certifications, experience requirements..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Supporting Documents</label>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <i data-lucide="upload" style="width: 48px; height: 48px; margin: 0 auto 12px; color: #667eea;"></i>
+                        <p style="color: #6b7280; margin-bottom: 8px;">Click to upload documents</p>
+                        <p style="color: #9ca3af; font-size: 12px;">PDF, DOC, DOCX, XLS, XLSX (Max 10MB)</p>
+                        <input type="file" id="fileInput" multiple onchange="handleFileUpload(event)">
+                    </div>
+                    <div id="uploadedFiles" class="uploaded-files"></div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeNewTenderModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="send"></i>
+                        Submit Tender
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review Proposal Modal -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Review Proposal</h2>
+                <button class="close-modal" onclick="closeReviewModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label>Feedback (Optional)</label>
+                <textarea id="reviewFeedback" class="feedback-input" placeholder="Provide feedback on the proposal..."></textarea>
+            </div>
+            <div class="review-actions">
+                <button class="btn btn-success" onclick="reviewProposal('accepted')">
+                    <i data-lucide="check"></i>
+                    Accept Proposal
+                </button>
+                <button class="btn btn-danger" onclick="reviewProposal('rejected')">
+                    <i data-lucide="x"></i>
+                    Reject Proposal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tenders = [];
+        let uploadedDocuments = [];
+        let currentReviewTenderId = null;
+
+        // Initialize
+        async function init() {
+            await loadTenders();
+            setInterval(loadTenders, 2000); // Poll every 2 seconds
+            lucide.createIcons();
+        }
+
+        // Load tenders
+        async function loadTenders() {
+            try {
+                const response = await fetch('/api/tenders');
+                tenders = await response.json();
+                renderTenders();
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error loading tenders:', error);
+            }
+        }
+
+        // Render tenders
+        function renderTenders() {
+            const activeTenders = tenders.filter(t => t.status === 'open');
+            
+            renderTenderList('active-tenders', activeTenders);
+            renderTenderList('all-tenders', tenders);
+        }
+
+        function renderTenderList(elementId, tenderList) {
+            const container = document.getElementById(elementId);
+            
+            if (tenderList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="inbox" style="width: 64px; height: 64px;"></i>
+                        <h3 style="margin-bottom: 8px;">No tenders found</h3>
+                        <p>Submit a new tender to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tenderList.map(tender => `
+                <div class="tender-card">
+                    <div class="tender-header">
+                        <div style="flex: 1;">
+                            <div class="tender-title">${tender.title}</div>
+                            <div class="tender-meta">
+                                <div class="tender-meta-item">
+                                    <i data-lucide="calendar"></i>
+                                    ${new Date(tender.createdAt).toLocaleDateString()}
+                                </div>
+                                <div class="tender-meta-item">
+                                    <i data-lucide="file-text"></i>
+                                    ${tender.documents?.length || 0} documents
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            ${getCountdown(tender.submissionDeadline)}
+                        </div>
+                    </div>
+
+                    <p style="color: #6b7280; margin-bottom: 16px; line-height: 1.6;">
+                        ${tender.description.substring(0, 200)}${tender.description.length > 200 ? '...' : ''}
+                    </p>
+
+                    ${tender.proposal.status !== 'draft' ? `
+                        <div class="proposal-section">
+                            <div class="proposal-header">
+                                <h3 style="color: #111827; font-size: 16px; font-weight: 600;">
+                                    <i data-lucide="file-check"></i>
+                                    Proposal from Neural Arc Inc
+                                </h3>
+                                <span class="status-badge status-${tender.proposal.status}">
+                                    ${tender.proposal.status.replace('_', ' ')}
+                                </span>
+                            </div>
+
+                            ${tender.proposal.status === 'submitted' ? `
+                                <div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                    <p style="color: #92400e; font-weight: 600; margin-bottom: 8px;">
+                                        <i data-lucide="alert-circle"></i>
+                                        Action Required
+                                    </p>
+                                    <p style="color: #92400e; font-size: 14px;">
+                                        A proposal has been submitted and is awaiting your review.
+                                    </p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openReviewModal('${tender.id}')">
+                                    <i data-lucide="eye"></i>
+                                    Review Proposal
+                                </button>
+                            ` : ''}
+
+                            ${tender.proposal.status === 'accepted' || tender.proposal.status === 'rejected' ? `
+                                <div class="proposal-content">
+                                    <div class="proposal-field">
+                                        <h4>Status</h4>
+                                        <p>${tender.proposal.status === 'accepted' ? '✓ Proposal Accepted' : '✗ Proposal Rejected'}</p>
+                                    </div>
+                                    ${tender.proposal.feedback ? `
+                                        <div class="proposal-field">
+                                            <h4>Feedback</h4>
+                                            <p>${tender.proposal.feedback}</p>
+                                        </div>
+                                    ` : ''}
+                                    <div class="proposal-field">
+                                        <h4>Reviewed At</h4>
+                                        <p>${new Date(tender.proposal.reviewedAt).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${tender.proposal.status === 'under_review' ? `
+                                <div style="background: #fef3c7; padding: 16px; border-radius: 8px;">
+                                    <p style="color: #92400e; font-weight: 600;">
+                                        <i data-lucide="clock"></i>
+                                        Under Review
+                                    </p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Get countdown
+        function getCountdown(deadline) {
+            const now = new Date();
+            const end = new Date(deadline);
+            const diff = end - now;
+
+            if (diff < 0) {
+                return '<span class="countdown expired"><i data-lucide="clock"></i>Expired</span>';
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            const isUrgent = days < 2;
+            const className = isUrgent ? 'countdown urgent' : 'countdown';
+
+            if (days > 0) {
+                return `<span class="${className}"><i data-lucide="clock"></i>${days}d ${hours}h remaining</span>`;
+            } else if (hours > 0) {
+                return `<span class="${className}"><i data-lucide="clock"></i>${hours}h ${minutes}m remaining</span>`;
+            } else {
+                return `<span class="${className}"><i data-lucide="clock"></i>${minutes}m remaining</span>`;
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+        }
+
+        // Modal functions
+        function showNewTenderModal() {
+            document.getElementById('newTenderModal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function closeNewTenderModal() {
+            document.getElementById('newTenderModal').classList.remove('active');
+            document.getElementById('tenderForm').reset();
+            uploadedDocuments = [];
+            document.getElementById('uploadedFiles').innerHTML = '';
+        }
+
+        // File upload
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            
+            for (let file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    uploadedDocuments.push(result);
+                    renderUploadedFiles();
+                } catch (error) {
+                    alert('Error uploading file: ' + error.message);
+                }
+            }
+        }
+
+        function renderUploadedFiles() {
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = uploadedDocuments.map((doc, index) => `
+                <div class="file-item">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="file"></i>
+                        <span>${doc.name}</span>
+                        <span style="color: #9ca3af; font-size: 12px;">(${(doc.size / 1024).toFixed(1)} KB)</span>
+                    </div>
+                    <button type="button" onclick="removeFile(${index})" style="background: none; border: none; cursor: pointer; color: #ef4444;">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function removeFile(index) {
+            uploadedDocuments.splice(index, 1);
+            renderUploadedFiles();
+        }
+
+        // Submit tender
+        async function submitTender(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                scopeOfWork: formData.get('scopeOfWork'),
+                technicalRequirements: formData.get('technicalRequirements'),
+                functionalRequirements: formData.get('functionalRequirements'),
+                submissionDeadline: formData.get('submissionDeadline'),
+                eligibilityCriteria: formData.get('eligibilityCriteria'),
+                documents: uploadedDocuments
+            };
+
+            try {
+                const response = await fetch('/api/tenders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    closeNewTenderModal();
+                    await loadTenders();
+                    alert('Tender submitted successfully! AI analysis will begin shortly.');
+                }
+            } catch (error) {
+                alert('Error submitting tender: ' + error.message);
+            }
+        }
+
+        // Review proposal
+        function openReviewModal(tenderId) {
+            currentReviewTenderId = tenderId;
+            document.getElementById('reviewModal').classList.add('active');
+            document.getElementById('reviewFeedback').value = '';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.remove('active');
+            currentReviewTenderId = null;
+        }
+
+        async function reviewProposal(status) {
+            const feedback = document.getElementById('reviewFeedback').value;
+
+            try {
+                const response = await fetch(`/api/tenders/${currentReviewTenderId}/proposal/review`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, feedback })
+                });
+
+                if (response.ok) {
+                    closeReviewModal();
+                    await loadTenders();
+                    alert(`Proposal ${status}!`);
+                }
+            } catch (error) {
+                alert('Error reviewing proposal: ' + error.message);
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>

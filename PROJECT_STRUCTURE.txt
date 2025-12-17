@@ -1,0 +1,21 @@
+.
+├── ARCHITECTURE.md
+├── DEMO_SCRIPT.md
+├── DEPLOYMENT_INFO.md
+├── PROJECT_STRUCTURE.txt
+├── PROJECT_SUMMARY.md
+├── README.md
+├── SYSTEM_OVERVIEW.md
+├── USER_GUIDE.md
+├── data
+│   └── tenders.json
+├── package-lock.json
+├── package.json
+├── public
+│   ├── admin.html
+│   ├── client.html
+│   └── index.html
+├── server.js
+└── uploads
+
+4 directories, 15 files

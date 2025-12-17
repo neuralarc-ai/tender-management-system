@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tender Management System</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        .portals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .portal-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        }
+
+        .portal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .portal-card.admin .portal-icon {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+
+        .portal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .portal-description {
+            color: #6b7280;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .portal-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .portal-features li {
+            padding: 8px 0;
+            color: #374151;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .portal-features li i {
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .portal-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .portal-card.admin .portal-button {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+
+        .portal-button:hover {
+            transform: scale(1.05);
+        }
+
+        .features {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .features h2 {
+            text-align: center;
+            color: #111827;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .portals {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>
+                <i data-lucide="briefcase" style="width: 48px; height: 48px;"></i>
+                Tender Management System
+            </h1>
+            <p>AI-Assisted Tender Intake and Proposal Submission Platform</p>
+        </div>
+
+        <div class="portals">
+            <a href="/client" class="portal-card">
+                <div class="portal-icon">
+                    <i data-lucide="building-2" style="width: 40px; height: 40px;"></i>
+                </div>
+                <div class="portal-title">Client Portal</div>
+                <div class="portal-description">
+                    For TCS/DCS - Submit tender requirements and review proposals
+                </div>
+                <ul class="portal-features">
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Submit tender requirements
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Upload supporting documents
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Track submission deadlines
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Review and approve proposals
+                    </li>
+                </ul>
+                <button class="portal-button">
+                    <i data-lucide="arrow-right"></i>
+                    Access Client Portal
+                </button>
+            </a>
+
+            <a href="/admin" class="portal-card admin">
+                <div class="portal-icon">
+                    <i data-lucide="brain" style="width: 40px; height: 40px;"></i>
+                </div>
+                <div class="portal-title">Admin Portal</div>
+                <div class="portal-description">
+                    For Neural Arc Inc - AI-powered tender analysis and proposal generation
+                </div>
+                <ul class="portal-features">
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        AI-powered tender analysis
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Automated proposal drafts
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Feasibility scoring
+                    </li>
+                    <li>
+                        <i data-lucide="check-circle"></i>
+                        Edit and submit proposals
+                    </li>
+                </ul>
+                <button class="portal-button">
+                    <i data-lucide="arrow-right"></i>
+                    Access Admin Portal
+                </button>
+            </a>
+        </div>
+
+        <div class="features">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="zap" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">Real-Time Sync</div>
+                    <div class="feature-description">
+                        Instant synchronization between client and admin portals
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="brain" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">AI Analysis</div>
+                    <div class="feature-description">
+                        Automated tender analysis with relevance and feasibility scoring
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="file-text" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">Auto Proposals</div>
+                    <div class="feature-description">
+                        AI-generated proposal drafts ready for review and editing
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="clock" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">Live Countdown</div>
+                    <div class="feature-description">
+                        Real-time deadline tracking with countdown timers
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="shield-check" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">Role-Based Access</div>
+                    <div class="feature-description">
+                        Secure portals with role-specific features and permissions
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="trending-up" style="width: 30px; height: 30px;"></i>
+                    </div>
+                    <div class="feature-title">Status Tracking</div>
+                    <div class="feature-description">
+                        Complete visibility into tender and proposal status
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
