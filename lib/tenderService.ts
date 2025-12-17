@@ -1,53 +1,26 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { Tender, TenderData, AIAnalysis, Proposal } from '@/types';
 
-const app = express();
-const PORT = 3000;
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_FILE = path.join(DATA_DIR, 'tenders.json');
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 
 // Ensure directories exist
-const dirs = ['data', 'uploads'];
-dirs.forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-});
-
-// File upload configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
-    cb(null, uniqueName);
-  }
-});
-
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
-});
-
-// Data storage
-const DATA_FILE = 'data/tenders.json';
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
 
 // Initialize data file
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({ tenders: [] }, null, 2));
 }
 
-// Helper functions
-function readData() {
+function readData(): TenderData {
   try {
     const data = fs.readFileSync(DATA_FILE, 'utf8');
     return JSON.parse(data);
@@ -56,13 +29,13 @@ function readData() {
   }
 }
 
-function writeData(data) {
+function writeData(data: TenderData) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// AI Analysis Engine
-function analyzeRequirements(tender) {
-  const keywords = {
+// AI Analysis Logic
+function analyzeRequirements(tender: Tender): AIAnalysis {
+  const keywords: Record<string, string[]> = {
     ai: ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
     software: ['software', 'application', 'system', 'platform', 'development'],
     web: ['web', 'website', 'portal', 'dashboard', 'frontend', 'backend'],
@@ -76,7 +49,7 @@ function analyzeRequirements(tender) {
   const text = `${tender.title} ${tender.description} ${tender.scopeOfWork} ${tender.technicalRequirements} ${tender.functionalRequirements}`.toLowerCase();
   
   let matchScore = 0;
-  let matchedCategories = [];
+  const matchedCategories: string[] = [];
   
   Object.entries(keywords).forEach(([category, words]) => {
     const matches = words.filter(word => text.includes(word));
@@ -97,16 +70,14 @@ function analyzeRequirements(tender) {
   if (overallScore >= 80) {
     canDeliver = 85 + Math.floor(Math.random() * 10);
     partialDeliver = 15 - Math.floor(Math.random() * 10);
-    outOfScope = 100 - canDeliver - partialDeliver;
   } else if (overallScore >= 60) {
     canDeliver = 60 + Math.floor(Math.random() * 15);
     partialDeliver = 25 + Math.floor(Math.random() * 10);
-    outOfScope = 100 - canDeliver - partialDeliver;
   } else {
     canDeliver = 40 + Math.floor(Math.random() * 15);
     partialDeliver = 30 + Math.floor(Math.random() * 15);
-    outOfScope = 100 - canDeliver - partialDeliver;
   }
+  outOfScope = 100 - canDeliver - partialDeliver;
 
   // Generate gaps, risks, and assumptions
   const gaps = [];
@@ -150,8 +121,7 @@ function analyzeRequirements(tender) {
   };
 }
 
-// Proposal Generation Engine
-function generateProposal(tender, analysis) {
+function generateProposal(tender: Tender, analysis: AIAnalysis): Proposal {
   const executiveSummary = `Neural Arc Inc is pleased to submit this proposal for "${tender.title}". With our extensive experience in AI-driven solutions and software development, we are confident in delivering a solution that meets your requirements. Our analysis indicates a ${analysis.overallScore}% alignment with your needs, and we are committed to addressing all aspects of this project with excellence.`;
 
   const requirementsUnderstanding = `Based on our thorough review of the tender documentation, we understand that you require:\n\n${tender.scopeOfWork}\n\nKey Technical Requirements:\n${tender.technicalRequirements}\n\nFunctional Requirements:\n${tender.functionalRequirements}\n\nWe have carefully analyzed these requirements and are prepared to deliver a comprehensive solution.`;
@@ -183,201 +153,142 @@ function generateProposal(tender, analysis) {
   };
 }
 
-// API Routes
-
-// Get all tenders
-app.get('/api/tenders', (req, res) => {
-  const data = readData();
-  res.json(data.tenders);
-});
-
-// Get single tender
-app.get('/api/tenders/:id', (req, res) => {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === req.params.id);
-  
-  if (!tender) {
-    return res.status(404).json({ error: 'Tender not found' });
-  }
-  
-  res.json(tender);
-});
-
-// Create new tender
-app.post('/api/tenders', (req, res) => {
-  const data = readData();
-  
-  const newTender = {
-    id: uuidv4(),
-    ...req.body,
-    status: 'open',
-    createdAt: new Date().toISOString(),
-    createdBy: 'client',
-    aiAnalysis: {
-      status: 'pending',
-      relevanceScore: 0,
-      feasibilityScore: 0,
-      overallScore: 0,
-      canDeliver: 0,
-      partialDeliver: 0,
-      outOfScope: 0,
-      gaps: [],
-      risks: [],
-      assumptions: [],
-      completedAt: null
-    },
-    proposal: {
-      status: 'draft',
-      executiveSummary: '',
-      requirementsUnderstanding: '',
-      technicalApproach: '',
-      scopeCoverage: '',
-      exclusions: '',
-      assumptions: '',
-      timeline: '',
-      commercialDetails: '',
-      documents: [],
-      submittedAt: null,
-      reviewedAt: null,
-      feedback: ''
-    }
-  };
-  
-  data.tenders.push(newTender);
-  writeData(data);
-  
-  // Trigger AI analysis after a short delay
-  setTimeout(() => {
-    triggerAIAnalysis(newTender.id);
-  }, 1000);
-  
-  res.status(201).json(newTender);
-});
-
-// Trigger AI analysis
-function triggerAIAnalysis(tenderId) {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === tenderId);
-  
-  if (!tender) return;
-  
-  // Set status to analyzing
-  tender.aiAnalysis.status = 'analyzing';
-  writeData(data);
-  
-  // Simulate AI processing time (5-10 seconds for demo, represents 5-10 minutes)
-  const processingTime = 5000 + Math.random() * 5000;
-  
-  setTimeout(() => {
+// Service Methods
+export const tenderService = {
+  getAll: () => {
     const data = readData();
-    const tender = data.tenders.find(t => t.id === tenderId);
+    const now = Date.now();
+    let updated = false;
+
+    // Lazy AI Analysis Simulation
+    data.tenders = data.tenders.map(tender => {
+      const createdAt = new Date(tender.createdAt).getTime();
+      const diff = now - createdAt;
+
+      if (tender.aiAnalysis.status === 'pending' && diff > 1000) {
+        tender.aiAnalysis.status = 'analyzing';
+        updated = true;
+      } else if (tender.aiAnalysis.status === 'analyzing' && diff > 6000) {
+        tender.aiAnalysis = analyzeRequirements(tender);
+        tender.proposal = generateProposal(tender, tender.aiAnalysis);
+        updated = true;
+      }
+      return tender;
+    });
+
+    if (updated) {
+      writeData(data);
+    }
+
+    return data.tenders;
+  },
+
+  getById: (id: string) => {
+    const tenders = tenderService.getAll(); // Triggers lazy update
+    return tenders.find(t => t.id === id);
+  },
+
+  create: (tenderData: Omit<Tender, 'id' | 'status' | 'createdAt' | 'createdBy' | 'aiAnalysis' | 'proposal'>) => {
+    const data = readData();
     
-    if (!tender) return;
+    const newTender: Tender = {
+      id: uuidv4(),
+      ...tenderData,
+      status: 'open',
+      createdAt: new Date().toISOString(),
+      createdBy: 'client',
+      aiAnalysis: {
+        status: 'pending',
+        relevanceScore: 0,
+        feasibilityScore: 0,
+        overallScore: 0,
+        canDeliver: 0,
+        partialDeliver: 0,
+        outOfScope: 0,
+        gaps: [],
+        risks: [],
+        assumptions: [],
+        completedAt: null
+      },
+      proposal: {
+        status: 'draft',
+        executiveSummary: '',
+        requirementsUnderstanding: '',
+        technicalApproach: '',
+        scopeCoverage: '',
+        exclusions: '',
+        assumptions: '',
+        timeline: '',
+        commercialDetails: '',
+        documents: [],
+        submittedAt: null,
+        reviewedAt: null,
+        feedback: ''
+      }
+    };
     
-    // Perform analysis
-    tender.aiAnalysis = analyzeRequirements(tender);
-    
-    // Generate proposal draft
-    tender.proposal = generateProposal(tender, tender.aiAnalysis);
-    
+    data.tenders.push(newTender);
     writeData(data);
-  }, processingTime);
-}
+    return newTender;
+  },
 
-// Manual trigger for AI analysis
-app.post('/api/tenders/:id/analyze', (req, res) => {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === req.params.id);
-  
-  if (!tender) {
-    return res.status(404).json({ error: 'Tender not found' });
+  updateProposal: (id: string, proposalData: Partial<Proposal>) => {
+    const data = readData();
+    const tender = data.tenders.find(t => t.id === id);
+    if (!tender) return null;
+
+    tender.proposal = {
+      ...tender.proposal,
+      ...proposalData,
+      status: 'draft' // Always revert to draft on edit unless explicit submit
+    };
+
+    writeData(data);
+    return tender;
+  },
+
+  submitProposal: (id: string) => {
+    const data = readData();
+    const tender = data.tenders.find(t => t.id === id);
+    if (!tender) return null;
+
+    tender.proposal.status = 'submitted';
+    tender.proposal.submittedAt = new Date().toISOString();
+
+    writeData(data);
+    return tender;
+  },
+
+  reviewProposal: (id: string, status: 'accepted' | 'rejected', feedback: string) => {
+    const data = readData();
+    const tender = data.tenders.find(t => t.id === id);
+    if (!tender) return null;
+
+    tender.proposal.status = status;
+    tender.proposal.reviewedAt = new Date().toISOString();
+    tender.proposal.feedback = feedback || '';
+
+    writeData(data);
+    return tender;
+  },
+
+  saveFile: async (file: File) => {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const uniqueName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const filePath = path.join(UPLOADS_DIR, uniqueName);
+    
+    fs.writeFileSync(filePath, buffer);
+    
+    return {
+      name: file.name,
+      url: `/api/uploads/${uniqueName}`, // Route we will create
+      size: file.size
+    };
+  },
+
+  getFilePath: (filename: string) => {
+    return path.join(UPLOADS_DIR, filename);
   }
-  
-  triggerAIAnalysis(tender.id);
-  res.json({ message: 'AI analysis triggered' });
-});
+};
 
-// Update proposal
-app.put('/api/tenders/:id/proposal', (req, res) => {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === req.params.id);
-  
-  if (!tender) {
-    return res.status(404).json({ error: 'Tender not found' });
-  }
-  
-  tender.proposal = {
-    ...tender.proposal,
-    ...req.body,
-    status: 'draft'
-  };
-  
-  writeData(data);
-  res.json(tender);
-});
-
-// Submit proposal
-app.post('/api/tenders/:id/proposal/submit', (req, res) => {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === req.params.id);
-  
-  if (!tender) {
-    return res.status(404).json({ error: 'Tender not found' });
-  }
-  
-  tender.proposal.status = 'submitted';
-  tender.proposal.submittedAt = new Date().toISOString();
-  
-  writeData(data);
-  res.json(tender);
-});
-
-// Update proposal status (client review)
-app.put('/api/tenders/:id/proposal/review', (req, res) => {
-  const data = readData();
-  const tender = data.tenders.find(t => t.id === req.params.id);
-  
-  if (!tender) {
-    return res.status(404).json({ error: 'Tender not found' });
-  }
-  
-  tender.proposal.status = req.body.status;
-  tender.proposal.reviewedAt = new Date().toISOString();
-  tender.proposal.feedback = req.body.feedback || '';
-  
-  writeData(data);
-  res.json(tender);
-});
-
-// File upload
-app.post('/api/upload', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file uploaded' });
-  }
-  
-  res.json({
-    name: req.file.originalname,
-    url: `/uploads/${req.file.filename}`,
-    size: req.file.size
-  });
-});
-
-// Serve portals
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.get('/client', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'client.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Tender Management System running on http://localhost:${PORT}`);
-  console.log(`📋 Client Portal: http://localhost:${PORT}/client`);
-  console.log(`⚙️  Admin Portal: http://localhost:${PORT}/admin`);
-});
