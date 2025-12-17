@@ -1,84 +1,160 @@
-import Link from 'next/link';
-import { RiBuilding2Line, RiShieldCheckLine, RiArrowRightLine, RiCheckLine } from 'react-icons/ri';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { RiLock2Line, RiShieldUserLine, RiBuilding4Line, RiLoader4Line } from 'react-icons/ri';
 
 export default function Home() {
+  const [pin, setPin] = useState(['', '', '', '']);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
+
+  // Focus first input on mount
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newPin = [...pin];
+    newPin[index] = value.substring(value.length - 1);
+    setPin(newPin);
+    setError(false);
+
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    const pinString = newPin.join('');
+    if (index === 3 && value) {
+      checkPin(pinString);
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !pin[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const checkPin = async (pinString: string) => {
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    if (pinString === '1111') {
+      router.push('/client');
+    } else if (pinString === '2222') {
+      router.push('/admin');
+    } else {
+      setError(true);
+      setLoading(false);
+      setPin(['', '', '', '']);
+      inputRefs.current[0]?.focus();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {/* Hero Section */}
-      <div className="container mx-auto px-6 py-24">
-        <div className="flex flex-col items-center text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-            </span>
-            System Operational
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-            Tender Management <br/>
-            <span className="text-white">Reimagined</span>
-          </h1>
-          
-          <p className="text-xl text-slate-400 max-w-2xl">
-            AI-assisted tender intake and proposal submission system featuring real-time synchronization and automated analysis.
-          </p>
+    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 relative overflow-hidden font-sans">
+      
+      {/* Neon Grid Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-violet-500/20 via-transparent to-transparent blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[500px] bg-gradient-to-t from-blue-500/10 via-transparent to-transparent blur-3xl"></div>
+      </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <Link href="/client">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-14 text-lg">
-                <RiBuilding2Line className="mr-2 h-5 w-5" />
-                Access Client Portal
-              </Button>
-            </Link>
+      {/* Main Card */}
+      <div className="relative z-10 w-full max-w-md">
+        <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 relative overflow-hidden group">
+          
+          {/* Moving Gradient Border Effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
+          
+          <div className="flex flex-col items-center">
             
-            <Link href="/admin">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 text-lg border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white">
-                <RiShieldCheckLine className="mr-2 h-5 w-5" />
-                Access Admin Portal
-              </Button>
-            </Link>
-          </div>
-        </div>
+            {/* Icon Container */}
+            <div className={`mb-8 p-4 rounded-2xl bg-gradient-to-br from-gray-800 to-black border border-gray-700 shadow-lg relative transition-all duration-300 ${error ? 'border-red-500/50 shadow-red-500/20' : 'border-gray-700'}`}>
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-blue-500/20 blur-xl opacity-50"></div>
+              {loading ? (
+                <RiLoader4Line className="w-8 h-8 text-violet-400 animate-spin relative z-10" />
+              ) : (
+                <RiLock2Line className={`w-8 h-8 relative z-10 transition-colors ${error ? 'text-red-400' : 'text-white'}`} />
+              )}
+            </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mt-24">
-          <FeatureCard 
-            title="Smart Intake"
-            description="Streamlined tender submission with automated validation and document handling."
-            icon={<RiBuilding2Line className="h-8 w-8 text-blue-400" />}
-          />
-          <FeatureCard 
-            title="AI Analysis"
-            description="Instant feasibility scoring and gap analysis powered by advanced algorithms."
-            icon={<RiShieldCheckLine className="h-8 w-8 text-purple-400" />}
-          />
-          <FeatureCard 
-            title="Auto-Proposals"
-            description="Generate comprehensive proposal drafts in seconds based on tender requirements."
-            icon={<RiCheckLine className="h-8 w-8 text-green-400" />}
-          />
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400 mb-2">
+              System Access
+            </h1>
+            <p className="text-gray-400 text-sm mb-10 text-center max-w-[240px]">
+              Enter your authentication PIN to access the secure portal
+            </p>
+
+            {/* PIN Inputs */}
+            <div className="flex gap-4 mb-10">
+              {pin.map((digit, index) => (
+                <div key={index} className="relative group">
+                  <div className={`absolute -inset-0.5 rounded-lg blur opacity-20 group-hover:opacity-60 transition duration-200 ${error ? 'bg-red-500' : 'bg-violet-500'}`}></div>
+                  <input
+                    ref={el => { inputRefs.current[index] = el; }}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={e => handleChange(index, e.target.value)}
+                    onKeyDown={e => handleKeyDown(index, e)}
+                    disabled={loading}
+                    className={`
+                      relative w-14 h-16 bg-black border rounded-lg text-center text-2xl font-bold text-white 
+                      focus:outline-none focus:ring-2 transition-all duration-200
+                      ${error 
+                        ? 'border-red-500/50 focus:ring-red-500/20 animate-shake' 
+                        : 'border-white/10 focus:border-violet-500/50 focus:ring-violet-500/20'
+                      }
+                      ${digit ? 'border-violet-500/50 shadow-[0_0_15px_rgba(139,92,246,0.3)]' : ''}
+                    `}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Hint Section */}
+            <div className="grid grid-cols-2 gap-3 w-full">
+              <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:border-violet-500/30 hover:bg-white/10 transition-all duration-300 cursor-help group/item">
+                <RiBuilding4Line className="w-5 h-5 text-gray-500 group-hover/item:text-violet-400 mb-1 transition-colors" />
+                <span className="text-xs text-gray-500">Client Portal</span>
+                <span className="text-sm font-mono font-bold text-gray-300 group-hover/item:text-white transition-colors">1111</span>
+              </div>
+              <div className="flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-300 cursor-help group/item">
+                <RiShieldUserLine className="w-5 h-5 text-gray-500 group-hover/item:text-blue-400 mb-1 transition-colors" />
+                <span className="text-xs text-gray-500">Admin Portal</span>
+                <span className="text-sm font-mono font-bold text-gray-300 group-hover/item:text-white transition-colors">2222</span>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes shimmer {
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        .animate-shake {
+          animation: shake 0.2s ease-in-out 0s 2;
+        }
+      `}</style>
     </div>
   );
 }
-
-function FeatureCard({ title, description, icon }: { title: string, description: string, icon: React.ReactNode }) {
-  return (
-    <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
-      <CardContent className="p-6">
-        <div className="mb-4 p-3 bg-slate-700/50 rounded-lg w-fit">
-          {icon}
-        </div>
-        <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
-        <p className="text-slate-400 leading-relaxed">
-          {description}
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
