@@ -110,3 +110,4 @@ function InsightCard({ title, items, icon, color }: { title: string, items: stri
   );
 }
 
+

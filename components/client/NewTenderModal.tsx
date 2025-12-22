@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { RiUploadLine, RiCloseLine, RiSendPlaneLine, RiFileLine, RiDeleteBinLine } from 'react-icons/ri';
+import { RiUploadLine, RiCloseLine, RiSendPlaneLine, RiFileLine, RiDeleteBinLine, RiCheckLine } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,24 +26,29 @@ interface TenderFormData {
 export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const queryClient = useQueryClient();
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TenderFormData>();
 
   const createTender = useMutation({
     mutationFn: async (data: TenderFormData & { documents: UploadedFile[] }) => {
-      const response = await axios.post('/api/tenders', data);
+      const response = await axios.post('/api/tenders', { ...data, createdBy: 'dcs' });
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tenders'] });
+      setShowSuccess(true);
+      
+      setTimeout(() => {
       reset();
       setUploadedFiles([]);
+        setShowSuccess(false);
       onClose();
-      alert('Tender submitted successfully! AI analysis will begin shortly.');
+      }, 2000);
     },
     onError: (error) => {
-      alert('Error submitting tender');
+      alert('Error submitting tender. Please try again.');
       console.error(error);
     }
   });
@@ -88,58 +93,108 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
 
   if (!isOpen) return null;
 
+  if (showSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-md p-12 text-center animate-in fade-in zoom-in duration-300">
+          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+            <RiCheckLine className="text-white" size={48} />
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 mb-3 uppercase tracking-tight">Success!</h3>
+          <p className="text-sm text-gray-500 font-medium">
+            Your tender has been submitted successfully.<br />AI analysis will begin shortly.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b sticky top-0 bg-white z-10">
-          <h2 className="text-xl font-semibold text-gray-900">Submit New Tender Requirement</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
+      <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center p-8 border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-[40px]">
+          <div>
+            <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">New Tender</h2>
+            <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Requirement Intake Form</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="text-gray-400 hover:text-gray-900 transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-3"
+          >
             <RiCloseLine size={24} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Tender Title *</label>
-            <Input {...register('title', { required: true })} placeholder="e.g., AI-Powered Customer Service Platform" />
-            {errors.title && <span className="text-red-500 text-xs">Title is required</span>}
+        <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Project Title *</label>
+            <Input 
+              {...register('title', { required: true })} 
+              placeholder="e.g., AI-Powered Customer Service Platform" 
+              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 h-12 px-4 font-medium"
+            />
+            {errors.title && <span className="text-red-500 text-xs font-bold uppercase tracking-wider">Required field</span>}
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Detailed Description *</label>
-            <Textarea {...register('description', { required: true })} placeholder="Provide a comprehensive description..." className="min-h-[100px]" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Scope of Work *</label>
-              <Textarea {...register('scopeOfWork', { required: true })} className="min-h-[100px]" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Technical Requirements *</label>
-              <Textarea {...register('technicalRequirements', { required: true })} className="min-h-[100px]" />
-            </div>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Project Description *</label>
+            <Textarea 
+              {...register('description', { required: true })} 
+              placeholder="Provide a comprehensive description of your requirements..." 
+              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Functional Requirements *</label>
-              <Textarea {...register('functionalRequirements', { required: true })} className="min-h-[100px]" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Scope of Work *</label>
+              <Textarea 
+                {...register('scopeOfWork', { required: true })} 
+                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                placeholder="Define the project scope..."
+              />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Eligibility Criteria *</label>
-              <Textarea {...register('eligibilityCriteria', { required: true })} className="min-h-[100px]" />
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Technical Requirements *</label>
+              <Textarea 
+                {...register('technicalRequirements', { required: true })} 
+                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                placeholder="Specify technical needs..."
+              />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Submission Deadline *</label>
-            <Input type="datetime-local" {...register('submissionDeadline', { required: true })} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Functional Requirements *</label>
+              <Textarea 
+                {...register('functionalRequirements', { required: true })} 
+                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                placeholder="List functional requirements..."
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Eligibility Criteria *</label>
+              <Textarea 
+                {...register('eligibilityCriteria', { required: true })} 
+                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                placeholder="Define eligibility criteria..."
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Supporting Documents</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer relative">
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Submission Deadline *</label>
+            <Input 
+              type="datetime-local" 
+              {...register('submissionDeadline', { required: true })} 
+              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 h-12 px-4 font-medium"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Supporting Documents</label>
+            <div className="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:border-indigo-400 hover:bg-indigo-50/30 transition-all cursor-pointer relative group">
               <input 
                 type="file" 
                 multiple 
@@ -147,36 +202,73 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 disabled={isUploading}
               />
-              <div className="flex flex-col items-center gap-2">
-                <RiUploadLine className="text-blue-500 w-12 h-12" />
-                <p className="text-gray-600">Click or drag files to upload</p>
-                <p className="text-xs text-gray-400">PDF, DOC, DOCX, XLS (Max 10MB)</p>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <RiUploadLine className="text-indigo-600 w-8 h-8" />
+                </div>
+                <div>
+                  <p className="text-gray-700 font-bold">Click or drag files to upload</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">PDF, DOC, DOCX, XLS (Max 10MB)</p>
+                </div>
               </div>
             </div>
             
-            {isUploading && <p className="text-sm text-blue-500 animate-pulse">Uploading...</p>}
+            {isUploading && (
+              <div className="flex items-center gap-3 justify-center">
+                <div className="w-5 h-5 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                <p className="text-sm text-indigo-600 font-bold uppercase tracking-wider animate-pulse">Uploading...</p>
+              </div>
+            )}
 
             <div className="space-y-2 mt-4">
               {uploadedFiles.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <RiFileLine className="text-gray-500" />
-                    <span className="text-sm text-gray-700">{file.name}</span>
-                    <span className="text-xs text-gray-400">({(file.size / 1024).toFixed(1)} KB)</span>
+                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                      <RiFileLine className="text-indigo-600" />
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-900 font-bold block">{file.name}</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">{(file.size / 1024).toFixed(1)} KB</span>
+                    </div>
                   </div>
-                  <button type="button" onClick={() => removeFile(index)} className="text-red-500 hover:text-red-700">
-                    <RiDeleteBinLine />
+                  <button 
+                    type="button" 
+                    onClick={() => removeFile(index)} 
+                    className="text-red-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 bg-red-50 hover:bg-red-100 p-2 rounded-xl"
+                  >
+                    <RiDeleteBinLine size={18} />
                   </button>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={createTender.isPending || isUploading}>
-              <RiSendPlaneLine className="mr-2" />
-              {createTender.isPending ? 'Submitting...' : 'Submit Tender'}
+          <div className="flex justify-end gap-4 pt-6 border-t border-gray-100">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={onClose}
+              className="rounded-full px-8 h-12 font-bold uppercase tracking-wider text-[11px]"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={createTender.isPending || isUploading}
+              className="rounded-full px-8 h-12 bg-indigo-600 hover:bg-indigo-700 font-black uppercase tracking-wider text-[11px] shadow-lg shadow-indigo-100"
+            >
+              {createTender.isPending ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Submitting...</span>
+                </div>
+              ) : (
+                <>
+                  <RiSendPlaneLine className="mr-2" size={16} />
+                  Submit Tender
+                </>
+              )}
             </Button>
           </div>
         </form>
@@ -184,4 +276,3 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
     </div>
   );
 }
-

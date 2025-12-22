@@ -1,61 +1,113 @@
 import { useState } from 'react';
 import { Tender } from '@/types';
-import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine } from 'react-icons/ri';
+import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
 import { AnalysisView } from './AnalysisView';
 import { ProposalEditor } from './ProposalEditor';
 import { formatDistanceToNow } from 'date-fns';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
-export function TenderDetail({ tender }: { tender: Tender }) {
+export function TenderDetail({ tender, role }: { tender: Tender, role?: string }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'proposal'>('overview');
+  const [isReviewing, setIsReviewing] = useState(false);
+  const queryClient = useQueryClient();
 
   const isExpired = new Date(tender.submissionDeadline) < new Date();
   const deadlineText = isExpired 
-    ? 'Expired' 
-    : formatDistanceToNow(new Date(tender.submissionDeadline), { addSuffix: true });
+    ? 'EXPIRED' 
+    : formatDistanceToNow(new Date(tender.submissionDeadline), { addSuffix: true }).toUpperCase();
+
+  const isClient = role === 'client';
+
+  const reviewProposal = useMutation({
+    mutationFn: async ({ status, feedback }: { status: 'accepted' | 'rejected', feedback: string }) => {
+      const response = await axios.post(`/api/tenders/${tender.id}/proposal/review`, {
+        status,
+        feedback
+      });
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['tenders'] });
+      alert(`✓ Proposal ${variables.status === 'accepted' ? 'accepted' : 'rejected'} successfully!`);
+      setIsReviewing(false);
+    },
+    onError: () => {
+      alert('✗ Failed to review proposal. Please try again.');
+      setIsReviewing(false);
+    }
+  });
+
+  const handleAccept = () => {
+    if (confirm('Accept this proposal? This will notify Neural Arc of your decision.')) {
+      setIsReviewing(true);
+      reviewProposal.mutate({ 
+        status: 'accepted', 
+        feedback: 'Proposal accepted. Looking forward to working together!' 
+      });
+    }
+  };
+
+  const handleReject = () => {
+    const feedback = prompt('Please provide feedback for rejection (optional):');
+    if (feedback !== null) { // null means cancelled
+      setIsReviewing(true);
+      reviewProposal.mutate({ 
+        status: 'rejected', 
+        feedback: feedback || 'Proposal did not meet requirements.' 
+      });
+    }
+  };
 
   return (
-    <div>
+    <div className="font-sans">
       {/* Header */}
-      <div className="flex justify-between items-start mb-8 pb-6 border-b">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 pb-6 border-b border-gray-100">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{tender.title}</h2>
-          <div className="flex gap-6 text-gray-500 text-sm">
+          <h2 className="text-3xl font-black text-gray-900 mb-3 uppercase tracking-tight">{tender.title}</h2>
+          <div className="flex flex-wrap gap-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
             <span className="flex items-center gap-2"><RiCalendarLine /> Submitted: {new Date(tender.createdAt).toLocaleDateString()}</span>
-            <span className="flex items-center gap-2"><RiUserLine /> Client: TCS/DCS</span>
+            <span className="flex items-center gap-2"><RiUserLine /> {isClient ? 'Neural Arc Inc.' : 'DCS Corporation'}</span>
           </div>
         </div>
-        <div className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 ${isExpired ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'}`}>
+        <div className={`px-6 py-3 rounded-full font-black text-[10px] flex items-center gap-2 uppercase tracking-widest ${
+          isExpired 
+            ? 'bg-red-100 text-red-700 animate-pulse' 
+            : 'bg-amber-100 text-amber-800'
+        }`}>
           <RiTimeLine />
           {deadlineText}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b mb-8">
+      <div className="flex gap-2 border-b border-gray-100 mb-8 overflow-x-auto">
         <TabButton 
           active={activeTab === 'overview'} 
           onClick={() => setActiveTab('overview')} 
           icon={<RiFileTextLine />} 
           label="Overview" 
         />
+        {!isClient && (
         <TabButton 
           active={activeTab === 'analysis'} 
           onClick={() => setActiveTab('analysis')} 
           icon={<RiBrainLine />} 
           label="AI Analysis" 
         />
+        )}
         <TabButton 
           active={activeTab === 'proposal'} 
           onClick={() => setActiveTab('proposal')} 
           icon={<RiEditLine />} 
-          label="Proposal Draft" 
+          label={isClient ? "Received Proposal" : "Proposal Draft"} 
         />
       </div>
 
       {/* Content */}
       <div className="min-h-[500px]">
         {activeTab === 'overview' && (
-          <div className="space-y-8 animate-in fade-in duration-300">
+          <div className="space-y-6 animate-in fade-in duration-300">
             <DetailSection title="Description" content={tender.description} icon={<RiFileTextLine />} />
             <DetailSection title="Scope of Work" content={tender.scopeOfWork} icon={<RiFileTextLine />} />
             <DetailSection title="Technical Requirements" content={tender.technicalRequirements} icon={<RiBrainLine />} />
@@ -63,12 +115,22 @@ export function TenderDetail({ tender }: { tender: Tender }) {
             <DetailSection title="Eligibility Criteria" content={tender.eligibilityCriteria} icon={<RiUserLine />} />
             
             {tender.documents.length > 0 && (
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="font-semibold mb-4 flex items-center gap-2"><RiFileTextLine /> Supporting Documents</h3>
+              <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                <h3 className="font-black text-[10px] uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
+                  <RiFileTextLine /> Supporting Documents
+                </h3>
                 <div className="space-y-2">
                   {tender.documents.map((doc, i) => (
-                    <a key={i} href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
-                      <RiFileTextLine /> {doc.name} <span className="text-gray-400 text-sm">({(doc.size / 1024).toFixed(1)} KB)</span>
+                    <a 
+                      key={i} 
+                      href={doc.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex items-center gap-3 text-indigo-600 hover:text-indigo-800 font-medium p-3 hover:bg-indigo-50 rounded-2xl transition-colors"
+                    >
+                      <RiFileTextLine className="flex-shrink-0" /> 
+                      <span className="flex-1">{doc.name}</span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">({(doc.size / 1024).toFixed(1)} KB)</span>
                     </a>
                   ))}
                 </div>
@@ -77,7 +139,7 @@ export function TenderDetail({ tender }: { tender: Tender }) {
           </div>
         )}
 
-        {activeTab === 'analysis' && (
+        {activeTab === 'analysis' && !isClient && (
           <div className="animate-in fade-in duration-300">
             <AnalysisView analysis={tender.aiAnalysis} />
           </div>
@@ -85,11 +147,53 @@ export function TenderDetail({ tender }: { tender: Tender }) {
 
         {activeTab === 'proposal' && (
           <div className="animate-in fade-in duration-300">
+            {isClient ? (
+                tender.proposal.status === 'submitted' || tender.proposal.status === 'accepted' || tender.proposal.status === 'rejected' ? (
+                    <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900 mb-6">Received Proposal</h3>
+                        <div className="space-y-6">
+                            <DetailSection title="Executive Summary" content={tender.proposal.executiveSummary} icon={<RiFileTextLine />} />
+                            <DetailSection title="Technical Approach" content={tender.proposal.technicalApproach} icon={<RiBrainLine />} />
+                            <DetailSection title="Timeline" content={tender.proposal.timeline} icon={<RiTimeLine />} />
+                            
+                            <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end gap-4">
+                                <button 
+                                  onClick={handleAccept}
+                                  disabled={isReviewing}
+                                  className="px-8 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {isReviewing ? (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                  ) : (
+                                    <>
+                                      <RiCheckLine size={18} /> Accept Proposal
+                                    </>
+                                  )}
+                                </button>
+                                <button 
+                                  onClick={handleReject}
+                                  disabled={isReviewing}
+                                  className="px-8 py-3 border-2 border-red-200 text-red-600 rounded-full hover:bg-red-50 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <RiCloseLine size={18} /> Decline
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-300 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                        <RiTimeLine className="w-20 h-20 mb-4 opacity-20" />
+                        <p className="text-lg font-bold uppercase tracking-wider">Proposal In Progress</p>
+                        <p className="text-[10px] uppercase tracking-widest mt-2">Neural Arc is preparing your proposal</p>
+                    </div>
+                )
+            ) : (
             <ProposalEditor 
               tenderId={tender.id} 
               proposal={tender.proposal} 
               isAnalysisComplete={tender.aiAnalysis.status === 'completed'} 
             />
+            )}
           </div>
         )}
       </div>
@@ -101,10 +205,10 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-3 font-medium flex items-center gap-2 border-b-2 transition-colors ${
+      className={`px-6 py-3 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 border-b-4 transition-all ${
         active 
-          ? 'border-blue-600 text-blue-600' 
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          ? 'border-indigo-600 text-indigo-600' 
+          : 'border-transparent text-gray-400 hover:text-gray-900 hover:border-gray-200'
       }`}
     >
       {icon} {label}
@@ -115,13 +219,12 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
 function DetailSection({ title, content, icon }: { title: string, content: string, icon: React.ReactNode }) {
   return (
     <div className="space-y-3">
-      <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+      <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
         {icon} {title}
       </h3>
-      <div className="bg-white border rounded-lg p-5 text-gray-700 whitespace-pre-wrap leading-relaxed shadow-sm">
+      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-gray-700 whitespace-pre-wrap leading-relaxed font-medium">
         {content}
       </div>
     </div>
   );
 }
-

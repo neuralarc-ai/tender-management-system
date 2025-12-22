@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { RiSaveLine, RiSendPlaneLine, RiFileEditLine, RiInformationLine, RiCheckLine } from 'react-icons/ri';
+import { RiSaveLine, RiSendPlaneLine, RiFileEditLine, RiInformationLine, RiCheckLine, RiSparklingLine } from 'react-icons/ri';
 
 interface ProposalEditorProps {
   tenderId: string;
@@ -14,11 +14,33 @@ interface ProposalEditorProps {
 
 export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: ProposalEditorProps) {
   const [formData, setFormData] = useState(proposal);
+  const [isGenerating, setIsGenerating] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     setFormData(proposal);
   }, [proposal]);
+
+  const generateWithAI = useMutation({
+    mutationFn: async () => {
+      setIsGenerating(true);
+      const response = await axios.post(`/api/tenders/${tenderId}/generate-proposal`);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setFormData(prev => ({
+        ...prev,
+        ...data.proposal
+      }));
+      queryClient.invalidateQueries({ queryKey: ['tenders'] });
+      setIsGenerating(false);
+      alert('✅ AI proposal generated successfully! Review and edit as needed.');
+    },
+    onError: (error: any) => {
+      setIsGenerating(false);
+      alert(`⚠️ AI generation had issues. Using template fallback.\n${error.response?.data?.details || ''}`);
+    }
+  });
 
   const saveDraft = useMutation({
     mutationFn: async (data: Partial<Proposal>) => {
@@ -76,10 +98,42 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
 
   return (
     <div className="space-y-6">
-      <div className="bg-amber-50 text-amber-800 p-4 rounded-lg flex items-center gap-3">
-        <RiFileEditLine className="w-5 h-5" />
-        <p className="text-sm font-medium">Review and edit the AI-generated proposal below. Add commercial details before submitting.</p>
+      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <RiFileEditLine className="w-5 h-5" />
+          <p className="text-sm font-medium">Review and edit the AI-generated proposal below. Add commercial details before submitting.</p>
+        </div>
+        <Button
+          size="sm"
+          onClick={() => generateWithAI.mutate()}
+          disabled={isGenerating}
+          className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white gap-2 text-xs font-bold px-4 flex-shrink-0"
+        >
+          {isGenerating ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <RiSparklingLine /> Regenerate with AI
+            </>
+          )}
+        </Button>
       </div>
+
+      {isGenerating && (
+        <div className="bg-indigo-50 border-2 border-indigo-200 text-indigo-800 p-6 rounded-lg">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 border-3 border-indigo-300 border-t-indigo-600 rounded-full animate-spin"></div>
+            <p className="font-bold">AI is analyzing the tender and generating proposal...</p>
+          </div>
+          <p className="text-sm text-indigo-600">
+            Using reference websites: <code className="bg-white px-2 py-0.5 rounded">ipc.he2.ai</code> and <code className="bg-white px-2 py-0.5 rounded">ers.he2.ai</code>
+          </p>
+          <p className="text-xs text-indigo-500 mt-2">This may take 10-30 seconds...</p>
+        </div>
+      )}
 
       <div className="space-y-6">
         <EditorSection label="Executive Summary" value={formData.executiveSummary} onChange={(v) => handleChange('executiveSummary', v)} />

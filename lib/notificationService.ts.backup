@@ -1,0 +1,97 @@
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { Notification, NotificationData } from '@/types/notifications';
+
+const DATA_DIR = path.join(process.cwd(), 'data');
+const NOTIFICATIONS_FILE = path.join(DATA_DIR, 'notifications.json');
+
+// Initialize notifications file
+if (!fs.existsSync(NOTIFICATIONS_FILE)) {
+  fs.writeFileSync(NOTIFICATIONS_FILE, JSON.stringify({ notifications: [] }, null, 2));
+}
+
+function readNotifications(): NotificationData {
+  try {
+    const data = fs.readFileSync(NOTIFICATIONS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    return { notifications: [] };
+  }
+}
+
+function writeNotifications(data: NotificationData) {
+  fs.writeFileSync(NOTIFICATIONS_FILE, JSON.stringify(data, null, 2));
+}
+
+export const notificationService = {
+  getAll: () => {
+    return readNotifications().notifications;
+  },
+
+  getByRole: (role: string) => {
+    const data = readNotifications();
+    return data.notifications
+      .filter(n => n.targetRoles.includes(role))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  getUnreadByRole: (role: string) => {
+    const data = readNotifications();
+    return data.notifications
+      .filter(n => n.targetRoles.includes(role) && !n.readBy.includes(role))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  create: (notification: Omit<Notification, 'id' | 'createdAt' | 'readBy'>) => {
+    const data = readNotifications();
+    
+    const newNotification: Notification = {
+      ...notification,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      readBy: []
+    };
+    
+    data.notifications.push(newNotification);
+    writeNotifications(data);
+    return newNotification;
+  },
+
+  markAsRead: (notificationId: string, role: string) => {
+    const data = readNotifications();
+    const notification = data.notifications.find(n => n.id === notificationId);
+    
+    if (notification && !notification.readBy.includes(role)) {
+      notification.readBy.push(role);
+      writeNotifications(data);
+    }
+    
+    return notification;
+  },
+
+  markAllAsRead: (role: string) => {
+    const data = readNotifications();
+    
+    data.notifications.forEach(notification => {
+      if (notification.targetRoles.includes(role) && !notification.readBy.includes(role)) {
+        notification.readBy.push(role);
+      }
+    });
+    
+    writeNotifications(data);
+  },
+
+  deleteOld: (daysOld: number = 30) => {
+    const data = readNotifications();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld);
+    
+    data.notifications = data.notifications.filter(
+      n => new Date(n.createdAt) > cutoffDate
+    );
+    
+    writeNotifications(data);
+  }
+};
+

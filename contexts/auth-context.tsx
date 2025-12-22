@@ -2,16 +2,20 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 interface AuthState {
   isAuthenticated: boolean;
   role: 'client' | 'admin' | null;
+  userId: string | null;
+  email: string | null;
+  organization: string | null;
   timestamp: number | null;
 }
 
 interface AuthContextType {
   authState: AuthState;
-  login: (role: 'client' | 'admin') => void;
+  login: (role: 'client' | 'admin', userId: string, email: string, organization: string) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -24,6 +28,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     role: null,
+    userId: null,
+    email: null,
+    organization: null,
     timestamp: null,
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuthState();
   }, [pathname]);
 
-  const checkAuthState = () => {
+  const checkAuthState = async () => {
     try {
       const storedAuth = localStorage.getItem('auth');
       if (storedAuth) {
@@ -46,6 +53,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (parsedAuth.isAuthenticated && sessionAge < maxAge) {
           setAuthState(parsedAuth);
+          
+          // Update last_login_at in database
+          if (parsedAuth.userId) {
+            await supabase
+              .from('users')
+              .update({ last_login_at: new Date().toISOString() })
+              .eq('id', parsedAuth.userId);
+          }
+          
           setIsLoading(false);
           return;
         } else {
@@ -58,6 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthState({
         isAuthenticated: false,
         role: null,
+        userId: null,
+        email: null,
+        organization: null,
         timestamp: null,
       });
 
@@ -71,6 +90,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAuthState({
         isAuthenticated: false,
         role: null,
+        userId: null,
+        email: null,
+        organization: null,
         timestamp: null,
       });
       router.push('/auth/pin');
@@ -79,10 +101,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   };
 
-  const login = (role: 'client' | 'admin') => {
+  const login = (role: 'client' | 'admin', userId: string, email: string, organization: string) => {
     const newAuthState: AuthState = {
       isAuthenticated: true,
       role,
+      userId,
+      email,
+      organization,
       timestamp: Date.now(),
     };
     
@@ -97,6 +122,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthState({
       isAuthenticated: false,
       role: null,
+      userId: null,
+      email: null,
+      organization: null,
       timestamp: null,
     });
     localStorage.removeItem('auth');

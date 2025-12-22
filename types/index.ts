@@ -55,3 +55,4 @@ export interface TenderData {
   tenders: Tender[];
 }
 
+

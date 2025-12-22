@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Tender, TenderData, AIAnalysis, Proposal } from '@/types';
+import { notificationService } from './notificationService';
+import { autoGenerateProposal } from './aiProposalService';
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'tenders.json');
@@ -33,7 +35,7 @@ function writeData(data: TenderData) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// AI Analysis Logic
+// AI Analysis Logic - Improved Algorithm
 function analyzeRequirements(tender: Tender): AIAnalysis {
   const keywords: Record<string, string[]> = {
     ai: ['ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
@@ -47,22 +49,53 @@ function analyzeRequirements(tender: Tender): AIAnalysis {
   };
 
   const text = `${tender.title} ${tender.description} ${tender.scopeOfWork} ${tender.technicalRequirements} ${tender.functionalRequirements}`.toLowerCase();
+  const wordCount = text.split(/\s+/).length;
   
-  let matchScore = 0;
+  let totalScore = 0;
   const matchedCategories: string[] = [];
   
-  Object.entries(keywords).forEach(([category, words]) => {
-    const matches = words.filter(word => text.includes(word));
-    if (matches.length > 0) {
-      matchScore += matches.length * 10;
+  Object.entries(keywords).forEach(([category, categoryKeywords]) => {
+    let categoryScore = 0;
+    let categoryHasMatches = false;
+    
+    categoryKeywords.forEach(keyword => {
+      // Use word boundary to avoid substring matches (e.g., 'app' won't match 'happy')
+      const escapedKeyword = keyword.replace(/\s+/g, '\\s+');
+      const regex = new RegExp(`\\b${escapedKeyword}\\b`, 'gi');
+      const matches = text.match(regex);
+      const count = matches ? matches.length : 0;
+      
+      if (count > 0) {
+        categoryHasMatches = true;
+        // Use logarithmic scaling to prevent score inflation from repetition
+        // log2(count + 1) * 10, capped at 20 per keyword
+        const keywordScore = Math.min(Math.log2(count + 1) * 10, 20);
+        categoryScore += keywordScore;
+      }
+    });
+    
+    if (categoryHasMatches) {
       matchedCategories.push(category);
+      // Cap each category at 25 points for balanced scoring
+      totalScore += Math.min(categoryScore, 25);
     }
   });
 
-  // Calculate scores
-  const relevanceScore = Math.min(matchScore, 95);
-  const feasibilityScore = Math.min(relevanceScore + Math.floor(Math.random() * 10), 95);
-  const overallScore = Math.floor((relevanceScore + feasibilityScore) / 2);
+  // Normalize by document length (prevents bias toward longer documents)
+  // Documents over 1000 words get full credit, shorter docs get proportional credit
+  const lengthPenalty = Math.min(wordCount / 1000, 1);
+  const normalizedScore = totalScore * lengthPenalty;
+  
+  // Calculate final scores
+  const relevanceScore = Math.min(Math.round(normalizedScore), 95);
+  
+  // Calculate feasibility based on category coverage (not random!)
+  // More matched categories = higher feasibility
+  const categoryCount = matchedCategories.length;
+  const categoryCoverage = (categoryCount / Object.keys(keywords).length) * 100;
+  const feasibilityScore = Math.min(Math.round((relevanceScore * 0.7) + (categoryCoverage * 0.3)), 95);
+  
+  const overallScore = Math.round((relevanceScore + feasibilityScore) / 2);
 
   // Determine delivery capability
   let canDeliver, partialDeliver, outOfScope;
@@ -160,7 +193,7 @@ export const tenderService = {
     const now = Date.now();
     let updated = false;
 
-    // Lazy AI Analysis Simulation
+    // Lazy AI Analysis Simulation (synchronous for now)
     data.tenders = data.tenders.map(tender => {
       const createdAt = new Date(tender.createdAt).getTime();
       const diff = now - createdAt;
@@ -169,9 +202,30 @@ export const tenderService = {
         tender.aiAnalysis.status = 'analyzing';
         updated = true;
       } else if (tender.aiAnalysis.status === 'analyzing' && diff > 6000) {
+        // Trigger AI analysis
         tender.aiAnalysis = analyzeRequirements(tender);
         tender.proposal = generateProposal(tender, tender.aiAnalysis);
         updated = true;
+        
+        // Trigger AI proposal generation in background (don't block)
+        autoGenerateProposal(tender, tender.aiAnalysis)
+          .then(aiProposal => {
+            // Update proposal with AI content
+            const currentData = readData();
+            const tenderIndex = currentData.tenders.findIndex(t => t.id === tender.id);
+            if (tenderIndex !== -1) {
+              currentData.tenders[tenderIndex].proposal = {
+                ...currentData.tenders[tenderIndex].proposal,
+                ...aiProposal,
+                status: 'draft'
+              };
+              writeData(currentData);
+              console.log(`✅ AI proposal generated for: ${tender.title}`);
+            }
+          })
+          .catch(error => {
+            console.error('❌ AI generation failed, keeping template:', error);
+          });
       }
       return tender;
     });
@@ -229,6 +283,17 @@ export const tenderService = {
     
     data.tenders.push(newTender);
     writeData(data);
+
+    // Create notification for admin
+    notificationService.create({
+      type: 'tender_created',
+      title: 'New Tender Submitted',
+      message: `${newTender.title} has been submitted and is ready for review.`,
+      tenderId: newTender.id,
+      createdBy: 'client',
+      targetRoles: ['admin']
+    });
+    
     return newTender;
   },
 
@@ -256,6 +321,17 @@ export const tenderService = {
     tender.proposal.submittedAt = new Date().toISOString();
 
     writeData(data);
+
+    // Create notification for client
+    notificationService.create({
+      type: 'proposal_submitted',
+      title: 'Proposal Received',
+      message: `Neural Arc has submitted a proposal for "${tender.title}". Review it now.`,
+      tenderId: tender.id,
+      createdBy: 'admin',
+      targetRoles: ['client']
+    });
+
     return tender;
   },
 
@@ -269,6 +345,17 @@ export const tenderService = {
     tender.proposal.feedback = feedback || '';
 
     writeData(data);
+
+    // Create notification for admin
+    notificationService.create({
+      type: status === 'accepted' ? 'proposal_accepted' : 'proposal_rejected',
+      title: `Proposal ${status === 'accepted' ? 'Accepted' : 'Rejected'}`,
+      message: `Client has ${status === 'accepted' ? 'accepted' : 'rejected'} your proposal for "${tender.title}".`,
+      tenderId: tender.id,
+      createdBy: 'client',
+      targetRoles: ['admin']
+    });
+
     return tender;
   },
 
@@ -291,4 +378,5 @@ export const tenderService = {
     return path.join(UPLOADS_DIR, filename);
   }
 };
+
 

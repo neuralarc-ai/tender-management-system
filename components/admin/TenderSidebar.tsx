@@ -52,3 +52,4 @@ export function TenderSidebar({ tenders, selectedId, onSelect }: TenderSidebarPr
   );
 }
 
+

@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Enable server actions if needed, though mostly standard in 14+
+    // Increase API route timeouts for AI generation
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '10mb',
+        },
+    },
 };
 
 module.exports = nextConfig;
+
 

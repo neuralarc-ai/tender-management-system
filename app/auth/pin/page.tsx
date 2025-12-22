@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
+import { RiShieldCheckLine, RiArrowRightLine, RiTimeLine, RiRocketLine } from 'react-icons/ri';
 
 export default function PinAuthPage() {
   const [pin, setPin] = useState(['', '', '', '']);
@@ -48,16 +49,6 @@ export default function PinAuthPage() {
     if (e.key === 'Backspace' && !pin[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
-    
-    // Quick test shortcuts
-    if (e.key === '1' && e.ctrlKey) {
-      e.preventDefault();
-      setPin(['1','1','1','1']);
-    }
-    if (e.key === '2' && e.ctrlKey) {
-      e.preventDefault();
-      setPin(['2','2','2','2']);
-    }
   };
 
   const checkPin = async (pinString: string) => {
@@ -65,9 +56,9 @@ export default function PinAuthPage() {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     if (pinString === '1111') {
-      login('client');
+      login('client', 'user-client-001', 'partner@dcs.com', 'DCS Corporation');
     } else if (pinString === '2222') {
-      login('admin');
+      login('admin', 'user-admin-001', 'admin@neuralarc.com', 'Neural Arc Inc.');
     } else {
       setError(true);
       setLoading(false);
@@ -77,176 +68,178 @@ export default function PinAuthPage() {
   };
 
   return (
-    <div className="min-h-screen text-white antialiased selection:bg-white/20 selection:text-white" style={{fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji'}}>
-      
-      {/* Solid Black Background Base to prevent white bleed-through */}
-      <div className="fixed inset-0 -z-20 bg-black"></div>
-
-      {/* UnicornStudio Background */}
-      <div 
-        suppressHydrationWarning
-        className="aura-background-component fixed top-0 w-full h-screen -z-10 saturate-0 brightness-50" 
-        data-alpha-mask="80" 
-        style={{
-          maskImage: 'linear-gradient(to bottom, transparent, black 0%, black 80%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 0%, black 80%, transparent)'
-        }}
-      >
-        <div data-us-project="bmaMERjX2VZDtPrh4Zwx" className="absolute w-full h-full left-0 top-0 -z-10"></div>
-      </div>
-      
-      {/* Script injection handled via useEffect or Next.js Script component */}
-      <script 
-        dangerouslySetInnerHTML={{
-          __html: `!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.34/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();`
-        }}
-      />
-
-      {/* Main */}
-      <main className="relative flex min-h-screen items-center justify-center p-4 sm:p-6 z-10 overflow-hidden">
-        <div className="w-full max-w-5xl mx-auto my-8 relative">
-          
-          {/* Outer circuit-style nodes with lines connected to card */}
-          <div className="pointer-events-none hidden md:block absolute top-0 right-0 bottom-0 left-0">
-            {/* Left upper node */}
-            <div className="absolute left-4 top-1/4 flex items-center gap-2 text-neutral-700">
-              <div className="h-px flex-1 bg-neutral-800 translate-x-2"></div>
-              <div className="relative h-9 w-16 rounded-xl bg-neutral-900/80 shadow-[0_0_0_1px_rgba(82,82,91,0.4)] flex items-center justify-center">
-                <div className="h-1 w-10 rounded-full bg-neutral-700"></div>
-                {/* Pulsing chip dots */}
-                <span className="absolute -left-1 h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)] animate-pulse"></span>
+    <div className="min-h-screen flex font-sans">
+      {/* Left Side - Form */}
+      <div className="w-full lg:w-1/2 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center p-8 relative">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="text-white">
+                  <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/>
+                </svg>
               </div>
-              {/* Line to card */}
-              <div className="h-px w-12 bg-neutral-800"></div>
-            </div>
-
-            {/* Left bottom node */}
-            <div className="absolute left-10 bottom-10 flex items-center gap-2 text-neutral-700">
-              <div className="h-px flex-1 bg-neutral-800 translate-x-2"></div>
-              <div className="relative h-9 w-20 rounded-xl bg-neutral-900/80 shadow-[0_0_0_1px_rgba(82,82,91,0.4)] flex items-center justify-center">
-                <div className="flex gap-1">
-                  <span className="h-1 w-2 rounded bg-neutral-700"></span>
-                  <span className="h-1 w-2 rounded bg-neutral-700/60"></span>
-                  <span className="h-1 w-2 rounded bg-neutral-700/40"></span>
-                </div>
-                {/* Pulsing chip dots */}
-                <span className="absolute -left-1 h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)] animate-pulse"></span>
-              </div>
-              {/* Line to card */}
-              <div className="h-px w-16 bg-neutral-800"></div>
-            </div>
-
-            {/* Right upper node */}
-            <div className="absolute right-4 top-1/5 flex items-center gap-2 text-neutral-700">
-              {/* Line to card (now pointing left) */}
-              <div className="h-px w-16 bg-neutral-800"></div>
-              <div className="relative h-9 w-20 rounded-xl bg-neutral-900/80 shadow-[0_0_0_1px_rgba(82,82,91,0.4)] flex items-center justify-center">
-                <div className="flex gap-1">
-                  <span className="h-1 w-6 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)]"></span>
-                </div>
-                {/* Pulsing chip dots */}
-                <span className="absolute -right-1 h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)] animate-pulse"></span>
-              </div>
-              <div className="h-px flex-1 bg-neutral-800 -translate-x-2"></div>
-            </div>
-
-            {/* Right bottom node */}
-            <div className="absolute right-8 bottom-16 flex items-center gap-2 text-neutral-700">
-              {/* Line to card (now pointing left) */}
-              <div className="h-px w-10 bg-neutral-800"></div>
-              <div className="relative h-9 w-16 rounded-xl bg-neutral-900/80 shadow-[0_0_0_1px_rgba(82,82,91,0.4)] flex items-center justify-center">
-                <div className="h-1 w-8 rounded-full bg-neutral-700"></div>
-                {/* Pulsing chip dots */}
-                <span className="absolute -right-1 h-1 w-1 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)] animate-pulse"></span>
-              </div>
-              <div className="h-px flex-1 bg-neutral-800 -translate-x-2"></div>
+              <span className="text-2xl font-black bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent tracking-tight">VECTOR</span>
             </div>
           </div>
 
-          {/* Card */}
-          <div className={`sm:px-10 sm:py-10 bg-gradient-to-b from-neutral-900 via-neutral-900 to-neutral-800 max-w-md border-neutral-800 border rounded-3xl mr-auto ml-auto pt-8 pr-6 pb-8 pl-6 relative shadow-xl ${error ? 'animate-shake' : ''}`}>
-            {/* Top glow dots */}
-            <div className="absolute left-10 top-5 hidden h-1.5 w-16 rounded-full bg-neutral-700/60 sm:block"></div>
-            <div className="absolute right-10 top-5 hidden h-1.5 w-10 rounded-full bg-neutral-700/30 sm:block"></div>
+          {/* Heading */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">
+              Welcome back
+            </h1>
+            <p className="text-gray-600 text-base">
+              Enter your secure PIN to access the platform
+            </p>
+          </div>
 
-            {/* Logo (simplified green glow) */}
-            <div className="flex justify-center">
-              <div className="flex bg-neutral-900 w-14 h-14 rounded-2xl relative shadow-[0_0_0_1px_rgba(82,82,91,0.7)] items-center justify-center">
-                <div className="flex bg-neutral-950 w-10 h-10 rounded-2xl relative items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{width: '24px', height: '24px', color: 'rgb(52, 211, 153)'}} className="w-[24px] h-[24px]" aria-hidden="true" role="img" strokeWidth="2">
-                    <path fill="#34d399" d="M2.535 11.916c0 5.267 4.238 9.537 9.465 9.537s9.465-4.27 9.465-9.537a9.54 9.54 0 0 0-5.335-8.584a.776.776 0 0 1-.355-1.033a.765.765 0 0 1 1.026-.358A11.09 11.09 0 0 1 23 11.916C23 18.038 18.075 23 12 23S1 18.038 1 11.916C1 6.548 4.787 2.073 9.815 1.051c1.689-.343 2.952 1.104 2.952 2.617v2.134c1.894.364 3.326 2.05 3.326 4.076V14c0 2.291-1.832 4.148-4.093 4.148c-2.26 0-4.093-1.857-4.093-4.148V9.878c0-2.025 1.432-3.711 3.326-4.075V3.668c0-.766-.588-1.208-1.115-1.101c-4.326.879-7.583 4.732-7.583 9.35" opacity=".5"></path>
-                    <path fill="#34d399" d="M7.907 13.954c0 2.29 1.833 4.148 4.093 4.148s4.093-1.857 4.093-4.148v-3.37H7.907zm4.861-4.616h3.253c-.312-1.667-1.608-3.292-3.253-3.609zm-1.535 0V5.73c-1.645.317-2.942 1.942-3.254 3.61z"></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Heading */}
-            <div className="mt-6 text-center">
-              <h1 className="text-[26px] leading-tight tracking-tight font-bold text-neutral-50">
-                Axis
-              </h1>
-              <p className="mt-2 text-sm font-medium text-neutral-400 tracking-wide">
-                Core of Intelligent Execution
-              </p>
-            </div>
-
-            {/* Form */}
-            <form className="mt-10 space-y-6" onSubmit={(e) => { e.preventDefault(); if(pin.join('').length === 4) checkPin(pin.join('')); }}>
-              <div className="flex justify-center gap-4">
+          {/* PIN Input */}
+          <form onSubmit={(e) => { e.preventDefault(); if(pin.join('').length === 4) checkPin(pin.join('')); }}>
+            <div className="mb-6">
+              <label className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-3 block">
+                Security PIN
+              </label>
+              <div className="grid grid-cols-4 gap-3">
                 {pin.map((digit, index) => (
-                  <div key={index} className="relative group">
-                    <input
-                      ref={el => { inputRefs.current[index] = el; }}
-                      type="password"
-                      maxLength={1}
-                      value={digit}
-                      onChange={e => handleChange(index, e.target.value)}
-                      onKeyDown={e => handleKeyDown(index, e)}
-                      disabled={loading}
-                      autoComplete="off"
-                      className={`
-                        w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border border-neutral-800 bg-neutral-950/80 
-                        text-center text-2xl sm:text-3xl font-bold text-neutral-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]
-                        focus:border-emerald-500/50 focus:bg-neutral-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 
-                        transition-all duration-200
-                        ${error ? 'border-red-500/50 text-red-400 bg-red-950/10 focus:ring-red-500/20' : ''}
-                      `}
-                    />
-                    {/* Active glow effect */}
-                    <div className="absolute inset-0 rounded-2xl ring-1 ring-white/5 pointer-events-none"></div>
-                  </div>
+                  <input
+                    key={index}
+                    ref={el => { inputRefs.current[index] = el; }}
+                    type="password"
+                    maxLength={1}
+                    value={digit}
+                    onChange={e => handleChange(index, e.target.value)}
+                    onKeyDown={e => handleKeyDown(index, e)}
+                    disabled={loading}
+                    autoComplete="off"
+                    className={`
+                      w-full aspect-square h-16 rounded-2xl border-2 bg-white
+                      text-center text-2xl font-bold text-gray-900
+                      focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-100
+                      transition-all duration-200
+                      ${error ? 'border-red-500 bg-red-50 text-red-500 animate-shake' : 'border-orange-200'}
+                      ${digit ? 'border-orange-400 shadow-sm ring-2 ring-orange-100' : ''}
+                      ${loading ? 'opacity-50' : ''}
+                    `}
+                  />
                 ))}
               </div>
+            </div>
 
-              {error && (
-                <p className="text-center text-red-400 text-sm animate-pulse">
-                  Access Denied. Invalid PIN Code.
-                </p>
+            {error && (
+              <div className="mb-6 flex items-center gap-2 text-red-600 text-sm font-medium bg-red-50 px-4 py-3 rounded-2xl border border-red-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                <span>Invalid PIN. Please try again.</span>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={pin.join('').length !== 4 || loading}
+              className="w-full h-14 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:from-orange-700 hover:to-amber-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl mb-6"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                <>
+                  <span>Access Platform</span>
+                  <RiArrowRightLine className="w-5 h-5" />
+                </>
               )}
+            </button>
 
-              {loading && (
-                <div className="flex justify-center mt-6">
-                  <div className="w-5 h-5 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
-                </div>
-              )}
-
-
-            </form>
-          </div>
+          </form>
         </div>
-      </main>
+      </div>
+
+      {/* Right Side - Visual */}
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        {/* Professional Business Image Background */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `linear-gradient(135deg, rgba(249, 115, 22, 0.7) 0%, rgba(251, 146, 60, 0.65) 50%, rgba(253, 186, 116, 0.6) 100%), 
+            url("/login-background.png")`
+          }}
+        />
+
+        {/* Subtle Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 via-transparent to-amber-500/10" />
+
+        {/* Content */}
+        <div className="relative h-full flex flex-col items-center justify-center p-12 text-white">
+          {/* Status Badge */}
+          <div className="mb-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-full mb-8 shadow-lg">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></div>
+              <span className="text-xs font-bold uppercase tracking-widest">System Operational</span>
+            </div>
+
+            <h2 className="text-5xl font-black mb-6 leading-tight drop-shadow-lg">
+              Intelligent<br />
+              Tender Management
+            </h2>
+            <p className="text-lg text-white/90 max-w-md mx-auto leading-relaxed font-medium drop-shadow">
+              AI-powered platform for seamless proposal workflows<br />and real-time collaboration.
+            </p>
+          </div>
+
+          {/* Feature Cards */}
+          <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
+            <FeatureCard 
+              icon={<RiRocketLine />}
+              title="AI Analysis"
+              description="Instant feasibility scoring"
+            />
+            <FeatureCard 
+              icon={<RiTimeLine />}
+              title="Real-Time"
+              description="Live notifications & updates"
+            />
+            <FeatureCard 
+              icon={<RiShieldCheckLine />}
+              title="Secure"
+              description="Enterprise-grade encryption"
+            />
+            <FeatureCard 
+              icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>}
+              title="Scalable"
+              description="Built for enterprise scale"
+            />
+          </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-10 right-10 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-10 w-40 h-40 bg-amber-400/10 rounded-full blur-3xl"></div>
+        </div>
+      </div>
 
       <style jsx global>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+          20%, 40%, 60%, 80% { transform: translateX(4px); }
         }
         .animate-shake {
-          animation: shake 0.2s ease-in-out 0s 2;
+          animation: shake 0.4s ease-in-out;
         }
       `}</style>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+  return (
+    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 hover:bg-white/15 transition-all hover:scale-105 shadow-xl">
+      <div className="text-white mb-3 w-6 h-6">
+        {icon}
+      </div>
+      <h3 className="text-sm font-bold mb-1.5 text-white">{title}</h3>
+      <p className="text-[11px] text-white/70 leading-relaxed">{description}</p>
     </div>
   );
 }
