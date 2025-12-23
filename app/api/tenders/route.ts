@@ -31,7 +31,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     // Extract user ID from request (in production, get from session/JWT)
-    const createdBy = body.createdBy || 'default-user-id';
+    // Default to client user if not provided
+    const createdBy = body.createdBy || '11111111-1111-1111-1111-111111111111';
     
     const tenderData = {
       title: body.title,

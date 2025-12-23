@@ -1,0 +1,62 @@
+# ============================================
+# TENDER MANAGEMENT SYSTEM - ENVIRONMENT SETUP
+# ============================================
+
+# ⚠️ IMPORTANT: You MUST update these values!
+# Do NOT use the example values - they will NOT work!
+
+# --------------------------------------------
+# SUPABASE DATABASE (REQUIRED)
+# --------------------------------------------
+# Get these from: https://app.supabase.com/project/_/settings/api
+#
+# 1. Create account at supabase.com
+# 2. Create new project (takes 2-3 minutes)
+# 3. Go to Project Settings → API
+# 4. Copy your values below:
+
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT-ID.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...YOUR_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...YOUR_SERVICE_KEY
+
+# ⚠️ IMPORTANT: 
+# - DO NOT add trailing slash to URL
+# - DO NOT share service role key publicly
+# - After updating, run: npm install dotenv && node diagnose-supabase.js
+
+# --------------------------------------------
+# HELIUM AI API (REQUIRED for AI features)
+# --------------------------------------------
+# Get from: Your Helium AI account
+
+AI_API_KEY=your_actual_helium_api_key_here
+AI_API_ENDPOINT=https://api.he2.site/api/v1/public
+
+# --------------------------------------------
+# NEXT STEPS AFTER UPDATING:
+# --------------------------------------------
+# 1. Save this file as .env.local (remove .txt)
+# 2. Run diagnostic: node diagnose-supabase.js
+# 3. If connection works, run migrations (see supabase/SETUP_GUIDE.md)
+# 4. Start dev server: npm run dev
+# 5. Test by creating a tender!
+
+# ============================================
+# TROUBLESHOOTING
+# ============================================
+# 
+# Error: "ENOTFOUND xxx.supabase.co"
+# → Your Supabase URL is wrong or project doesn't exist
+# → Create a new Supabase project and update URL
+#
+# Error: "Invalid API key"
+# → Check you copied the correct keys
+# → Anon key starts with eyJhbGci...
+# → Service key also starts with eyJhbGci... (but different)
+#
+# Error: "Table 'tenders' does not exist"
+# → You need to run database migrations
+# → See: supabase/SETUP_GUIDE.md
+#
+# Need help? Check: supabase/SETUP_GUIDE.md
+

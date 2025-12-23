@@ -14,12 +14,13 @@ if (!AI_API_KEY) {
 
 /**
  * POST /api/ai/chat-followup
- * Send follow-up message - NO TIMEOUT LIMIT
+ * Send follow-up message and return streaming response
+ * Uses Helium's realtime SSE streaming for immediate feedback
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { threadId, projectId, prompt, tenderId } = body;
+    const { threadId, projectId, prompt, tenderId, stream = false } = body;
 
     if (!threadId || !projectId || !prompt) {
       return NextResponse.json(
@@ -28,9 +29,8 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('💬 Sending ONE follow-up message to AI thread:', threadId);
+    console.log('💬 Sending follow-up message to AI thread:', threadId);
     console.log('📝 User request:', prompt);
-    console.log('⚠️ Will send ONCE, then only poll for response...');
 
     // Send follow-up message ONCE
     const followUpUrl = `${API_BASE_URL}/threads/${threadId}/response?project_id=${projectId}`;
@@ -54,75 +54,106 @@ export async function POST(request: Request) {
 
     const followUpData = await followUpResponse.json();
     console.log('✅ Follow-up message sent successfully');
-    console.log('⏳ Now ONLY polling for response - no more sending...');
+    console.log(`🆔 Agent Run ID: ${followUpData.agent_run_id}`);
 
-    // Poll indefinitely until response - ONLY CHECK, don't send
-    let attempts = 0;
-    let response: any = null;
+    // If client requests streaming, return immediately and let them use SSE endpoint
+    if (stream) {
+      return NextResponse.json({
+        success: true,
+        message: 'Follow-up sent. Connect to SSE stream for real-time updates.',
+        threadId,
+        projectId,
+        agentRunId: followUpData.agent_run_id,
+        streamUrl: `/api/ai/stream/${threadId}?projectId=${projectId}`
+      });
+    }
+
+    // Otherwise, use real-time SSE to get response and return when complete
+    console.log('⏳ Connecting to real-time stream for response...');
     
-    while (true) { // Infinite loop until completion
-      attempts++;
-      await new Promise(resolve => setTimeout(resolve, 5000)); // 5 second pause
+    const responseUrl = `${API_BASE_URL}/threads/${threadId}/response?project_id=${projectId}&realtime=true&include_file_content=true`;
       
-      console.log(`📡 Follow-up poll attempt ${attempts} - ONLY checking status...`);
-      
-      // GET only - just checking status with realtime mode
-      const responseUrl = `${API_BASE_URL}/threads/${threadId}/response?project_id=${projectId}&realtime=true&timeout=20&include_file_content=true`;
-      
-      try {
-        const responseData = await fetch(responseUrl, {
-          method: 'GET',
-          headers: {
-            'X-API-Key': AI_API_KEY,
-            'Accept': 'text/event-stream'
-          }
-        });
+    const responseStream = await fetch(responseUrl, {
+      method: 'GET',
+      headers: {
+        'X-API-Key': AI_API_KEY,
+        'Accept': 'text/event-stream'
+      }
+    });
 
-        if (responseData.ok) {
-          response = await responseData.json();
+    if (!responseStream.ok) {
+      throw new Error(`Failed to connect to stream: ${responseStream.status}`);
+    }
+
+    // Process SSE stream
+    const reader = responseStream.body?.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let fullContent = '';
+
+    if (!reader) {
+      throw new Error('No reader available');
+    }
+
+    while (true) {
+      const { done, value } = await reader.read();
+      
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const jsonStr = line.substring(6).trim();
           
-          if (response.status === 'completed' && response.response?.content) {
-            console.log(`✅ AI response received after ${attempts} attempts`);
-            break; // Exit loop
-          } else if (response.status === 'failed') {
-            console.error('⚠️ AI reported failed, but continuing to poll anyway...');
-            await new Promise(resolve => setTimeout(resolve, 10000));
-          } else {
-            console.log(`⏳ Status: ${response.status}, continuing...`);
+          if (!jsonStr) continue;
+
+          try {
+            const eventData = JSON.parse(jsonStr);
+            
+            if (eventData.type === 'content') {
+              fullContent += eventData.content || '';
+              console.log(`✍️ Received content chunk: ${eventData.content?.length || 0} chars`);
+            }
+            else if (eventData.type === 'complete' || eventData.status === 'completed') {
+              console.log(`✅ Stream complete! Total content: ${fullContent.length} chars`);
+              
+              // Update the proposal if the AI made changes
+              if (tenderId && fullContent.length > 50) {
+                const tender = await supabaseTenderService.getById(tenderId);
+                if (tender) {
+                  console.log('📝 AI response received');
+                }
+              }
+
+              return NextResponse.json({
+                success: true,
+                message: fullContent || eventData.content || 'AI processing complete',
+                status: 'completed',
+                threadId,
+                projectId
+              });
+            }
+            else if (eventData.type === 'status') {
+              console.log(`📊 Status: ${eventData.status}`);
+            }
+          } catch (parseError: any) {
+            console.error(`⚠️ Parse error: ${parseError.message}`);
           }
         }
-      } catch (error: any) {
-        console.error('⚠️ Poll error:', error.message, '- Retrying...');
-        // Continue polling even on errors
       }
     }
 
-    if (response && response.status === 'completed') {
-      // Extract content from multiple possible locations
-      const aiMessage = response.response?.content || response.content || response.message || 'AI processing complete';
-      
-      // Update the proposal if the AI made changes
-      if (tenderId && aiMessage.length > 50) {
-        const tender = await supabaseTenderService.getById(tenderId);
-        if (tender) {
-          console.log('📝 AI response saved to conversation');
-        }
-      }
-
-      return NextResponse.json({
-        success: true,
-        message: aiMessage,
-        status: 'completed'
-      });
-    } else {
-      // Even if not completed, return what we have
-      console.log('⚠️ Polling ended but not completed, returning partial response');
-      return NextResponse.json({
-        success: true,
-        message: 'AI is still processing. Please check back.',
-        status: response?.status || 'unknown'
-      });
-    }
+    // If stream ended without explicit completion
+    return NextResponse.json({
+      success: true,
+      message: fullContent || 'AI processing complete',
+      status: 'completed',
+      threadId,
+      projectId
+    });
 
   } catch (error: any) {
     console.error('❌ Chat follow-up error:', error);

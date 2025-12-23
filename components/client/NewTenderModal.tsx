@@ -33,7 +33,12 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
 
   const createTender = useMutation({
     mutationFn: async (data: TenderFormData & { documents: UploadedFile[] }) => {
-      const response = await axios.post('/api/tenders', { ...data, createdBy: 'dcs' });
+      // Use the client user UUID from database
+      // Client: partner@dcs.com (PIN: 1111)
+      const response = await axios.post('/api/tenders', { 
+        ...data, 
+        createdBy: '11111111-1111-1111-1111-111111111111' 
+      });
       return response.data;
     },
     onSuccess: () => {

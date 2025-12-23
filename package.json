@@ -7,7 +7,9 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "diagnose": "node diagnose-supabase.js",
+        "check-db": "node diagnose-supabase.js"
     },
     "dependencies": {
         "@radix-ui/react-dialog": "^1.1.15",
@@ -19,6 +21,7 @@
         "clsx": "^2.0.0",
         "date-fns": "^4.1.0",
         "date-fns-tz": "^3.2.0",
+        "dotenv": "^17.2.3",
         "lucide-react": "^0.294.0",
         "next": "14.0.3",
         "react": "^18.2.0",

@@ -2,6 +2,20 @@
 
 A production-ready Next.js application for tender intake, AI analysis, and proposal generation.
 
+---
+
+## 🚨 EXPERIENCING ERRORS?
+
+**Getting "Error submitting tender" message?**
+
+→ **Quick Fix:** Run `npm run diagnose` and follow the instructions.  
+→ **Complete Guide:** See [`FIX_TENDER_ERROR.md`](./FIX_TENDER_ERROR.md)  
+→ **Quick Reference:** See [`QUICK_FIX_CARD.txt`](./QUICK_FIX_CARD.txt)
+
+**Common Issue:** Supabase database not configured. Fix takes 15 minutes. [Details here](./FIX_TENDER_ERROR.md)
+
+---
+
 ## 🚀 Technologies
 
 - **Framework:** Next.js 14 (App Router)
@@ -11,7 +25,8 @@ A production-ready Next.js application for tender intake, AI analysis, and propo
 - **State Management:** TanStack Query (React Query)
 - **Forms:** React Hook Form + Zod
 - **Backend:** Next.js API Routes
-- **Data:** JSON File-based persistence (Local)
+- **Database:** Supabase (PostgreSQL)
+- **AI:** Helium AI API
 
 ## 🛠 Setup & Run
 

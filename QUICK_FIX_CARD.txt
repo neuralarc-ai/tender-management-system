@@ -1,0 +1,99 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║         🚨 TENDER SUBMISSION ERROR - QUICK FIX CARD 🚨            ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  ERROR: "Error submitting tender. Please try again."             ║
+║                                                                   ║
+║  CAUSE: Supabase database not configured                         ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  🔧 FIX IT IN 3 STEPS (15 MINUTES):                              ║
+║                                                                   ║
+║  1️⃣  RUN DIAGNOSTIC                                              ║
+║     └─ npm run diagnose                                          ║
+║                                                                   ║
+║  2️⃣  CREATE SUPABASE PROJECT                                     ║
+║     └─ Go to: https://supabase.com                               ║
+║     └─ Sign up (free)                                            ║
+║     └─ Create new project (2-3 min wait)                         ║
+║     └─ Copy URL & API keys                                       ║
+║     └─ Update .env.local file                                    ║
+║                                                                   ║
+║  3️⃣  RUN MIGRATIONS & TEST                                       ║
+║     └─ Open Supabase SQL Editor                                  ║
+║     └─ Run: supabase/migrations/007_clean_setup_no_dummy_data.sql║
+║     └─ Restart: npm run dev                                      ║
+║     └─ Test: http://localhost:3000                               ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  📖 DETAILED GUIDES:                                             ║
+║                                                                   ║
+║  • FIX_TENDER_ERROR.md     → Step-by-step fix guide             ║
+║  • ERROR_ANALYSIS.md        → Technical explanation             ║
+║  • supabase/SETUP_GUIDE.md → Complete Supabase setup            ║
+║  • fix-env-template.txt     → .env.local template               ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  ⚡ QUICK COMMANDS:                                               ║
+║                                                                   ║
+║  npm run diagnose          # Check what's wrong                  ║
+║  npm run dev               # Start development server            ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  ✅ SUCCESS CHECKLIST:                                            ║
+║                                                                   ║
+║  □ npm run diagnose passes all checks                            ║
+║  □ No database errors in terminal                                ║
+║  □ Can login to app                                              ║
+║  □ Can submit tender successfully                                ║
+║  □ Tender appears in dashboard                                   ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  🎯 WHAT YOU NEED:                                               ║
+║                                                                   ║
+║  • 15 minutes of time                                            ║
+║  • Internet connection                                           ║
+║  • Email address (for Supabase signup)                           ║
+║  • $0 (completely free!)                                         ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  💡 PRO TIP:                                                      ║
+║                                                                   ║
+║  Run "npm run diagnose" first - it will tell you EXACTLY         ║
+║  what's wrong and guide you through the fix automatically!       ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+
+╔═══════════════════════════════════════════════════════════════════╗
+║                                                                   ║
+║  🔍 TROUBLESHOOTING QUICK REFERENCE                              ║
+║                                                                   ║
+╠═══════════════════════════════════════════════════════════════════╣
+║                                                                   ║
+║  ERROR: ENOTFOUND xxx.supabase.co                                ║
+║  FIX: Create new Supabase project + update .env.local            ║
+║                                                                   ║
+║  ERROR: Invalid API key                                          ║
+║  FIX: Copy fresh keys from Supabase dashboard                    ║
+║                                                                   ║
+║  ERROR: Table 'tenders' does not exist                           ║
+║  FIX: Run database migrations in SQL Editor                      ║
+║                                                                   ║
+║  ERROR: Missing Supabase environment variables                   ║
+║  FIX: Create .env.local file in project root                     ║
+║                                                                   ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+
+START NOW: npm run diagnose
+THEN READ: FIX_TENDER_ERROR.md
+
