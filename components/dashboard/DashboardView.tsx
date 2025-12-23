@@ -220,15 +220,6 @@ export function DashboardView() {
           </div>
 
           <div className="flex items-center gap-4">
-             <Button 
-                variant="ghost" 
-                size="lg" 
-                onClick={() => setShowSettings(true)}
-                className="rounded-full bg-white/50 backdrop-blur-sm border border-gray-200/50 gap-2 px-6 font-bold text-xs uppercase tracking-widest hover:bg-white"
-             >
-                <RiSettings4Line />
-                Config
-             </Button>
              <div className="relative">
                 <Button 
                   variant="ghost" 
@@ -260,16 +251,16 @@ export function DashboardView() {
         {activeView === 'dashboard' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Welcome Section */}
-            <WelcomeBanner stats={stats} role={role} />
+            <WelcomeBanner stats={stats} role={role} onPostTender={() => handleAction('new')} />
 
             {/* Dashboard Grid */}
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-12 gap-6 h-[666px] mb-16">
                 {/* Column 1: Profile & Actions */}
-                <div className="col-span-12 lg:col-span-3 space-y-6 flex flex-col">
+                <div className="col-span-12 lg:col-span-3 flex flex-col">
                     <div className="h-[400px] flex-shrink-0">
                         <ProfileCard role={role} tenders={displayTenders} />
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-1 mt-6 overflow-hidden">
                         <QuickActions role={role} onAction={handleAction} />
                     </div>
                 </div>
@@ -286,7 +277,7 @@ export function DashboardView() {
                                     <AIAnalysisCard score={stats.avgAiScore} />
                                 </div>
                             </div>
-                            <div className="flex-1 min-h-[450px]">
+                            <div className="flex-1 overflow-hidden">
                                 <CalendarWidget tenders={tenders} onSelectTender={setSelectedTenderId} />
                             </div>
                         </>
@@ -304,7 +295,7 @@ export function DashboardView() {
                                     />
                                 </div>
                             </div>
-                            <div className="flex-1 min-h-[450px]">
+                            <div className="flex-1 overflow-hidden">
                                 <CalendarWidget tenders={displayTenders} onSelectTender={setSelectedTenderId} />
                             </div>
                         </>

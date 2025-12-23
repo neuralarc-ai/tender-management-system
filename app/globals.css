@@ -23,23 +23,51 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Custom scrollbar with new colors */
+/* Custom scrollbar with sleek design */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5EEE6;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--quantum);
-  border-radius: 5px;
+  background: rgba(157, 153, 196, 0.3);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--passion);
+  background: rgba(157, 153, 196, 0.5);
+}
+
+/* Custom scrollbar for dark backgrounds */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Hide scrollbar */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Selection color */
@@ -52,4 +80,3 @@ body {
   background: var(--passion);
   color: white;
 }
-

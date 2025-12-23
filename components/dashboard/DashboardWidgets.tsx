@@ -14,8 +14,7 @@ import {
   RiSettings4Line,
   RiTimeLine,
   RiFlashlightLine,
-  RiPulseLine,
-  RiFileTextLine
+  RiPulseLine
 } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -30,7 +29,7 @@ interface DashboardStats {
   avgAiScore: number;
 }
 
-export function WelcomeBanner({ stats, role }: { stats: DashboardStats, role: string }) {
+export function WelcomeBanner({ stats, role, onPostTender }: { stats: DashboardStats, role: string, onPostTender?: () => void }) {
   const isClient = role === 'client';
   const today = format(new Date(), 'EEEE, MMMM do');
   
@@ -43,10 +42,20 @@ export function WelcomeBanner({ stats, role }: { stats: DashboardStats, role: st
                 Welcome back, <span className="font-bold capitalize">{isClient ? 'Partner' : 'Admin'}</span>
               </h1>
           </div>
-          <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-              <RiPulseLine className="text-verdant" />
-              <span className="text-sm font-bold uppercase text-[10px] tracking-widest text-gray-500">System Pulse: <span className="text-verdant">Optimal</span></span>
-          </div>
+          {isClient && onPostTender && (
+            <button
+              onClick={onPostTender}
+              className="flex items-center gap-4 bg-passion hover:bg-passion-dark text-white px-5 py-3 rounded-[24px] shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
+            >
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shadow-sm">
+                <RiAddLine size={20} className="text-white" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-sm text-white uppercase tracking-tight">Post Tender</div>
+                <div className="text-[9px] text-white/70 font-bold uppercase tracking-widest">Initial project intake</div>
+              </div>
+            </button>
+          )}
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
@@ -100,16 +109,7 @@ function StatsPill({ label, value, color, width = "w-32", striped = false }: { l
   );
 }
 
-export function ProfileCard({ role, tenders }: { role: string, tenders?: any[] }) {
-  // Calculate real stats based on tenders
-  const activeTasks = tenders ? tenders.filter(t => t.status === 'open').length : 0;
-  const completedTasks = tenders ? tenders.filter(t => t.status === 'closed' || t.status === 'awarded').length : 0;
-  const totalTasks = activeTasks + completedTasks;
-  
-  // Rating based on proposal acceptance rate (for partner) or completion rate (for admin)
-  const acceptedProposals = tenders ? tenders.filter(t => t.proposal?.status === 'accepted').length : 0;
-  const rating = tenders && tenders.length > 0 ? ((acceptedProposals / tenders.length) * 5).toFixed(1) : '5.0';
-
+export function ProfileCard({ role }: { role: string }) {
   return (
     <Card className="p-6 rounded-[40px] bg-white border-none shadow-xl h-full relative overflow-hidden group font-sans">
       <div className="absolute top-6 right-6 z-10">
@@ -139,16 +139,12 @@ export function ProfileCard({ role, tenders }: { role: string, tenders?: any[] }
 
         <div className="grid grid-cols-2 gap-4 mt-auto">
             <div className="bg-gray-50 p-4 rounded-3xl">
-                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">
-                    {role === 'admin' ? 'Pipeline' : 'Active'}
-                </div>
-                <div className="text-xl font-bold text-neural">{activeTasks}</div>
+                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">Tasks</div>
+                <div className="text-xl font-bold text-neural">12</div>
             </div>
             <div className="bg-gray-50 p-4 rounded-3xl">
-                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">
-                    {role === 'admin' ? 'Success' : 'Rating'}
-                </div>
-                <div className="text-xl font-bold text-aurora flex items-center gap-1">{rating}</div>
+                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">Rating</div>
+                <div className="text-xl font-bold text-aurora flex items-center gap-1">4.9</div>
             </div>
         </div>
       </div>
@@ -260,7 +256,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
 
 export function ProjectProgressCard({ tender }: { tender?: Tender }) {
     if (!tender) return (
-        <Card className="p-6 rounded-[32px] bg-passion text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
+        <Card className="p-6 rounded-[32px] bg-indigo-600 text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
             <RiFlashlightLine size={48} className="mb-4 opacity-30" />
             <h3 className="text-xl font-bold mb-2">No Active Projects</h3>
             <p className="text-indigo-100 text-sm">Submit your first tender to track progress here.</p>
@@ -278,10 +274,10 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <div className="bg-passion-light/30 text-passion text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
+                    <div className="bg-indigo-100 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
                     <h3 className="text-lg font-bold truncate max-w-[200px] text-neural">{tender.title}</h3>
                 </div>
-                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-passion">
+                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-indigo-600">
                     <RiTimeLine />
                 </div>
             </div>
@@ -298,7 +294,7 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
                                 {step.completed ? '✓' : i + 1}
                             </div>
                             <span className={`text-[10px] font-black uppercase tracking-tighter ${
-                                step.active ? 'text-passion' : 'text-gray-400'
+                                step.active ? 'text-indigo-600' : 'text-gray-400'
                             }`}>{step.name}</span>
                         </div>
                     ))}
@@ -373,10 +369,10 @@ export function RecentTendersWidget({ tenders, onSelect }: { tenders: Tender[], 
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm">
             <div className="flex justify-between mb-4">
                 <div>
-                    <h3 className="text-lg font-bold text-neural">Velocity</h3>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Total thru-put</p>
+                    <h3 className="text-base font-bold text-neural">Velocity</h3>
+                    <p className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Total thru-put</p>
                 </div>
-                <span className="text-3xl font-light text-neural">{Math.round(progress)}<span className="text-sm font-bold">%</span></span>
+                <span className="text-2xl font-light text-neural">{Math.round(progress)}<span className="text-xs font-bold">%</span></span>
             </div>
             <div className="flex gap-1 h-12 bg-gray-50 rounded-2xl p-1">
                 <div className="bg-aurora rounded-xl flex items-center justify-center text-[10px] font-black uppercase tracking-tighter shadow-sm" style={{ width: `${Math.max(progress, 20)}%` }}>Closed</div>
@@ -384,7 +380,7 @@ export function RecentTendersWidget({ tenders, onSelect }: { tenders: Tender[], 
             </div>
         </Card>
 
-        <Card className="p-6 rounded-[32px] bg-neural text-white border-none shadow-sm flex-1 flex flex-col overflow-hidden">
+        <Card className="p-5 rounded-[32px] bg-neural text-white border-none shadow-sm flex-1 flex flex-col overflow-hidden min-h-[510px]">
             <div className="flex justify-between items-center mb-6 px-1">
                 <div>
                     <h3 className="text-lg font-bold text-white">Stream</h3>
@@ -437,7 +433,7 @@ function TenderItem({ icon, title, subtitle, time, completed = false, onClick }:
     )
 }
 
-export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[], onSelectTender?: (id: string) => void }) {
+export function CalendarWidget({ tenders }: { tenders: Tender[] }) {
     const today = new Date();
     const currentMonth = format(today, 'MMMM yyyy');
     const upcomingDeadlines = tenders
@@ -449,7 +445,7 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h3 className="text-xl font-bold text-neural uppercase tracking-tighter">Radar</h3>
+                    <h3 className="text-lg font-bold text-neural uppercase tracking-tighter">Radar</h3>
                     <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">{currentMonth}</p>
                 </div>
                 <div className="flex gap-2">
@@ -461,16 +457,12 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
 
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {upcomingDeadlines.length > 0 ? upcomingDeadlines.map((tender, i) => (
-                        <div 
-                          key={tender.id} 
-                          onClick={() => onSelectTender?.(tender.id)}
-                          className="bg-gray-50 p-6 rounded-[28px] flex flex-col justify-between hover:bg-gray-100 transition-all cursor-pointer border border-transparent hover:border-gray-200 hover:shadow-sm"
-                        >
+                        <div key={tender.id} className="bg-gray-50 p-6 rounded-[28px] flex flex-col justify-between hover:bg-gray-100 transition-all cursor-pointer border border-transparent hover:border-gray-200 hover:shadow-sm">
                         <div>
                             <div className="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest">
                                 {format(new Date(tender.submissionDeadline), 'EEEE')}
                             </div>
-                            <div className="text-5xl font-black text-neural mb-1 tracking-tighter">
+                            <div className="text-4xl font-black text-neural mb-1 tracking-tighter">
                                 {format(new Date(tender.submissionDeadline), 'dd')}
                             </div>
                             <div className="text-[10px] font-black text-aurora uppercase tracking-[0.2em]">
@@ -478,7 +470,7 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
                             </div>
                         </div>
                         <div className="mt-8">
-                            <div className="text-xs font-bold text-neural truncate mb-1 uppercase tracking-tight">{tender.title}</div>
+                            <div className="text-[10px] font-bold text-neural truncate mb-0.5 uppercase tracking-tight">{tender.title}</div>
                             <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Submission Deadline</div>
                         </div>
                     </div>
@@ -496,24 +488,6 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
 export function QuickActions({ role, onAction }: { role: string, onAction: (action: string) => void }) {
     return (
         <div className="space-y-4 font-sans">
-             {role === 'client' && (
-               <Card 
-                  className="p-5 rounded-[28px] bg-passion text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-passion-dark transition-all hover:scale-[1.02] shadow-passion/10"
-                  onClick={() => onAction('new')}
-              >
-                  <div className="flex items-center gap-4">
-                      <div className="bg-white/20 p-2 rounded-xl">
-                          <RiAddLine size={24} />
-                      </div>
-                      <div>
-                        <span className="font-black text-lg block leading-tight uppercase tracking-tighter">Post Tender</span>
-                        <span className="text-[10px] text-white/60 font-bold uppercase tracking-widest">Initial project intake</span>
-                      </div>
-                  </div>
-                  <RiArrowRightUpLine className="text-white/40" />
-               </Card>
-             )}
-
              {role === 'admin' && (
                <Card 
                   className="p-5 rounded-[28px] bg-passion text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-passion-dark transition-all hover:scale-[1.02] shadow-passion/10"
