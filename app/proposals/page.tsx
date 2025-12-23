@@ -23,11 +23,22 @@ interface ChatMessage {
   timestamp: Date;
   fileUrl?: string;
   fileName?: string;
+  fileId?: string;
+  fileType?: string;
+  fileSize?: number;
   toolName?: string;
   toolInput?: any;
   toolResult?: any;
   isStreaming?: boolean;
   status?: 'running' | 'completed' | 'failed';
+}
+
+interface GeneratedFile {
+  file_id: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  file_path?: string;
 }
 
 export default function AIProposalGeneratorPage() {
@@ -40,6 +51,10 @@ export default function AIProposalGeneratorPage() {
   const [chatInput, setChatInput] = useState('');
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+  const [fileViewerOpen, setFileViewerOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<GeneratedFile | null>(null);
+  const [fileContent, setFileContent] = useState<string | null>(null);
+  const [loadingFile, setLoadingFile] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const { data: tenders = [] } = useQuery({
@@ -59,125 +74,203 @@ export default function AIProposalGeneratorPage() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
-  const addMessage = (type: ChatMessage['type'], content: string, fileUrl?: string, fileName?: string) => {
+  const addMessage = (type: ChatMessage['type'], content: string, fileId?: string, fileName?: string, fileType?: string, fileSize?: number) => {
     setChatMessages(prev => [...prev, {
       id: Date.now().toString() + Math.random(),
       type,
       content,
       timestamp: new Date(),
-      fileUrl,
-      fileName
+      fileId,
+      fileName,
+      fileType,
+      fileSize
     }]);
+  };
+
+  // Function to fetch and view a generated file
+  const viewGeneratedFile = async (fileId: string, fileName: string, fileType: string) => {
+    if (!currentThreadId || !currentProjectId) {
+      console.error('Missing thread or project ID');
+      return;
+    }
+
+    setLoadingFile(true);
+    setFileViewerOpen(true);
+    setSelectedFile({ file_id: fileId, file_name: fileName, file_type: fileType, file_size: 0 });
+
+    try {
+      console.log('📁 Fetching file:', { fileId, fileName, fileType });
+      
+      // Call Get Specific File API endpoint
+      const response = await axios.get(
+        `/api/ai/get-file?file_id=${encodeURIComponent(fileId)}&project_id=${currentProjectId}&thread_id=${currentThreadId}`
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Failed to fetch file');
+      }
+
+      const fileData = response.data.file;
+      
+      console.log('✅ File data received:', {
+        fileName: fileData.file_name,
+        fileType: fileData.file_type,
+        hasContent: !!fileData.content,
+        includedInline: fileData.included_inline
+      });
+
+      // Handle different file types
+      if (fileType.startsWith('image/')) {
+        // For images, decode base64 if needed or use content directly
+        if (fileData.content) {
+          const blobUrl = `data:${fileType};base64,${fileData.content}`;
+          setFileContent(blobUrl);
+        } else {
+          throw new Error('Image content not available');
+        }
+      } else if (fileType === 'application/pdf') {
+        // For PDFs, create blob URL
+        if (fileData.content) {
+          const binaryString = atob(fileData.content);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const blob = new Blob([bytes], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(blob);
+          setFileContent(blobUrl);
+        } else {
+          throw new Error('PDF content not available');
+        }
+      } else if (fileType.startsWith('text/') || fileType === 'application/json') {
+        // For text files, display content directly
+        const content = fileData.content || 'No content available';
+        setFileContent(content);
+      } else {
+        // For other types, show as text
+        setFileContent(fileData.content || 'File content not available for inline viewing. Please download.');
+      }
+      
+    } catch (error: any) {
+      console.error('❌ Error loading file:', error);
+      const errorMessage = error.response?.data?.error || error.message;
+      setFileContent(`Error loading file: ${errorMessage}`);
+    } finally {
+      setLoadingFile(false);
+    }
   };
 
   const generateProposal = async (tenderId: string) => {
     setIsGenerating(true);
     addMessage('user', '🚀 Generate comprehensive proposal with AI');
+    addMessage('system', '⏳ Initiating AI generation...');
     
     try {
+      // Step 1: Call Quick Action API to start generation
+      console.log('📤 Calling Quick Action API...');
       const response = await axios.post(`/api/tenders/${tenderId}/generate-proposal`);
       
-      if (response.data.success && response.data.proposal?.metadata) {
-        const { threadId, projectId } = response.data.proposal.metadata;
-        
-        // Track streaming message
-        let streamingMessageId: string | null = null;
-        let accumulatedContent = '';
-        
-        const eventSource = new EventSource(`/api/ai/stream/${threadId}?projectId=${projectId}`);
-        
-        eventSource.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            
-            switch (data.type) {
-              case 'status':
-                // Show AI status
-                if (data.status === 'running') {
-                  if (!streamingMessageId) {
-                    addMessage('system', `🤖 AI is thinking... (${data.elapsed || 0}s)`);
-                  }
-                } else if (data.status === 'completed') {
-                  addMessage('system', `✅ Generation completed in ${data.elapsed || 0}s`);
-                  
-                  // Check for files
-                  setTimeout(async () => {
-                    try {
-                      const filesResponse = await axios.get(`/api/tenders/${tenderId}`);
-                      if (filesResponse.data.proposal?.executiveSummary) {
-                        addMessage('file', '🌐 View Proposal Website', `/api/tenders/${tenderId}/proposal-website`, 'website.html');
-                        addMessage('file', '📄 Download Proposal PDF', `/api/tenders/${tenderId}/proposal-pdf`, 'proposal.pdf');
-                      }
-                    } catch (err) {
-                      console.error('Failed to check files:', err);
-                    }
-                  }, 1000);
-                  
-                  eventSource.close();
-                  setIsGenerating(false);
-                  queryClient.invalidateQueries({ queryKey: ['tenders'] });
-                }
-                break;
-                
-              case 'content':
-                // Real-time content streaming
-                accumulatedContent += data.content || '';
-                
-                if (streamingMessageId) {
-                  // Update existing streaming message
-                  setChatMessages(prev => prev.map(msg => 
-                    msg.id === streamingMessageId
-                      ? { ...msg, content: accumulatedContent, isStreaming: true }
-                      : msg
-                  ));
-                } else {
-                  // Create new streaming message
-                  const newMsg: ChatMessage = {
-                    id: 'streaming-' + Date.now(),
-                    type: 'streaming',
-                    content: accumulatedContent,
-                    timestamp: new Date(),
-                    isStreaming: true
-                  };
-                  streamingMessageId = newMsg.id;
-                  setChatMessages(prev => [...prev, newMsg]);
-                }
-                break;
-                
-              case 'tool':
-                // AI is using a tool
-                addMessage('tool', data.tool_name || 'Using tool', undefined, undefined);
-                break;
-                
-              case 'tool_result':
-                // Tool execution result
-                if (data.success) {
-                  addMessage('system', `✅ ${data.tool_name} completed`);
-                }
-                break;
-                
-              case 'error':
-                addMessage('system', `❌ ${data.message || 'Error occurred'}`);
-                eventSource.close();
-                setIsGenerating(false);
-                break;
-            }
-          } catch (err) {
-            console.error('Stream parse error:', err);
-          }
-        };
-        
-        eventSource.onerror = () => {
-          addMessage('system', '⚠️ Connection lost');
-          eventSource.close();
-          setIsGenerating(false);
-        };
-        
-        setCurrentThreadId(threadId);
-        setCurrentProjectId(projectId);
+      if (!response.data.success) {
+        throw new Error(response.data.error || 'Failed to start AI generation');
       }
+
+      const { project_id, thread_id, agent_run_id } = response.data;
+      
+      console.log('✅ AI generation started:', { project_id, thread_id, agent_run_id });
+      
+      addMessage('system', `✅ AI task created successfully`);
+      addMessage('system', `⏳ AI is processing... We'll check back in 3 minutes...`);
+      
+      // Store thread info for follow-ups
+      setCurrentThreadId(thread_id);
+      setCurrentProjectId(project_id);
+      
+      // Step 2: Wait 180 seconds (3 minutes) before checking for response
+      console.log('⏰ Waiting 180 seconds before checking response...');
+      await new Promise(resolve => setTimeout(resolve, 180000)); // 180 seconds = 3 minutes
+      
+      console.log('✅ 3 minutes passed, now checking for AI response...');
+      addMessage('system', `🔍 Checking for AI response...`);
+      
+      // Step 3: Now check for the response
+      const getResponseUrl = `/api/ai/get-response?thread_id=${thread_id}&project_id=${project_id}`;
+      console.log('📡 Getting AI response:', getResponseUrl);
+      
+      const aiResponse = await axios.get(getResponseUrl);
+      
+      if (!aiResponse.data.success) {
+        throw new Error(aiResponse.data.error || 'Failed to get AI response');
+      }
+
+      const responseData = aiResponse.data;
+      
+      console.log('✅ Response received:', {
+        status: responseData.status,
+        hasContent: !!responseData.response?.content,
+        hasFiles: responseData.has_files,
+        filesCount: responseData.files?.length || 0
+      });
+      
+      // Extract content from response
+      const content = responseData.response?.content || '';
+      
+      if (content && content.length > 0) {
+        // Display AI response content with proper formatting
+        addMessage('assistant', content);
+        addMessage('system', `✅ Generation completed`);
+        
+        // Parse and save the proposal
+        if (content.length > 100) {
+          addMessage('system', `💾 Parsing and saving proposal...`);
+          
+          try {
+            await parseAndSaveProposal(tenderId, content, thread_id, project_id);
+            addMessage('system', `✅ Proposal saved successfully`);
+          } catch (parseError: any) {
+            console.error('Failed to save proposal:', parseError);
+            addMessage('system', `⚠️ Content generated but save failed: ${parseError.message}`);
+          }
+        }
+      } else {
+        addMessage('system', `⚠️ No content received from AI`);
+      }
+      
+      // Handle files from response
+      if (responseData.has_files && responseData.files && responseData.files.length > 0) {
+        console.log('📁 Files received:', responseData.files.length);
+        
+        responseData.files.forEach((file: any) => {
+          addMessage(
+            'file',
+            `📎 ${file.file_name}`,
+            file.file_id,
+            file.file_name,
+            file.file_type,
+            file.file_size
+          );
+        });
+      }
+      
+      setIsGenerating(false);
+      
+      // Refresh tender data and show local files
+      setTimeout(async () => {
+        try {
+          await queryClient.invalidateQueries({ queryKey: ['tenders'] });
+          const filesResponse = await axios.get(`/api/tenders/${tenderId}`);
+          if (filesResponse.data.proposal?.executiveSummary) {
+            addMessage('file', '🌐 View Proposal Website', `/api/tenders/${tenderId}/proposal-website`, 'website.html', 'text/html', 0);
+            addMessage('file', '📄 Download Proposal PDF', `/api/tenders/${tenderId}/proposal-pdf`, 'proposal.pdf', 'application/pdf', 0);
+          }
+        } catch (err) {
+          console.error('Failed to load proposal files:', err);
+        }
+      }, 1000);
+      
     } catch (error: any) {
-      addMessage('system', `❌ ${error.response?.data?.details || error.message}`);
+      console.error('❌ Generation error:', error);
+      const errorMessage = error.response?.data?.details || error.response?.data?.error || error.message;
+      addMessage('system', `❌ Failed to generate proposal: ${errorMessage}`);
       setIsGenerating(false);
     }
   };
@@ -327,6 +420,76 @@ export default function AIProposalGeneratorPage() {
       // No active thread
       addMessage('assistant', '💡 Please generate the initial proposal first using the "Generate with AI" button.');
     }
+  };
+
+  // Helper function to parse AI response and save proposal
+  const parseAndSaveProposal = async (
+    tenderId: string, 
+    content: string, 
+    threadId: string, 
+    projectId: string
+  ) => {
+    console.log('🔍 Parsing AI response:', content.substring(0, 200) + '...');
+    
+    // Parse sections from markdown content
+    const sections = {
+      executiveSummary: extractSection(content, 'EXECUTIVE SUMMARY') || 
+                       extractSection(content, 'Executive Summary') || 
+                       content.substring(0, Math.min(1000, content.length)),
+      requirementsUnderstanding: extractSection(content, 'REQUIREMENTS UNDERSTANDING') || 
+                                extractSection(content, 'Requirements Understanding') || '',
+      technicalApproach: extractSection(content, 'TECHNICAL APPROACH') || 
+                        extractSection(content, 'Technical Approach') || '',
+      scopeCoverage: extractSection(content, 'SCOPE') || 
+                    extractSection(content, 'Scope & Deliverables') || '',
+      timeline: extractSection(content, 'TIMELINE') || 
+               extractSection(content, 'Timeline') || '',
+      commercialDetails: extractSection(content, 'INVESTMENT') || 
+                        extractSection(content, 'Commercial Details') || 
+                        extractSection(content, 'Investment') || ''
+    };
+    
+    // Extract HTML if present
+    const htmlMatch = content.match(/```html\s*([\s\S]*?)```/i);
+    const websiteHtml = htmlMatch ? htmlMatch[1].trim() : null;
+    
+    console.log('📋 Extracted sections:', {
+      executiveSummary: sections.executiveSummary.length,
+      requirementsUnderstanding: sections.requirementsUnderstanding.length,
+      technicalApproach: sections.technicalApproach.length,
+      websiteHtml: websiteHtml ? websiteHtml.length : 0
+    });
+    
+    // Save to database
+    await axios.post(`/api/tenders/${tenderId}/save-proposal`, {
+      ...sections,
+      websiteHtml,
+      metadata: {
+        threadId,
+        projectId,
+        generatedAt: new Date().toISOString()
+      }
+    });
+  };
+  
+  // Helper to extract section from markdown
+  const extractSection = (text: string, heading: string): string => {
+    // Try with ## heading
+    const regex1 = new RegExp(`##\\s*${heading}\\s*\n([\\s\\S]*?)(?=\n##|$)`, 'i');
+    const match1 = text.match(regex1);
+    if (match1) return match1[1].trim();
+    
+    // Try with # heading
+    const regex2 = new RegExp(`#\\s*${heading}\\s*\n([\\s\\S]*?)(?=\n#|$)`, 'i');
+    const match2 = text.match(regex2);
+    if (match2) return match2[1].trim();
+    
+    // Try with **heading**
+    const regex3 = new RegExp(`\\*\\*${heading}\\*\\*\\s*\n([\\s\\S]*?)(?=\n\\*\\*|$)`, 'i');
+    const match3 = text.match(regex3);
+    if (match3) return match3[1].trim();
+    
+    return '';
   };
 
   const selectTender = (tender: Tender) => {
@@ -496,7 +659,12 @@ export default function AIProposalGeneratorPage() {
                     {/* Chat Messages Area */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-transparent to-gray-50/30">
                       {chatMessages.map((msg) => (
-                        <ChatMessageBubble key={msg.id} message={msg} tenderId={selectedTender.id} />
+                        <ChatMessageBubble 
+                          key={msg.id} 
+                          message={msg} 
+                          tenderId={selectedTender.id}
+                          onViewFile={viewGeneratedFile}
+                        />
                       ))}
                       <div ref={chatEndRef} />
                       
@@ -633,12 +801,66 @@ export default function AIProposalGeneratorPage() {
             </div>
           </div>
         </div>
+
+        {/* File Viewer Modal */}
+        {fileViewerOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFileViewerOpen(false)}>
+            <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white">
+                    <RiFileTextLine size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-lg text-neural">{selectedFile?.file_name}</h3>
+                    <p className="text-xs text-gray-500">{selectedFile?.file_type}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setFileViewerOpen(false)}
+                  className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                >
+                  <span className="text-2xl text-gray-600">×</span>
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 overflow-auto max-h-[calc(90vh-140px)]">
+                {loadingFile ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <RiLoaderLine className="w-12 h-12 text-passion animate-spin mb-4" />
+                    <p className="text-gray-600">Loading file...</p>
+                  </div>
+                ) : selectedFile?.file_type.startsWith('image/') ? (
+                  <div className="flex justify-center">
+                    <img src={fileContent || ''} alt={selectedFile.file_name} className="max-w-full h-auto rounded-xl shadow-lg" />
+                  </div>
+                ) : selectedFile?.file_type === 'application/pdf' ? (
+                  <iframe
+                    src={fileContent || ''}
+                    className="w-full h-[70vh] rounded-xl"
+                    title={selectedFile.file_name}
+                  />
+                ) : (
+                  <pre className="bg-gray-50 p-6 rounded-xl overflow-auto text-sm font-mono whitespace-pre-wrap">
+                    {fileContent}
+                  </pre>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   );
 }
 
-function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tenderId: string }) {
+function ChatMessageBubble({ message, tenderId, onViewFile }: { 
+  message: ChatMessage, 
+  tenderId: string,
+  onViewFile?: (fileId: string, fileName: string, fileType: string) => void
+}) {
   if (message.type === 'user') {
     return (
       <div className="flex justify-end">
@@ -656,32 +878,81 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
   }
   
   if (message.type === 'file') {
+    // Determine file icon and color based on type
+    const getFileIcon = () => {
+      if (message.fileType?.startsWith('image/')) {
+        return {
+          icon: <RiFileTextLine size={28} />,
+          gradient: 'from-blue-500 to-cyan-600',
+          bgGradient: 'from-blue-50 to-cyan-50',
+          borderColor: 'border-blue-200'
+        };
+      } else if (message.fileName?.includes('html') || message.fileType === 'text/html') {
+        return {
+          icon: <RiGlobalLine size={28} />,
+          gradient: 'from-green-500 to-emerald-600',
+          bgGradient: 'from-green-50 to-emerald-50',
+          borderColor: 'border-green-200'
+        };
+      } else if (message.fileType === 'application/pdf') {
+        return {
+          icon: <RiFileTextLine size={28} />,
+          gradient: 'from-red-500 to-pink-600',
+          bgGradient: 'from-red-50 to-pink-50',
+          borderColor: 'border-red-200'
+        };
+      } else {
+        return {
+          icon: <RiFileTextLine size={28} />,
+          gradient: 'from-purple-500 to-indigo-600',
+          bgGradient: 'from-purple-50 to-indigo-50',
+          borderColor: 'border-purple-200'
+        };
+      }
+    };
+    
+    const fileDisplay = getFileIcon();
+    
     return (
-      <div className="flex justify-start">
-        <div className="max-w-md bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-verdant-light/50/60 rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all">
+      <div className="flex justify-center my-3">
+        <button
+          onClick={() => {
+            if (message.fileId && message.fileName && message.fileType && onViewFile) {
+              onViewFile(message.fileId, message.fileName, message.fileType);
+            } else if (message.fileUrl) {
+              // Fallback to old behavior for local files
+              window.open(message.fileUrl, '_blank');
+            }
+          }}
+          className={`group max-w-md bg-gradient-to-br ${fileDisplay.bgGradient} border-2 ${fileDisplay.borderColor} rounded-2xl p-4 shadow-md hover:shadow-xl transition-all cursor-pointer hover:scale-[1.02]`}
+        >
           <div className="flex items-center gap-4">
-            {message.fileName?.includes('website') || message.fileName?.includes('html') ? (
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md">
-                <RiGlobalLine size={28} />
-              </div>
-            ) : (
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md">
-                <RiFileTextLine size={28} />
-              </div>
-            )}
-            <div className="flex-1">
-              <p className="font-black text-sm text-green-900 mb-1">{message.content}</p>
-              <p className="text-xs text-verdant-dark font-medium bg-verdant/20/70 px-2 py-0.5 rounded-full inline-block">{message.fileName}</p>
+            <div className={`w-16 h-16 bg-gradient-to-br ${fileDisplay.gradient} rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+              {fileDisplay.icon}
             </div>
-            <Button
-              size="sm"
-              onClick={() => window.open(message.fileUrl, '_blank')}
-              className="rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white h-10 px-5 text-xs font-black shadow-md hover:shadow-lg transition-all"
-            >
-              Open
-            </Button>
+            <div className="flex-1 text-left">
+              <p className="font-black text-sm text-gray-900 mb-1 group-hover:text-passion transition-colors">
+                {message.fileName || 'File'}
+              </p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-xs text-gray-600 font-medium bg-white/60 px-2 py-0.5 rounded-full">
+                  {message.fileType || 'Unknown type'}
+                </p>
+                {message.fileSize && message.fileSize > 0 && (
+                  <p className="text-xs text-gray-500 font-medium">
+                    {(message.fileSize / 1024).toFixed(1)} KB
+                  </p>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-1.5 font-medium">
+                Click to view/download
+              </p>
+            </div>
+            <div className="text-2xl text-gray-400 group-hover:text-passion transition-colors">
+              →
+            </div>
           </div>
-        </div>
+        </button>
       </div>
     );
   }
@@ -714,6 +985,73 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
   if (message.type === 'streaming' || message.type === 'assistant') {
     const isStreaming = message.isStreaming === true;
     
+    // Format content with proper line breaks and sections
+    const formatContent = (text: string): JSX.Element[] => {
+      const lines = text.split('\n');
+      const elements: JSX.Element[] = [];
+      
+      lines.forEach((line, idx) => {
+        // Detect headings
+        if (line.startsWith('# ')) {
+          elements.push(
+            <h1 key={idx} className="text-xl font-black text-neural mt-4 mb-2">
+              {line.substring(2)}
+            </h1>
+          );
+        } else if (line.startsWith('## ')) {
+          elements.push(
+            <h2 key={idx} className="text-lg font-bold text-neural mt-3 mb-2">
+              {line.substring(3)}
+            </h2>
+          );
+        } else if (line.startsWith('### ')) {
+          elements.push(
+            <h3 key={idx} className="text-base font-bold text-gray-800 mt-2 mb-1">
+              {line.substring(4)}
+            </h3>
+          );
+        } else if (line.startsWith('**') && line.endsWith('**')) {
+          // Bold text
+          elements.push(
+            <p key={idx} className="font-bold text-neural my-1">
+              {line.substring(2, line.length - 2)}
+            </p>
+          );
+        } else if (line.startsWith('- ') || line.startsWith('* ')) {
+          // Bullet points
+          elements.push(
+            <div key={idx} className="flex gap-2 my-1">
+              <span className="text-passion mt-1">•</span>
+              <span className="flex-1">{line.substring(2)}</span>
+            </div>
+          );
+        } else if (line.match(/^\d+\. /)) {
+          // Numbered lists
+          const match = line.match(/^(\d+)\. (.*)$/);
+          if (match) {
+            elements.push(
+              <div key={idx} className="flex gap-2 my-1">
+                <span className="text-passion font-bold">{match[1]}.</span>
+                <span className="flex-1">{match[2]}</span>
+              </div>
+            );
+          }
+        } else if (line.trim() === '') {
+          // Empty line - add spacing
+          elements.push(<div key={idx} className="h-2"></div>);
+        } else {
+          // Regular text
+          elements.push(
+            <p key={idx} className="my-1 leading-relaxed">
+              {line}
+            </p>
+          );
+        }
+      });
+      
+      return elements;
+    };
+    
     return (
       <div className="flex justify-start">
         <div className="flex gap-3 max-w-3xl">
@@ -736,10 +1074,10 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
               </div>
             )}
             <div className="prose prose-sm max-w-none">
-              <p className="text-sm text-neural whitespace-pre-wrap leading-relaxed font-medium">
-                {message.content}
+              <div className="text-sm text-neural leading-relaxed font-medium">
+                {formatContent(message.content)}
                 {isStreaming && <span className="inline-block w-2 h-4 bg-passion ml-1 animate-pulse"></span>}
-              </p>
+              </div>
             </div>
             {!isStreaming && (
               <p className="text-[10px] text-gray-400 mt-3 pt-2 border-t border-indigo-100/50 font-medium">

@@ -107,9 +107,14 @@ export function DashboardView() {
   };
 
   const { data: tenders = [], isLoading } = useQuery({
-    queryKey: ['tenders'],
+    queryKey: ['tenders', role, authState.userId],
     queryFn: async () => {
-      const response = await axios.get('/api/tenders');
+      const params = new URLSearchParams();
+      if (role === 'client' && authState.userId) {
+        params.append('userId', authState.userId);
+      }
+      params.append('role', role);
+      const response = await axios.get(`/api/tenders?${params.toString()}`);
       return response.data as Tender[];
     },
     refetchInterval: 5000,
@@ -127,10 +132,9 @@ export function DashboardView() {
 
   const unreadCount = notifications.filter(n => !n.readBy.includes(role)).length;
 
-  // Filter tenders based on role
-  const displayTenders = role === 'client' 
-    ? tenders.filter(t => t.createdBy === 'dcs')
-    : tenders;
+  // Tenders are already filtered by the database based on role and userId
+  // No need for additional client-side filtering
+  const displayTenders = tenders;
 
   const selectedTender = displayTenders.find(t => t.id === selectedTenderId);
   const latestTender = displayTenders[0];

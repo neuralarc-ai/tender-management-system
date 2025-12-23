@@ -54,9 +54,9 @@ export default function PinAuthPage() {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     if (pinString === '1111') {
-      login('client', 'user-client-001', 'partner@dcs.com', 'DCS Corporation');
+      login('client', '11111111-1111-1111-1111-111111111111', 'partner@dcs.com', 'DCS Corporation');
     } else if (pinString === '2222') {
-      login('admin', 'user-admin-001', 'admin@neuralarc.com', 'Neural Arc Inc.');
+      login('admin', '22222222-2222-2222-2222-222222222222', 'admin@neuralarc.com', 'Neural Arc Inc.');
     } else {
       setError(true);
       setLoading(false);
@@ -67,18 +67,18 @@ export default function PinAuthPage() {
 
   return (
     <div className="min-h-screen flex font-sans relative overflow-hidden">
-      {/* Full Screen Neural Arc Background - PNG (No Overlay!) */}
+      {/* Full Screen Neural Arc Background - Latest PNG */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url("/Neural_Arc_something_special_--ar_21_--sref_httpss.mj.runOq08_0708aaa1-9b75-4ee2-8fe1-93ea00a92302_3.png")`
+          backgroundImage: `url("/Neural_Arc_httpss.mj.runQtO32uqLcu8_remove_all_these_sharpnes_b8a6df75-6679-4bdb-a171-44774f5fbdd3_3.png")`
         }}
       />
 
       {/* Left Side - Glassmorphism Card */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
-        {/* Perfect Glassmorphism Container */}
-        <div className="w-full max-w-sm bg-white/10 backdrop-blur-3xl p-8 rounded-[36px] shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] border border-white/20 relative">
+        {/* Proper Glassmorphism Container - Thin Border Like Reference */}
+        <div className="w-full max-w-sm bg-white/10 backdrop-blur-3xl p-8 rounded-[36px] border border-white/30 relative">
           {/* Glass reflection effects */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent pointer-events-none rounded-[36px]" />
           <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-[36px]" />
@@ -130,9 +130,9 @@ export default function PinAuthPage() {
                         text-center text-xl font-bold text-white drop-shadow-lg
                         focus:border-white focus:outline-none focus:ring-4 focus:ring-white/30 focus:bg-white/30
                         transition-all duration-300
-                        ${error ? 'border-passion bg-passion/30 text-passion animate-shake' : 'border-white/30'}
-                        ${digit ? 'border-white shadow-xl ring-4 ring-white/30 bg-white/40 scale-105' : 'hover:border-white/60 hover:bg-white/25'}
-                        ${loading ? 'opacity-50' : ''}
+                      ${error ? 'border-passion bg-passion/30 text-passion animate-shake' : 'border-white/30'}
+                      ${digit ? 'border-white ring-4 ring-white/30 bg-white/40 scale-105' : 'hover:border-white/60 hover:bg-white/25'}
+                      ${loading ? 'opacity-50' : ''}
                       `}
                     />
                   ))}
@@ -140,17 +140,17 @@ export default function PinAuthPage() {
               </div>
 
               {error && (
-                <div className="mb-4 flex items-center gap-2 text-white text-sm font-semibold bg-passion/30 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/30 shadow-lg">
+                <div className="mb-4 flex items-center gap-2 text-white text-sm font-semibold bg-passion/30 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/30">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                   <span className="drop-shadow-md">Invalid PIN. Please try again.</span>
                 </div>
               )}
 
-              {/* Glassmorphism Button */}
+              {/* Pure Glassmorphism Button */}
               <button
                 type="submit"
                 disabled={pin.join('').length !== 4 || loading}
-                className="w-full h-12 bg-white/20 backdrop-blur-md border-2 border-white/30 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/30 hover:border-white/50 hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl drop-shadow-lg"
+                className="w-full h-12 bg-white/20 backdrop-blur-md border-2 border-white/25 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/30 hover:border-white/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
