@@ -45,18 +45,41 @@ export async function GET(
           send({ type: 'progress', message: `📡 Poll #${attempts} - Checking AI status...`, attempt: attempts });
 
           try {
-            // Use real-time mode to keep thread alive
-            const responseUrl = `${API_BASE_URL}/threads/${params.threadId}/response?project_id=${projectId}&realtime=true&timeout=30&include_file_content=true`;
+            // Use standard JSON polling (NOT SSE)
+            const responseUrl = `${API_BASE_URL}/threads/${params.threadId}/response?project_id=${projectId}&timeout=30&include_file_content=true`;
             
             const response = await fetch(responseUrl, {
               headers: { 
                 'X-API-Key': AI_API_KEY,
-                'Accept': 'text/event-stream'
+                'Accept': 'application/json' // Request JSON format
               }
             });
 
             if (response.ok) {
-              const data = await response.json();
+              const contentType = response.headers.get('content-type');
+              let data: any;
+              
+              // Handle different content types
+              if (contentType?.includes('application/json')) {
+                data = await response.json();
+              } else if (contentType?.includes('text/event-stream')) {
+                // Parse SSE format if server sends it
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.startsWith('data: '));
+                if (lines.length > 0) {
+                  const lastDataLine = lines[lines.length - 1];
+                  const jsonStr = lastDataLine.substring(6);
+                  data = JSON.parse(jsonStr);
+                } else {
+                  send({ type: 'warning', message: `⚠️ No data in SSE response - Retrying...` });
+                  await new Promise(resolve => setTimeout(resolve, 10000));
+                  continue;
+                }
+              } else {
+                send({ type: 'warning', message: `⚠️ Unexpected content type: ${contentType} - Retrying...` });
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                continue;
+              }
               
               send({ 
                 type: 'api_response', 
@@ -93,10 +116,16 @@ export async function GET(
                 send({ type: 'info', message: `📊 Status: ${data.status}` });
               }
             } else {
-              send({ type: 'warning', message: `⚠️ HTTP ${response.status} - Retrying...` });
+              const errorText = await response.text();
+              send({ type: 'warning', message: `⚠️ HTTP ${response.status}: ${errorText.substring(0, 100)} - Retrying...` });
             }
           } catch (error: any) {
-            send({ type: 'warning', message: `⚠️ Error: ${error.message} - Continuing...` });
+            // Better error handling for JSON parsing issues
+            if (error.message.includes('JSON') || error.message.includes('Unexpected token')) {
+              send({ type: 'warning', message: `⚠️ JSON parse error (API may be in SSE mode) - Retrying...` });
+            } else {
+              send({ type: 'warning', message: `⚠️ Error: ${error.message} - Continuing...` });
+            }
           }
 
           // Always wait before next poll (unless completed)

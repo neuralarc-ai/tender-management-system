@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
-import { RiShieldCheckLine, RiArrowRightLine, RiTimeLine, RiRocketLine } from 'react-icons/ri';
+import { RiArrowRightLine } from 'react-icons/ri';
 
 export default function PinAuthPage() {
   const [pin, setPin] = useState(['', '', '', '']);
@@ -71,7 +71,7 @@ export default function PinAuthPage() {
     <div className="min-h-screen flex font-sans">
       {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 flex items-center justify-center p-8 relative">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-2xl">
           {/* Logo */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-2">
@@ -171,10 +171,10 @@ export default function PinAuthPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 via-transparent to-amber-500/10" />
 
         {/* Content */}
-        <div className="relative h-full flex flex-col items-center justify-center p-12 text-white">
+        <div className="relative h-full flex flex-col items-start justify-start p-12 text-white">
           {/* Status Badge */}
-          <div className="mb-12 text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-full mb-8 shadow-lg">
+          <div className="mb-4 text-left">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 rounded-full mb-4 shadow-lg">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></div>
               <span className="text-xs font-bold uppercase tracking-widest">System Operational</span>
             </div>
@@ -183,33 +183,9 @@ export default function PinAuthPage() {
               Intelligent<br />
               Tender Management
             </h2>
-            <p className="text-lg text-white/90 max-w-md mx-auto leading-relaxed font-medium drop-shadow">
+            <p className="text-lg text-white/90 max-w-md leading-relaxed font-medium drop-shadow">
               AI-powered platform for seamless proposal workflows<br />and real-time collaboration.
             </p>
-          </div>
-
-          {/* Feature Cards */}
-          <div className="grid grid-cols-2 gap-4 w-full max-w-lg">
-            <FeatureCard 
-              icon={<RiRocketLine />}
-              title="AI Analysis"
-              description="Instant feasibility scoring"
-            />
-            <FeatureCard 
-              icon={<RiTimeLine />}
-              title="Real-Time"
-              description="Live notifications & updates"
-            />
-            <FeatureCard 
-              icon={<RiShieldCheckLine />}
-              title="Secure"
-              description="Enterprise-grade encryption"
-            />
-            <FeatureCard 
-              icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline><polyline points="7.5 19.79 7.5 14.6 3 12"></polyline><polyline points="21 12 16.5 14.6 16.5 19.79"></polyline><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>}
-              title="Scalable"
-              description="Built for enterprise scale"
-            />
           </div>
 
           {/* Decorative Elements */}
@@ -228,18 +204,6 @@ export default function PinAuthPage() {
           animation: shake 0.4s ease-in-out;
         }
       `}</style>
-    </div>
-  );
-}
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 hover:bg-white/15 transition-all hover:scale-105 shadow-xl">
-      <div className="text-white mb-3 w-6 h-6">
-        {icon}
-      </div>
-      <h3 className="text-sm font-bold mb-1.5 text-white">{title}</h3>
-      <p className="text-[11px] text-white/70 leading-relaxed">{description}</p>
     </div>
   );
 }

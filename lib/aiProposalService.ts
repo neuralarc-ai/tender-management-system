@@ -74,27 +74,52 @@ export async function generateProposalWithAI(request: ProposalGenerationRequest)
     
     while (true) { // Infinite loop until completion
       attempts++;
-      const elapsed = Math.floor((attempts * 45) / 60);
-      console.log(`📡 Poll attempt ${attempts} (${elapsed} min) - ONLY checking status, not sending anything...`);
+      const elapsed = Math.floor((attempts * 10) / 60);
+      console.log(`📡 Poll attempt ${attempts} (${elapsed} min) - checking status...`);
       
       try {
-        // Use real-time streaming mode to prevent thread timeout
-        const responseUrl = `${API_BASE_URL}/threads/${thread_id}/response?project_id=${project_id}&realtime=true&timeout=30&include_file_content=true`;
+        // Use standard polling (NOT SSE) to get JSON response
+        const responseUrl = `${API_BASE_URL}/threads/${thread_id}/response?project_id=${project_id}&timeout=30&include_file_content=true`;
         
         const responseData = await fetch(responseUrl, {
           method: 'GET',
           headers: {
             'X-API-Key': AI_API_KEY,
-            'Accept': 'text/event-stream' // Enable SSE streaming
+            'Accept': 'application/json' // Request JSON, not SSE
           }
         });
 
         if (responseData.ok) {
-          response = await responseData.json();
+          const contentType = responseData.headers.get('content-type');
           
+          // Handle different response types
+          if (contentType?.includes('application/json')) {
+            response = await responseData.json();
+          } else if (contentType?.includes('text/event-stream')) {
+            // If server sends SSE despite our request, parse it
+            const text = await responseData.text();
+            console.log('⚠️ Received SSE stream, parsing...');
+            
+            // Parse SSE format: "data: {...}\n\n"
+            const lines = text.split('\n').filter(line => line.startsWith('data: '));
+            if (lines.length > 0) {
+              const lastDataLine = lines[lines.length - 1];
+              const jsonStr = lastDataLine.substring(6); // Remove "data: " prefix
+              response = JSON.parse(jsonStr);
+            } else {
+              console.log('⚠️ No data lines found in SSE response');
+              await new Promise(resolve => setTimeout(resolve, 10000));
+              continue;
+            }
+          } else {
+            console.log(`⚠️ Unexpected content type: ${contentType}`);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            continue;
+          }
+
           console.log(`📊 Response status: ${response.status}`);
-          console.log(`📊 has_files: ${response.has_files}, files count: ${response.files?.length || 0}`);
-          console.log(`📊 has_code: ${response.has_code}, code_blocks count: ${response.code_blocks?.length || 0}`);
+          console.log(`📊 has_files: ${response.has_files || false}, files count: ${response.files?.length || 0}`);
+          console.log(`📊 has_code: ${response.has_code || false}, code_blocks count: ${response.code_blocks?.length || 0}`);
           console.log(`📊 has response.response: ${!!response.response}, has content: ${!!response.response?.content}`);
           
           if (response.status === 'completed') {
@@ -126,14 +151,22 @@ export async function generateProposalWithAI(request: ProposalGenerationRequest)
           } else {
             // Still running
             console.log(`⏳ Status: ${response.status}, continuing...`);
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
           }
         } else {
-          console.log(`⚠️ HTTP ${responseData.status}, retrying in 10s...`);
+          const errorText = await responseData.text();
+          console.log(`⚠️ HTTP ${responseData.status}: ${errorText.substring(0, 200)}`);
+          console.log(`⚠️ Retrying in 10s...`);
           await new Promise(resolve => setTimeout(resolve, 10000));
         }
       } catch (error: any) {
         console.error(`⚠️ Poll attempt ${attempts} error:`, error.message);
+        
+        // Check if it's a parsing error
+        if (error.message.includes('JSON') || error.message.includes('Unexpected token')) {
+          console.log('⚠️ JSON parsing failed - API may be sending SSE format');
+        }
+        
         await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10s on error, then continue
       }
     }

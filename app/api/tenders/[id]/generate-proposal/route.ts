@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseTenderService } from '@/lib/supabaseTenderService';
 import { autoGenerateProposal } from '@/lib/aiProposalService';
 
-// Configure route to allow long-running AI generation
-export const maxDuration = 1800; // 30 minutes maximum (Vercel limit)
+// Configure route to allow AI generation
+export const maxDuration = 300; // 5 minutes (Vercel hobby plan limit)
 export const dynamic = 'force-dynamic'; // Never cache
 
 /**

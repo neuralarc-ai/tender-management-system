@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabaseTenderService } from '@/lib/supabaseTenderService';
 
-// Allow indefinite follow-up requests
-export const maxDuration = 600; // 10 minutes
+// Allow follow-up requests
+export const maxDuration = 300; // 5 minutes (Vercel hobby plan limit)
 export const dynamic = 'force-dynamic';
 
 const AI_API_KEY = process.env.AI_API_KEY!;
