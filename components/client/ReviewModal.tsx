@@ -36,18 +36,18 @@ export function ReviewModal({ isOpen, onClose, tenderId }: ReviewModalProps) {
   if (!isOpen || !tenderId) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-neural/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Review Proposal</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <h2 className="text-xl font-semibold text-neural">Review Proposal</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-neural-light">
             <RiCloseLine size={24} />
           </button>
         </div>
 
         <div className="p-6 space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Feedback (Optional)</label>
+            <label className="text-sm font-medium text-neural-light">Feedback (Optional)</label>
             <Textarea 
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
@@ -58,7 +58,7 @@ export function ReviewModal({ isOpen, onClose, tenderId }: ReviewModalProps) {
 
           <div className="flex gap-4">
             <Button 
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+              className="flex-1 bg-verdant hover:bg-verdant-dark text-white"
               onClick={() => reviewProposal.mutate({ status: 'accepted', feedback })}
               disabled={reviewProposal.isPending}
             >

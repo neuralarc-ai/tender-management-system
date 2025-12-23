@@ -8,7 +8,7 @@ export function PlansView() {
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
              <div>
-               <h2 className="text-3xl font-bold text-gray-900">Subscription Plans</h2>
+               <h2 className="text-3xl font-bold text-neural">Subscription Plans</h2>
                <p className="text-gray-500">Choose the right plan for your organization</p>
             </div>
 
@@ -17,13 +17,13 @@ export function PlansView() {
                 {/* Basic Plan */}
                 <Card className="p-8 rounded-[32px] border-none shadow-sm bg-white flex flex-col relative overflow-hidden group hover:shadow-md transition-all">
                     <div className="mb-6">
-                        <h3 className="text-xl font-medium text-gray-900">Recruit Basic</h3>
+                        <h3 className="text-xl font-medium text-neural">Recruit Basic</h3>
                         <p className="text-sm text-gray-500 mt-2">Essential tools for small teams</p>
                     </div>
                     
                     <div className="mb-8">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-bold text-gray-900">$17</span>
+                            <span className="text-4xl font-bold text-neural">$17</span>
                             <span className="text-gray-500">/month</span>
                         </div>
                         <p className="text-xs text-gray-400 mt-1">$228 billed yearly</p>
@@ -41,8 +41,8 @@ export function PlansView() {
                 </Card>
 
                 {/* Pro Plan (Dark) */}
-                <Card className="p-8 rounded-[32px] border-none shadow-xl bg-[#1F2937] text-white flex flex-col relative overflow-hidden transform scale-105 z-10">
-                    <div className="absolute top-0 right-0 bg-amber-300 text-gray-900 text-xs font-bold px-4 py-1 rounded-bl-xl">
+                <Card className="p-8 rounded-[32px] border-none shadow-xl bg-neural text-white flex flex-col relative overflow-hidden transform scale-105 z-10">
+                    <div className="absolute top-0 right-0 bg-amber-300 text-neural text-xs font-bold px-4 py-1 rounded-bl-xl">
                         Best Deal
                     </div>
                     
@@ -70,7 +70,7 @@ export function PlansView() {
                         <FeatureItem text="Export to PDF/Excel" light />
                     </div>
 
-                    <Button className="w-full rounded-full bg-amber-300 text-gray-900 hover:bg-amber-400 h-12 font-semibold">
+                    <Button className="w-full rounded-full bg-amber-300 text-neural hover:bg-aurora-light h-12 font-semibold">
                         Upgrade Now
                     </Button>
                 </Card>
@@ -78,13 +78,13 @@ export function PlansView() {
                  {/* Enterprise Plan */}
                  <Card className="p-8 rounded-[32px] border-none shadow-sm bg-white flex flex-col relative overflow-hidden group hover:shadow-md transition-all">
                     <div className="mb-6">
-                        <h3 className="text-xl font-medium text-gray-900">HR Master</h3>
+                        <h3 className="text-xl font-medium text-neural">HR Master</h3>
                         <p className="text-sm text-gray-500 mt-2">Custom solutions for enterprises</p>
                     </div>
                     
                     <div className="mb-8">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-bold text-gray-900">$34</span>
+                            <span className="text-4xl font-bold text-neural">$34</span>
                             <span className="text-gray-500">/month</span>
                         </div>
                         <p className="text-xs text-gray-400 mt-1">$408 billed yearly</p>
@@ -109,7 +109,7 @@ export function PlansView() {
 function FeatureItem({ text, light = false }: { text: string, light?: boolean }) {
     return (
         <div className="flex items-center gap-3">
-            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${light ? 'bg-gray-700 text-amber-300' : 'bg-gray-100 text-gray-900'}`}>
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${light ? 'bg-gray-700 text-amber-300' : 'bg-gray-100 text-neural'}`}>
                 <RiCheckLine size={12} />
             </div>
             <span className={`text-sm ${light ? 'text-gray-300' : 'text-gray-600'}`}>{text}</span>

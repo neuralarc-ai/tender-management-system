@@ -139,28 +139,28 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex flex-col gap-2">
-        <h2 className="text-4xl font-normal text-gray-900">{pageTitle}</h2>
+        <h2 className="text-4xl font-normal text-neural">{pageTitle}</h2>
         
         {/* Stats Row */}
         <div className="flex gap-4 overflow-x-auto pb-2 text-sm">
-           <div className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-full">
+           <div className="flex items-center gap-2 px-4 py-2 bg-neural text-white rounded-full">
               <span className="font-bold">{tenders.length}</span> Total
            </div>
            {isProposalsView ? (
              <>
-               <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full">
+               <div className="flex items-center gap-2 px-4 py-2 bg-drift/20 text-passion-dark rounded-full">
                   <span className="font-bold">{tenders.filter(t => t.proposal?.status === 'submitted').length}</span> Submitted
                </div>
-               <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full">
+               <div className="flex items-center gap-2 px-4 py-2 bg-verdant/20 text-verdant-dark rounded-full">
                   <span className="font-bold">{tenders.filter(t => t.proposal?.status === 'accepted').length}</span> Accepted
                </div>
-               <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-full">
+               <div className="flex items-center gap-2 px-4 py-2 bg-passion-light/30 text-passion-dark rounded-full">
                   <span className="font-bold">{tenders.filter(t => t.proposal?.status === 'rejected').length}</span> Rejected
                </div>
              </>
            ) : (
              <>
-               <div className="flex items-center gap-2 px-4 py-2 bg-amber-300 text-gray-900 rounded-full">
+               <div className="flex items-center gap-2 px-4 py-2 bg-amber-300 text-neural rounded-full">
                   <span className="font-bold">{tenders.filter(t => t.status === 'open').length}</span> Open
                </div>
                <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-500 rounded-full">
@@ -233,7 +233,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                         <Button 
                           size="icon" 
                           onClick={onAddTender}
-                          className="rounded-full bg-amber-100 text-amber-900 hover:bg-amber-200 h-10 w-10"
+                          className="rounded-full bg-aurora/20 text-aurora-dark hover:bg-amber-200 h-10 w-10"
                         >
                             <RiAddLine />
                         </Button>
@@ -250,7 +250,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                     <Button 
                       variant="outline" 
                       onClick={handleExport}
-                      className="rounded-full border-gray-200 gap-2 h-10 text-xs hover:bg-gray-900 hover:text-white transition-colors"
+                      className="rounded-full border-gray-200 gap-2 h-10 text-xs hover:bg-neural hover:text-white transition-colors"
                     >
                         <RiDownloadLine /> Export
                     </Button>
@@ -300,7 +300,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                   onClick={() => handleSelect(tender.id)}
                   className={`border-b border-gray-100 cursor-pointer transition-all ${
                     selectedId === tender.id 
-                      ? 'bg-amber-100' 
+                      ? 'bg-aurora/20' 
                       : 'hover:bg-gray-50'
                   }`}
                 >
@@ -316,23 +316,23 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold relative ${
-                        selectedId === tender.id ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'
+                        selectedId === tender.id ? 'bg-neural text-white' : 'bg-gray-100 text-gray-600'
                       }`}>
                         {tender.title.substring(0, 2).toUpperCase()}
                         {role === 'admin' && index < 2 && tender.status === 'open' && (
                           <span className="absolute -top-1 -right-1 flex h-3 w-3">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-passion"></span>
                           </span>
                         )}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <div className="font-bold text-sm text-gray-900 truncate max-w-xs">
+                          <div className="font-bold text-sm text-neural truncate max-w-xs">
                             {tender.title}
                           </div>
                           {role === 'admin' && index < 2 && tender.status === 'open' && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 flex-shrink-0">NEW</span>
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-drift/20 text-passion-dark flex-shrink-0">NEW</span>
                           )}
                         </div>
                         <div className="text-xs text-gray-500">{tender.id}</div>
@@ -341,7 +341,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                   </td>
 
                   <td className="py-4 px-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-neural">
                       {tender.createdBy === 'dcs' ? 'DCS Corp' : tender.createdBy === 'acme_corp' ? 'Acme Inc' : 'Global Tech'}
                     </div>
                     <div className="text-xs text-gray-400">Enterprise</div>
@@ -367,8 +367,8 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                   {role === 'admin' && (
                     <td className="py-4 px-4">
                       <span className={`text-sm font-bold ${
-                        tender.aiAnalysis?.overallScore > 80 ? 'text-green-600' : 
-                        tender.aiAnalysis?.overallScore > 50 ? 'text-amber-600' : 'text-red-500'
+                        tender.aiAnalysis?.overallScore > 80 ? 'text-verdant' : 
+                        tender.aiAnalysis?.overallScore > 50 ? 'text-aurora' : 'text-passion'
                       }`}>
                         {tender.aiAnalysis?.overallScore || 0}%
                       </span>
@@ -384,7 +384,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                       {tender.proposal?.status === 'draft' && tender.status === 'open' ? (
                         <Button 
                           size="sm" 
-                          className="h-8 rounded-full bg-black text-white hover:bg-gray-800 gap-2 text-xs px-4"
+                          className="h-8 rounded-full bg-neural text-white hover:bg-neural-light gap-2 text-xs px-4"
                           onClick={(e) => handleQuickSubmit(e, tender.id)}
                           disabled={submittingId === tender.id}
                         >
@@ -395,7 +395,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                           )}
                         </Button>
                       ) : tender.proposal?.status === 'submitted' ? (
-                        <div className="inline-flex items-center gap-1 text-green-600 text-xs font-medium bg-green-50 px-3 py-1 rounded-full">
+                        <div className="inline-flex items-center gap-1 text-verdant text-xs font-medium bg-verdant/10 px-3 py-1 rounded-full">
                           <RiCheckDoubleLine /> Sent
                         </div>
                       ) : (
@@ -425,7 +425,7 @@ function FilterButton({ label, active, onClick }: { label: string, active?: bool
           onClick={onClick}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
             active 
-              ? 'bg-gray-900 text-white shadow-sm' 
+              ? 'bg-neural text-white shadow-sm' 
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
           }`}
         >
@@ -440,12 +440,12 @@ function StatusBadge({ status }: { status: string }) {
     
     switch (status) {
         case 'open':
-            colorClass = 'bg-green-100 text-green-700';
-            dotClass = 'bg-green-500';
+            colorClass = 'bg-verdant/20 text-verdant-dark';
+            dotClass = 'bg-verdant';
             break;
         case 'submitted':
-            colorClass = 'bg-blue-100 text-blue-700';
-            dotClass = 'bg-blue-500';
+            colorClass = 'bg-drift/20 text-passion-dark';
+            dotClass = 'bg-passion';
             break;
         case 'closed':
             colorClass = 'bg-gray-100 text-gray-600';

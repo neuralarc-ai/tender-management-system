@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Tender } from '@/types';
-import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine, RiCheckLine, RiCloseLine } from 'react-icons/ri';
+import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine, RiCheckLine, RiCloseLine, RiMessage3Line } from 'react-icons/ri';
 import { AnalysisView } from './AnalysisView';
 import { ProposalEditor } from './ProposalEditor';
+import { CommunicationTab } from './CommunicationTab';
 import { formatDistanceToNow } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-export function TenderDetail({ tender, role }: { tender: Tender, role?: string }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'proposal'>('overview');
+export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, role?: string, currentUserId?: string }) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'proposal' | 'communication'>('overview');
   const [isReviewing, setIsReviewing] = useState(false);
   const queryClient = useQueryClient();
 
@@ -64,7 +65,7 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 pb-6 border-b border-gray-100">
         <div>
-          <h2 className="text-3xl font-black text-gray-900 mb-3 uppercase tracking-tight">{tender.title}</h2>
+          <h2 className="text-3xl font-black text-neural mb-3 uppercase tracking-tight">{tender.title}</h2>
           <div className="flex flex-wrap gap-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">
             <span className="flex items-center gap-2"><RiCalendarLine /> Submitted: {new Date(tender.createdAt).toLocaleDateString()}</span>
             <span className="flex items-center gap-2"><RiUserLine /> {isClient ? 'Neural Arc Inc.' : 'DCS Corporation'}</span>
@@ -72,8 +73,8 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
         </div>
         <div className={`px-6 py-3 rounded-full font-black text-[10px] flex items-center gap-2 uppercase tracking-widest ${
           isExpired 
-            ? 'bg-red-100 text-red-700 animate-pulse' 
-            : 'bg-amber-100 text-amber-800'
+            ? 'bg-passion-light/30 text-passion-dark animate-pulse' 
+            : 'bg-aurora/20 text-aurora-dark'
         }`}>
           <RiTimeLine />
           {deadlineText}
@@ -102,6 +103,12 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
           icon={<RiEditLine />} 
           label={isClient ? "Received Proposal" : "Proposal Draft"} 
         />
+        <TabButton 
+          active={activeTab === 'communication'} 
+          onClick={() => setActiveTab('communication')} 
+          icon={<RiMessage3Line />} 
+          label="Communication" 
+        />
       </div>
 
       {/* Content */}
@@ -126,7 +133,7 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
                       href={doc.url} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="flex items-center gap-3 text-indigo-600 hover:text-indigo-800 font-medium p-3 hover:bg-indigo-50 rounded-2xl transition-colors"
+                      className="flex items-center gap-3 text-passion hover:text-passion-dark font-medium p-3 hover:bg-passion-light/10 rounded-2xl transition-colors"
                     >
                       <RiFileTextLine className="flex-shrink-0" /> 
                       <span className="flex-1">{doc.name}</span>
@@ -150,7 +157,7 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
             {isClient ? (
                 tender.proposal.status === 'submitted' || tender.proposal.status === 'accepted' || tender.proposal.status === 'rejected' ? (
                     <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-                        <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900 mb-6">Received Proposal</h3>
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-neural mb-6">Received Proposal</h3>
                         <div className="space-y-6">
                             <DetailSection title="Executive Summary" content={tender.proposal.executiveSummary} icon={<RiFileTextLine />} />
                             <DetailSection title="Technical Approach" content={tender.proposal.technicalApproach} icon={<RiBrainLine />} />
@@ -160,7 +167,7 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
                                 <button 
                                   onClick={handleAccept}
                                   disabled={isReviewing}
-                                  className="px-8 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-8 py-3 bg-verdant text-white rounded-full hover:bg-verdant-dark font-black text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {isReviewing ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -173,7 +180,7 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
                                 <button 
                                   onClick={handleReject}
                                   disabled={isReviewing}
-                                  className="px-8 py-3 border-2 border-red-200 text-red-600 rounded-full hover:bg-red-50 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-8 py-3 border-2 border-passion-light/50 text-passion rounded-full hover:bg-passion-light/10 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   <RiCloseLine size={18} /> Decline
                                 </button>
@@ -196,6 +203,16 @@ export function TenderDetail({ tender, role }: { tender: Tender, role?: string }
             )}
           </div>
         )}
+
+        {activeTab === 'communication' && currentUserId && (
+          <div className="animate-in fade-in duration-300">
+            <CommunicationTab 
+              tenderId={tender.id}
+              currentUserId={currentUserId}
+              currentUserRole={role as 'admin' | 'client'}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -207,8 +224,8 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
       onClick={onClick}
       className={`px-6 py-3 font-black text-[11px] uppercase tracking-wider flex items-center gap-2 border-b-4 transition-all ${
         active 
-          ? 'border-indigo-600 text-indigo-600' 
-          : 'border-transparent text-gray-400 hover:text-gray-900 hover:border-gray-200'
+          ? 'border-passion text-passion' 
+          : 'border-transparent text-gray-400 hover:text-neural hover:border-gray-200'
       }`}
     >
       {icon} {label}
@@ -222,7 +239,7 @@ function DetailSection({ title, content, icon }: { title: string, content: strin
       <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
         {icon} {title}
       </h3>
-      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-gray-700 whitespace-pre-wrap leading-relaxed font-medium">
+      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-neural-light whitespace-pre-wrap leading-relaxed font-medium">
         {content}
       </div>
     </div>

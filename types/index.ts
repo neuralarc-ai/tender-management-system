@@ -55,4 +55,37 @@ export interface TenderData {
   tenders: Tender[];
 }
 
+export interface TenderMessage {
+  id: string;
+  tender_id: string;
+  sender_id: string;
+  sender_name: string;
+  sender_role: 'admin' | 'client';
+  message_type: 'text' | 'file' | 'system';
+  content: string;
+  created_at: string;
+  is_read: boolean;
+  attachments: MessageAttachment[];
+}
 
+export interface MessageAttachment {
+  id: string;
+  file_name: string;
+  file_url: string;
+  file_size: number;
+  file_type: string;
+}
+
+export interface AIRegenerationLog {
+  id: string;
+  tender_id: string;
+  regenerated_by: string;
+  regenerated_by_name: string;
+  reason: string;
+  status: 'in_progress' | 'completed' | 'failed';
+  error_message?: string;
+  helium_thread_id?: string;
+  helium_project_id?: string;
+  created_at: string;
+  completed_at?: string;
+}

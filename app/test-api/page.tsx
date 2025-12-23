@@ -34,7 +34,7 @@ export default function APITestPage() {
           <Button 
             onClick={runTest}
             disabled={testing}
-            className="w-full rounded-full bg-indigo-600 hover:bg-indigo-700 h-14 text-lg font-bold mb-8"
+            className="w-full rounded-full bg-passion hover:bg-passion-dark h-14 text-lg font-bold mb-8"
           >
             {testing ? (
               <>
@@ -47,12 +47,12 @@ export default function APITestPage() {
 
           {result && (
             <div className="space-y-4">
-              <div className={`p-6 rounded-2xl ${result.readyForProduction ? 'bg-green-50 border-2 border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
+              <div className={`p-6 rounded-2xl ${result.readyForProduction ? 'bg-verdant/10 border-2 border-verdant-light/50' : 'bg-passion-light/10 border-2 border-passion-light/50'}`}>
                 <div className="flex items-center gap-3 mb-4">
                   {result.readyForProduction ? (
-                    <RiCheckLine className="w-8 h-8 text-green-600" />
+                    <RiCheckLine className="w-8 h-8 text-verdant" />
                   ) : (
-                    <RiCloseLine className="w-8 h-8 text-red-600" />
+                    <RiCloseLine className="w-8 h-8 text-passion" />
                   )}
                   <div>
                     <h2 className="text-xl font-bold">{result.overall}</h2>
@@ -66,17 +66,17 @@ export default function APITestPage() {
                 <div className="space-y-2 text-sm font-mono">
                   <div className="flex justify-between">
                     <span className="text-gray-600">API Key:</span>
-                    <span className={result.apiKeyConfigured ? 'text-green-600' : 'text-red-600'}>
+                    <span className={result.apiKeyConfigured ? 'text-verdant' : 'text-passion'}>
                       {result.apiKeyPreview}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Endpoint:</span>
-                    <span className="text-gray-900">{result.apiEndpoint}</span>
+                    <span className="text-neural">{result.apiEndpoint}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Time:</span>
-                    <span className="text-gray-900">{result.timestamp}</span>
+                    <span className="text-neural">{result.timestamp}</span>
                   </div>
                 </div>
               </Card>
@@ -97,7 +97,7 @@ export default function APITestPage() {
                           </pre>
                         )}
                         {test.error && (
-                          <p className="text-xs text-red-600 mt-2">{test.error}</p>
+                          <p className="text-xs text-passion mt-2">{test.error}</p>
                         )}
                       </div>
                     ))}
@@ -105,16 +105,16 @@ export default function APITestPage() {
                 </Card>
               )}
 
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
-                <h3 className="font-bold text-amber-900 mb-2">📝 Next Steps</h3>
+              <div className="bg-aurora/10 border border-aurora-light/50 rounded-2xl p-6">
+                <h3 className="font-bold text-aurora-dark mb-2">📝 Next Steps</h3>
                 {result.readyForProduction ? (
-                  <div className="text-sm text-amber-800 space-y-1">
+                  <div className="text-sm text-aurora-dark space-y-1">
                     <p>✅ API is working perfectly!</p>
                     <p>✅ You can now generate proposals</p>
                     <p>✅ Go to Admin → Proposals to start</p>
                   </div>
                 ) : (
-                  <div className="text-sm text-amber-800 space-y-2">
+                  <div className="text-sm text-aurora-dark space-y-2">
                     <p>❌ API connection failed</p>
                     <p><strong>Fix:</strong></p>
                     <ol className="list-decimal ml-4 space-y-1">

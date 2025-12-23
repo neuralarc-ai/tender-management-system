@@ -3,8 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F5EEE6;
+  --foreground: #3D4A4A;
+  
+  /* Helium-Inspired Color Palette (Muted & Sophisticated) */
+  --passion: #D97854;
+  --aurora: #E8C4A8;
+  --quantum: #A599C4;
+  --neural: #3D4A4A;
+  --drift: #88B5B8;
+  --solar: #E8C47F;
+  --verdant: #4A6A6A;
+  --salmon: #D4A5A5;
 }
 
 body {
@@ -13,4 +23,33 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Custom scrollbar with new colors */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5EEE6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--quantum);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--passion);
+}
+
+/* Selection color */
+::selection {
+  background: var(--passion);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--passion);
+  color: white;
+}
 

@@ -80,7 +80,7 @@ export function ProposalsListView({ tenders, role, onSelect }: {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-4xl font-normal text-gray-900 mb-2">Proposal Workflow</h2>
+          <h2 className="text-4xl font-normal text-neural mb-2">Proposal Workflow</h2>
           <p className="text-gray-500 text-sm">Track proposals from creation to decision</p>
         </div>
 
@@ -213,10 +213,10 @@ function ProposalColumn({ title, count, color, icon, children }: {
   children: React.ReactNode
 }) {
   const colorClasses = {
-    amber: 'bg-amber-50 border-amber-200 text-amber-700',
-    blue: 'bg-blue-50 border-blue-200 text-blue-700',
-    green: 'bg-green-50 border-green-200 text-green-700',
-    red: 'bg-red-50 border-red-200 text-red-700'
+    amber: 'bg-aurora/10 border-aurora-light/50 text-aurora-dark',
+    blue: 'bg-drift/10 border-drift-light/50 text-passion-dark',
+    green: 'bg-verdant/10 border-verdant-light/50 text-verdant-dark',
+    red: 'bg-passion-light/10 border-passion-light/50 text-passion-dark'
   };
 
   return (
@@ -264,7 +264,7 @@ function ProposalCard({ tender, role, onSelect, onQuickSubmit, isSubmitting, sta
       onClick={onSelect}
     >
       {/* Title */}
-      <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 leading-tight min-h-[40px]">
+      <h3 className="font-bold text-sm text-neural mb-2 line-clamp-2 leading-tight min-h-[40px]">
         {tender.title}
       </h3>
 
@@ -274,7 +274,7 @@ function ProposalCard({ tender, role, onSelect, onQuickSubmit, isSubmitting, sta
           {tender.createdBy === 'dcs' ? 'DCS' : tender.createdBy === 'acme_corp' ? 'Acme' : 'Global'}
         </span>
         <span className={`text-xs font-black ${
-          aiScore > 80 ? 'text-green-600' : aiScore > 50 ? 'text-amber-600' : 'text-red-500'
+          aiScore > 80 ? 'text-verdant' : aiScore > 50 ? 'text-aurora' : 'text-passion'
         }`}>
           {aiScore}%
         </span>
@@ -290,7 +290,7 @@ function ProposalCard({ tender, role, onSelect, onQuickSubmit, isSubmitting, sta
       {role === 'admin' && tender.proposal?.status === 'draft' && onQuickSubmit ? (
         <Button 
           size="sm" 
-          className="w-full rounded-full bg-gray-900 text-white hover:bg-gray-800 h-9 text-xs font-bold gap-2"
+          className="w-full rounded-full bg-neural text-white hover:bg-neural-light h-9 text-xs font-bold gap-2"
           onClick={onQuickSubmit}
           disabled={isSubmitting}
         >
@@ -306,7 +306,7 @@ function ProposalCard({ tender, role, onSelect, onQuickSubmit, isSubmitting, sta
         <Button 
           size="sm" 
           variant="outline"
-          className="w-full rounded-full border-gray-200 text-gray-700 h-9 text-xs font-bold gap-2"
+          className="w-full rounded-full border-gray-200 text-neural-light h-9 text-xs font-bold gap-2"
           onClick={(e) => { e.stopPropagation(); onSelect(); }}
         >
           <RiEyeLine /> View Details
@@ -322,7 +322,7 @@ function FilterPill({ label, active, onClick }: { label: string, active?: boolea
       onClick={onClick}
       className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
         active 
-          ? 'bg-gray-900 text-white shadow-sm' 
+          ? 'bg-neural text-white shadow-sm' 
           : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
       }`}
     >

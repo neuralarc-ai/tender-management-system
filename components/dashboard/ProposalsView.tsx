@@ -13,7 +13,7 @@ export function ProposalsView({ tenders }: { tenders: Tender[] }) {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex justify-between items-center">
         <div>
-           <h2 className="text-3xl font-bold text-gray-900">Proposals Pipeline</h2>
+           <h2 className="text-3xl font-bold text-neural">Proposals Pipeline</h2>
            <p className="text-gray-500">Manage your active applications and matches</p>
         </div>
         <div className="flex gap-3">
@@ -51,7 +51,7 @@ function ProposalCard({ tender }: { tender: Tender }) {
                         {tender.createdBy === 'client' ? 'C' : 'A'}
                     </div>
                     <div>
-                        <h3 className="font-semibold text-gray-900 line-clamp-1">{tender.title}</h3>
+                        <h3 className="font-semibold text-neural line-clamp-1">{tender.title}</h3>
                         <p className="text-sm text-gray-500">{tender.status}</p>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ function ProposalCard({ tender }: { tender: Tender }) {
             </div>
 
             <div className="flex gap-3">
-                <Button className="flex-1 rounded-full bg-gray-900 text-white hover:bg-gray-800">
+                <Button className="flex-1 rounded-full bg-neural text-white hover:bg-neural-light">
                     View Details
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full border-gray-200">

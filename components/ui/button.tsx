@@ -20,7 +20,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-secondary text-secondary-foreground hover:bg-secondary/80": variant === "secondary",
             "hover:bg-accent hover:text-accent-foreground": variant === "ghost",
             "text-primary underline-offset-4 hover:underline": variant === "link",
-            "bg-green-600 text-white hover:bg-green-700": variant === "success",
+            "bg-verdant text-white hover:bg-verdant-dark": variant === "success",
             "h-10 px-4 py-2": size === "default",
             "h-9 rounded-md px-3": size === "sm",
             "h-11 rounded-md px-8": size === "lg",

@@ -367,7 +367,7 @@ export default function AIProposalGeneratorPage() {
           <header className="flex justify-between items-center bg-transparent py-2 mb-6">
             <div className="flex items-center gap-8">
               <div className="text-2xl font-black tracking-tighter rounded-full border border-gray-300 px-6 py-2 bg-white/80 backdrop-blur-md shadow-sm">
-                VECTOR<span className="text-indigo-600">.</span>
+                VECTOR<span className="text-passion">.</span>
               </div>
               
               <nav className="hidden lg:flex items-center gap-3 bg-white/80 backdrop-blur-md px-3 py-2 rounded-full border border-gray-200/70 shadow-sm">
@@ -385,7 +385,7 @@ export default function AIProposalGeneratorPage() {
                <Button variant="ghost" size="icon" className="rounded-full bg-white/80 backdrop-blur-md border border-gray-200/70 h-12 w-12 shadow-sm hover:shadow-md transition-all">
                   <RiNotification3Line className="h-5 w-5" />
                </Button>
-               <Button onClick={logout} variant="ghost" size="icon" className="rounded-full bg-white/90 backdrop-blur-md border border-gray-200 h-12 w-12 text-red-500 hover:text-white hover:bg-red-500 transition-all shadow-sm hover:shadow-md">
+               <Button onClick={logout} variant="ghost" size="icon" className="rounded-full bg-white/90 backdrop-blur-md border border-gray-200 h-12 w-12 text-passion hover:text-white hover:bg-passion transition-all shadow-sm hover:shadow-md">
                   <RiLogoutBoxRLine className="h-5 w-5" />
                </Button>
             </div>
@@ -402,7 +402,7 @@ export default function AIProposalGeneratorPage() {
                     <RiRobot2Line size={20} />
                   </div>
                   <div className="flex-1">
-                    <h1 className="text-lg font-black text-gray-900">AI Generator</h1>
+                    <h1 className="text-lg font-black text-neural">AI Generator</h1>
                     <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">Powered by Helium</p>
                   </div>
                 </div>
@@ -422,25 +422,25 @@ export default function AIProposalGeneratorPage() {
                       className={`w-full text-left p-4 rounded-2xl transition-all duration-200 group ${
                         selectedTenderId === t.id 
                           ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-400 shadow-md scale-[1.02]' 
-                          : 'bg-gray-50/80 border border-gray-200/60 hover:border-indigo-300 hover:bg-indigo-50/30 hover:shadow-sm'
+                          : 'bg-gray-50/80 border border-gray-200/60 hover:border-passion-light hover:bg-passion-light/10/30 hover:shadow-sm'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all ${
                           selectedTenderId === t.id 
-                            ? 'bg-indigo-500 text-white shadow-md' 
-                            : 'bg-gray-200/60 text-gray-600 group-hover:bg-indigo-100'
+                            ? 'bg-passion text-white shadow-md' 
+                            : 'bg-gray-200/60 text-gray-600 group-hover:bg-passion-light/30'
                         }`}>
                           {t.aiAnalysis?.overallScore}%
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-sm mb-1 line-clamp-2 leading-tight text-gray-900">{t.title}</h3>
+                          <h3 className="font-bold text-sm mb-1 line-clamp-2 leading-tight text-neural">{t.title}</h3>
                           <div className="flex items-center gap-2 mt-1.5">
                             <span className="text-[10px] text-gray-500 font-medium bg-gray-100/80 px-2 py-0.5 rounded-full">
                               {t.createdBy === 'dcs' ? 'DCS Corp' : 'Client'}
                             </span>
                             {t.proposal?.executiveSummary && (
-                              <span className="text-[9px] text-green-600 font-bold flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">
+                              <span className="text-[9px] text-verdant font-bold flex items-center gap-1 bg-verdant/10 px-2 py-0.5 rounded-full">
                                 <RiCheckLine size={10} /> Generated
                               </span>
                             )}
@@ -466,9 +466,9 @@ export default function AIProposalGeneratorPage() {
                             {selectedTender.title.substring(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <h2 className="text-base font-black text-gray-900 leading-tight">{selectedTender.title}</h2>
+                            <h2 className="text-base font-black text-neural leading-tight">{selectedTender.title}</h2>
                             <p className="text-xs text-gray-500 font-medium flex items-center gap-2 mt-0.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                              <span className="w-1.5 h-1.5 rounded-full bg-verdant"></span>
                               {selectedTender.createdBy === 'dcs' ? 'DCS Corporation' : 'Client'} • Match {selectedTender.aiAnalysis?.overallScore}%
                             </p>
                           </div>
@@ -503,9 +503,9 @@ export default function AIProposalGeneratorPage() {
                       {chatMessages.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full">
                           <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mb-5 shadow-xl">
-                            <RiRobot2Line className="w-12 h-12 text-indigo-600" />
+                            <RiRobot2Line className="w-12 h-12 text-passion" />
                           </div>
-                          <p className="text-xl font-black text-gray-900 mb-2">AI Proposal Assistant</p>
+                          <p className="text-xl font-black text-neural mb-2">AI Proposal Assistant</p>
                           <p className="text-sm text-gray-500 text-center max-w-md">
                             Click "Generate with AI" to create a comprehensive proposal with real-time streaming
                           </p>
@@ -535,12 +535,12 @@ export default function AIProposalGeneratorPage() {
                       </div>
                       <div className="flex items-center justify-center mt-2.5">
                         {currentThreadId ? (
-                          <span className="text-[10px] text-green-600 font-bold flex items-center gap-1.5 bg-green-50 px-3 py-1 rounded-full">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                          <span className="text-[10px] text-verdant font-bold flex items-center gap-1.5 bg-verdant/10 px-3 py-1 rounded-full">
+                            <span className="w-1.5 h-1.5 rounded-full bg-verdant animate-pulse"></span>
                             Connected to AI - Live streaming enabled
                           </span>
                         ) : (
-                          <span className="text-[10px] text-amber-600 font-medium flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full">
+                          <span className="text-[10px] text-aurora font-medium flex items-center gap-1.5 bg-aurora/10 px-3 py-1 rounded-full">
                             <RiErrorWarningLine size={12} />
                             Generate proposal first to enable chat
                           </span>
@@ -553,7 +553,7 @@ export default function AIProposalGeneratorPage() {
                     <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-6 shadow-2xl">
                       <RiFileTextLine className="w-16 h-16 text-gray-400" />
                     </div>
-                    <p className="text-2xl font-black text-gray-900 mb-2">Select a Tender</p>
+                    <p className="text-2xl font-black text-neural mb-2">Select a Tender</p>
                     <p className="text-gray-500">Choose from the left panel to start AI generation</p>
                   </div>
                 )}
@@ -568,13 +568,13 @@ export default function AIProposalGeneratorPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-600">AI Model</span>
-                    <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Helium AI</span>
+                    <span className="text-xs font-black text-passion bg-passion-light/10 px-3 py-1 rounded-full">Helium AI</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-600">Status</span>
                     {isGenerating ? (
-                      <span className="text-xs font-bold text-green-600 flex items-center gap-1.5 bg-green-50 px-3 py-1 rounded-full">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                      <span className="text-xs font-bold text-verdant flex items-center gap-1.5 bg-verdant/10 px-3 py-1 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-verdant animate-pulse"></span>
                         Generating
                       </span>
                     ) : (
@@ -583,20 +583,20 @@ export default function AIProposalGeneratorPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-600">Mode</span>
-                    <span className="text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Streaming</span>
+                    <span className="text-xs font-bold text-quantum bg-quantum/10 px-3 py-1 rounded-full">Streaming</span>
                   </div>
                 </div>
               </div>
 
               {/* Quick Actions */}
               {selectedTender && (
-                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 backdrop-blur-xl rounded-3xl p-5 border border-yellow-200/50 shadow-lg">
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-amber-700 mb-4">Quick Actions</h3>
+                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 backdrop-blur-xl rounded-3xl p-5 border border-solar-light/50/50 shadow-lg">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-aurora-dark mb-4">Quick Actions</h3>
                   <div className="space-y-2">
                     <Button
                       onClick={() => window.open(`/api/tenders/${selectedTender.id}/proposal-website`, '_blank')}
                       variant="outline"
-                      className="w-full rounded-xl bg-white/80 border-2 border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
+                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
                       disabled={!selectedTender.proposal?.executiveSummary}
                     >
                       <RiGlobalLine size={18} />
@@ -605,7 +605,7 @@ export default function AIProposalGeneratorPage() {
                     <Button
                       onClick={() => window.open(`/api/tenders/${selectedTender.id}/proposal-pdf`, '_blank')}
                       variant="outline"
-                      className="w-full rounded-xl bg-white/80 border-2 border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
+                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
                       disabled={!selectedTender.proposal?.executiveSummary}
                     >
                       <RiDownloadLine size={18} />
@@ -617,15 +617,15 @@ export default function AIProposalGeneratorPage() {
 
               {/* Info Card */}
               <div className="flex-1 bg-gradient-to-br from-indigo-50 to-purple-50 backdrop-blur-xl rounded-3xl p-5 border border-indigo-200/50 shadow-lg">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-700 mb-3">About</h3>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-passion-dark mb-3">About</h3>
                 <div className="space-y-3 text-xs text-gray-600 leading-relaxed">
                   <p className="font-medium">
-                    <span className="font-black text-indigo-600">Real-time AI streaming</span> powered by Helium API
+                    <span className="font-black text-passion">Real-time AI streaming</span> powered by Helium API
                   </p>
                   <p>Watch proposals generate live with instant feedback</p>
                   <div className="pt-2 mt-2 border-t border-indigo-100">
                     <p className="text-[10px] text-gray-500">
-                      References: <span className="font-mono text-indigo-600">ipc.he2.ai</span>, <span className="font-mono text-indigo-600">ers.he2.ai</span>
+                      References: <span className="font-mono text-passion">ipc.he2.ai</span>, <span className="font-mono text-passion">ers.he2.ai</span>
                     </p>
                   </div>
                 </div>
@@ -658,7 +658,7 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
   if (message.type === 'file') {
     return (
       <div className="flex justify-start">
-        <div className="max-w-md bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200/60 rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all">
+        <div className="max-w-md bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-verdant-light/50/60 rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all">
           <div className="flex items-center gap-4">
             {message.fileName?.includes('website') || message.fileName?.includes('html') ? (
               <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md">
@@ -671,7 +671,7 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
             )}
             <div className="flex-1">
               <p className="font-black text-sm text-green-900 mb-1">{message.content}</p>
-              <p className="text-xs text-green-700 font-medium bg-green-100/70 px-2 py-0.5 rounded-full inline-block">{message.fileName}</p>
+              <p className="text-xs text-verdant-dark font-medium bg-verdant/20/70 px-2 py-0.5 rounded-full inline-block">{message.fileName}</p>
             </div>
             <Button
               size="sm"
@@ -699,11 +699,11 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
   if (message.type === 'tool') {
     return (
       <div className="flex justify-center">
-        <div className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200/60 text-purple-800 text-xs font-bold max-w-2xl flex items-center gap-2 shadow-md">
+        <div className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-quantum-light/50/60 text-quantum-dark text-xs font-bold max-w-2xl flex items-center gap-2 shadow-md">
           <div className="flex gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '150ms' }}></span>
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-quantum animate-bounce" style={{ animationDelay: '0ms' }}></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-passion animate-bounce" style={{ animationDelay: '150ms' }}></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-quantum animate-bounce" style={{ animationDelay: '300ms' }}></span>
           </div>
           <span>🔧 {message.content}</span>
         </div>
@@ -722,23 +722,23 @@ function ChatMessageBubble({ message, tenderId }: { message: ChatMessage, tender
           </div>
           <div className={`rounded-3xl rounded-tl-md px-5 py-4 shadow-lg transition-all ${
             isStreaming 
-              ? 'bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-300' 
+              ? 'bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-passion-light' 
               : 'bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100'
           }`}>
             {isStreaming && (
               <div className="flex items-center gap-2 mb-3 pb-2 border-b border-indigo-200/50">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-2 h-2 rounded-full bg-passion animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                  <span className="w-2 h-2 rounded-full bg-quantum animate-bounce" style={{ animationDelay: '150ms' }}></span>
                   <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" style={{ animationDelay: '300ms' }}></span>
                 </div>
-                <span className="text-xs font-black text-indigo-600 uppercase tracking-wider animate-pulse">Streaming...</span>
+                <span className="text-xs font-black text-passion uppercase tracking-wider animate-pulse">Streaming...</span>
               </div>
             )}
             <div className="prose prose-sm max-w-none">
-              <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed font-medium">
+              <p className="text-sm text-neural whitespace-pre-wrap leading-relaxed font-medium">
                 {message.content}
-                {isStreaming && <span className="inline-block w-2 h-4 bg-indigo-600 ml-1 animate-pulse"></span>}
+                {isStreaming && <span className="inline-block w-2 h-4 bg-passion ml-1 animate-pulse"></span>}
               </p>
             </div>
             {!isStreaming && (
@@ -760,7 +760,7 @@ function NavButton({ icon, label, active, onClick }: { icon: React.ReactNode, la
     <button 
       onClick={onClick}
       className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all px-6 py-2 rounded-full ${
-        active ? 'text-white bg-gray-900 shadow-lg scale-105' : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'
+        active ? 'text-white bg-neural shadow-lg scale-105' : 'text-gray-400 hover:text-neural hover:bg-gray-100'
       }`}
     >
       {icon} {label}

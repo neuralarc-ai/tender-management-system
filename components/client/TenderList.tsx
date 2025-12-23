@@ -50,7 +50,7 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{tender.title}</h3>
+            <h3 className="text-xl font-bold text-neural mb-2">{tender.title}</h3>
             <div className="flex gap-4 text-sm text-gray-500">
               <span className="flex items-center gap-1">
                 <RiCalendarLine />
@@ -62,7 +62,7 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
               </span>
             </div>
           </div>
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold ${isExpired ? 'bg-gray-100 text-gray-500' : 'bg-yellow-50 text-yellow-700'}`}>
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold ${isExpired ? 'bg-gray-100 text-gray-500' : 'bg-solar/10 text-solar-dark'}`}>
             <RiTimeLine />
             {deadlineText}
           </div>
@@ -73,8 +73,8 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
         {tender.proposal.status !== 'draft' && (
           <div className="border-t pt-4 mt-4">
             <div className="flex justify-between items-center mb-4">
-              <h4 className="flex items-center gap-2 font-semibold text-gray-900">
-                <RiTaskLine className="text-blue-600" />
+              <h4 className="flex items-center gap-2 font-semibold text-neural">
+                <RiTaskLine className="text-passion" />
                 Proposal from Neural Arc Inc
               </h4>
               <Badge variant={getStatusColor(tender.proposal.status) as any}>
@@ -83,16 +83,16 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
             </div>
 
             {tender.proposal.status === 'submitted' && (
-              <div className="bg-amber-50 p-4 rounded-lg border border-amber-100 mb-4">
+              <div className="bg-aurora/10 p-4 rounded-lg border border-amber-100 mb-4">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-3">
-                    <RiAlertLine className="text-amber-600 w-5 h-5 mt-0.5" />
+                    <RiAlertLine className="text-aurora w-5 h-5 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-amber-800">Action Required</p>
-                      <p className="text-sm text-amber-700">A proposal has been submitted and is awaiting your review.</p>
+                      <p className="font-semibold text-aurora-dark">Action Required</p>
+                      <p className="text-sm text-aurora-dark">A proposal has been submitted and is awaiting your review.</p>
                     </div>
                   </div>
-                  <Button onClick={onReview} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button onClick={onReview} className="bg-passion hover:bg-passion-dark text-white">
                     <RiEyeLine className="mr-2" />
                     Review Proposal
                   </Button>
@@ -104,14 +104,14 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
               <div className="bg-gray-50 p-4 rounded-lg space-y-3">
                  <div className="flex items-center gap-2 font-medium">
                    {tender.proposal.status === 'accepted' ? (
-                     <><RiCheckDoubleLine className="text-green-600" /> Proposal Accepted</>
+                     <><RiCheckDoubleLine className="text-verdant" /> Proposal Accepted</>
                    ) : (
-                     <><RiCloseCircleLine className="text-red-600" /> Proposal Rejected</>
+                     <><RiCloseCircleLine className="text-passion" /> Proposal Rejected</>
                    )}
                  </div>
                  {tender.proposal.feedback && (
                    <div className="text-sm text-gray-600">
-                     <span className="font-medium text-gray-900">Feedback: </span>
+                     <span className="font-medium text-neural">Feedback: </span>
                      {tender.proposal.feedback}
                    </div>
                  )}

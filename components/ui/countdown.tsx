@@ -43,7 +43,7 @@ export function Countdown({ targetDate }: { targetDate: string }) {
   return (
     <div className={`font-mono text-xs font-black tracking-tight uppercase ${
       isUrgent 
-        ? 'text-red-600 animate-pulse bg-red-50 px-2 py-1 rounded-full' 
+        ? 'text-passion animate-pulse bg-passion-light/10 px-2 py-1 rounded-full' 
         : 'text-gray-600'
     }`}>
       {timeLeft}

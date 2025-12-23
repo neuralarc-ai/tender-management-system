@@ -29,18 +29,18 @@ export function TenderSidebar({ tenders, selectedId, onSelect }: TenderSidebarPr
             onClick={() => onSelect(tender.id)}
             className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
               isSelected 
-                ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' 
+                ? 'border-blue-500 bg-drift/10 ring-1 ring-blue-500' 
                 : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
             }`}
           >
-            <h3 className={`font-semibold mb-2 line-clamp-2 ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
+            <h3 className={`font-semibold mb-2 line-clamp-2 ${isSelected ? 'text-blue-900' : 'text-neural'}`}>
               {tender.title}
             </h3>
             <div className="flex flex-col gap-1 text-xs text-gray-500">
               <span className="flex items-center gap-1">
                 <RiCalendarLine /> {new Date(tender.createdAt).toLocaleDateString()}
               </span>
-              <span className={`flex items-center gap-1 ${isExpired ? 'text-red-500' : ''}`}>
+              <span className={`flex items-center gap-1 ${isExpired ? 'text-passion' : ''}`}>
                 <RiTimeLine /> 
                 {isExpired ? 'Expired' : formatDistanceToNow(new Date(tender.submissionDeadline))} remaining
               </span>

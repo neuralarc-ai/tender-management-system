@@ -100,12 +100,12 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
 
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-neural/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-md p-12 text-center animate-in fade-in zoom-in duration-300">
-          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+          <div className="w-20 h-20 bg-verdant rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
             <RiCheckLine className="text-white" size={48} />
           </div>
-          <h3 className="text-2xl font-black text-gray-900 mb-3 uppercase tracking-tight">Success!</h3>
+          <h3 className="text-2xl font-black text-neural mb-3 uppercase tracking-tight">Success!</h3>
           <p className="text-sm text-gray-500 font-medium">
             Your tender has been submitted successfully.<br />AI analysis will begin shortly.
           </p>
@@ -115,16 +115,16 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
+    <div className="fixed inset-0 bg-neural/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 font-sans">
       <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-8 border-b border-gray-100 sticky top-0 bg-white z-10 rounded-t-[40px]">
           <div>
-            <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight">New Tender</h2>
+            <h2 className="text-2xl font-black text-neural uppercase tracking-tight">New Tender</h2>
             <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Requirement Intake Form</p>
           </div>
           <button 
             onClick={onClose} 
-            className="text-gray-400 hover:text-gray-900 transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-3"
+            className="text-gray-400 hover:text-neural transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-3"
           >
             <RiCloseLine size={24} />
           </button>
@@ -136,9 +136,9 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             <Input 
               {...register('title', { required: true })} 
               placeholder="e.g., AI-Powered Customer Service Platform" 
-              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 h-12 px-4 font-medium"
+              className="rounded-2xl border-2 border-gray-100 focus:border-neural h-12 px-4 font-medium"
             />
-            {errors.title && <span className="text-red-500 text-xs font-bold uppercase tracking-wider">Required field</span>}
+            {errors.title && <span className="text-passion text-xs font-bold uppercase tracking-wider">Required field</span>}
           </div>
 
           <div className="space-y-3">
@@ -146,7 +146,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             <Textarea 
               {...register('description', { required: true })} 
               placeholder="Provide a comprehensive description of your requirements..." 
-              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+              className="rounded-2xl border-2 border-gray-100 focus:border-neural min-h-[120px] p-4 font-medium resize-none"
             />
           </div>
 
@@ -155,7 +155,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Scope of Work *</label>
               <Textarea 
                 {...register('scopeOfWork', { required: true })} 
-                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                className="rounded-2xl border-2 border-gray-100 focus:border-neural min-h-[120px] p-4 font-medium resize-none"
                 placeholder="Define the project scope..."
               />
             </div>
@@ -163,7 +163,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Technical Requirements *</label>
               <Textarea 
                 {...register('technicalRequirements', { required: true })} 
-                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                className="rounded-2xl border-2 border-gray-100 focus:border-neural min-h-[120px] p-4 font-medium resize-none"
                 placeholder="Specify technical needs..."
               />
             </div>
@@ -174,7 +174,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Functional Requirements *</label>
               <Textarea 
                 {...register('functionalRequirements', { required: true })} 
-                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                className="rounded-2xl border-2 border-gray-100 focus:border-neural min-h-[120px] p-4 font-medium resize-none"
                 placeholder="List functional requirements..."
               />
             </div>
@@ -182,7 +182,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
               <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Eligibility Criteria *</label>
               <Textarea 
                 {...register('eligibilityCriteria', { required: true })} 
-                className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 min-h-[120px] p-4 font-medium resize-none"
+                className="rounded-2xl border-2 border-gray-100 focus:border-neural min-h-[120px] p-4 font-medium resize-none"
                 placeholder="Define eligibility criteria..."
               />
             </div>
@@ -193,13 +193,13 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             <Input 
               type="datetime-local" 
               {...register('submissionDeadline', { required: true })} 
-              className="rounded-2xl border-2 border-gray-100 focus:border-gray-900 h-12 px-4 font-medium"
+              className="rounded-2xl border-2 border-gray-100 focus:border-neural h-12 px-4 font-medium"
             />
           </div>
 
           <div className="space-y-4">
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">Supporting Documents</label>
-            <div className="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:border-indigo-400 hover:bg-indigo-50/30 transition-all cursor-pointer relative group">
+            <div className="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:border-passion hover:bg-passion-light/10/30 transition-all cursor-pointer relative group">
               <input 
                 type="file" 
                 multiple 
@@ -208,11 +208,11 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
                 disabled={isUploading}
               />
               <div className="flex flex-col items-center gap-3">
-                <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <RiUploadLine className="text-indigo-600 w-8 h-8" />
+                <div className="w-16 h-16 bg-passion-light/30 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <RiUploadLine className="text-passion w-8 h-8" />
                 </div>
                 <div>
-                  <p className="text-gray-700 font-bold">Click or drag files to upload</p>
+                  <p className="text-neural-light font-bold">Click or drag files to upload</p>
                   <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">PDF, DOC, DOCX, XLS (Max 10MB)</p>
                 </div>
               </div>
@@ -221,7 +221,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             {isUploading && (
               <div className="flex items-center gap-3 justify-center">
                 <div className="w-5 h-5 border-3 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-                <p className="text-sm text-indigo-600 font-bold uppercase tracking-wider animate-pulse">Uploading...</p>
+                <p className="text-sm text-passion font-bold uppercase tracking-wider animate-pulse">Uploading...</p>
               </div>
             )}
 
@@ -229,18 +229,18 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
               {uploadedFiles.map((file, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors group">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
-                      <RiFileLine className="text-indigo-600" />
+                    <div className="w-10 h-10 bg-passion-light/30 rounded-xl flex items-center justify-center">
+                      <RiFileLine className="text-passion" />
                     </div>
                     <div>
-                      <span className="text-sm text-gray-900 font-bold block">{file.name}</span>
+                      <span className="text-sm text-neural font-bold block">{file.name}</span>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">{(file.size / 1024).toFixed(1)} KB</span>
                     </div>
                   </div>
                   <button 
                     type="button" 
                     onClick={() => removeFile(index)} 
-                    className="text-red-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 bg-red-50 hover:bg-red-100 p-2 rounded-xl"
+                    className="text-red-400 hover:text-passion transition-colors opacity-0 group-hover:opacity-100 bg-passion-light/10 hover:bg-passion-light/30 p-2 rounded-xl"
                   >
                     <RiDeleteBinLine size={18} />
                   </button>
@@ -261,7 +261,7 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             <Button 
               type="submit" 
               disabled={createTender.isPending || isUploading}
-              className="rounded-full px-8 h-12 bg-indigo-600 hover:bg-indigo-700 font-black uppercase tracking-wider text-[11px] shadow-lg shadow-indigo-100"
+              className="rounded-full px-8 h-12 bg-passion hover:bg-passion-dark font-black uppercase tracking-wider text-[11px] shadow-lg shadow-passion/10"
             >
               {createTender.isPending ? (
                 <div className="flex items-center gap-2">

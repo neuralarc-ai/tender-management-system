@@ -42,7 +42,7 @@ export function SimpleBarChart({ data }: { data: { name: string; value: number }
             {data.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`} 
-                fill={entry.value > 0 ? (index % 2 === 0 ? '#111827' : '#FCD34D') : '#F3F4F6'} 
+                fill={entry.value > 0 ? '#4A6A6A' : '#E8DDD1'} 
               />
             ))}
           </Bar>
@@ -54,7 +54,7 @@ export function SimpleBarChart({ data }: { data: { name: string; value: number }
 
 export function ScoreRadialChart({ score, label }: { score: number, label: string }) {
   const data = [
-    { name: 'Score', value: score, fill: '#FCD34D' },
+    { name: 'Score', value: score, fill: '#88B5B8' },
   ];
 
   return (

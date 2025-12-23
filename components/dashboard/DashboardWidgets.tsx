@@ -39,13 +39,13 @@ export function WelcomeBanner({ stats, role }: { stats: DashboardStats, role: st
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
               <p className="text-gray-500 text-sm font-medium mb-1 uppercase tracking-wider">{today}</p>
-              <h1 className="text-4xl font-normal text-gray-900">
+              <h1 className="text-4xl font-normal text-neural">
                 Welcome back, <span className="font-bold capitalize">{isClient ? 'Partner' : 'Admin'}</span>
               </h1>
           </div>
           <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-              <RiPulseLine className="text-green-500" />
-              <span className="text-sm font-bold uppercase text-[10px] tracking-widest text-gray-500">System Pulse: <span className="text-green-600">Optimal</span></span>
+              <RiPulseLine className="text-verdant" />
+              <span className="text-sm font-bold uppercase text-[10px] tracking-widest text-gray-500">System Pulse: <span className="text-verdant">Optimal</span></span>
           </div>
       </div>
 
@@ -53,17 +53,17 @@ export function WelcomeBanner({ stats, role }: { stats: DashboardStats, role: st
         <StatsPill 
           label="Total Tenders" 
           value={stats.totalTenders.toString()} 
-          color="bg-gray-900 text-white" 
+          color="bg-neural text-white" 
         />
         <StatsPill 
           label="Open Opportunities" 
           value={stats.openTenders.toString()} 
-          color="bg-amber-300 text-gray-900" 
+          color="bg-aurora text-neural" 
         />
         <StatsPill 
           label="Avg. AI Match" 
           value={`${stats.avgAiScore}%`} 
-          color="bg-white text-gray-900 border border-gray-100 shadow-sm" 
+          color="bg-white text-neural border border-gray-100 shadow-sm" 
           width="w-48" 
           striped 
         />
@@ -114,7 +114,7 @@ export function ProfileCard({ role, tenders }: { role: string, tenders?: any[] }
     <Card className="p-6 rounded-[40px] bg-white border-none shadow-xl h-full relative overflow-hidden group font-sans">
       <div className="absolute top-6 right-6 z-10">
         <button className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors">
-            <RiMore2Fill className="text-gray-900" />
+            <RiMore2Fill className="text-neural" />
         </button>
       </div>
       <div className="h-full flex flex-col">
@@ -122,14 +122,14 @@ export function ProfileCard({ role, tenders }: { role: string, tenders?: any[] }
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
                 <RiUser3Line className="w-12 h-12 text-gray-300" />
             </div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
+            <div className="absolute bottom-0 right-0 w-6 h-6 bg-verdant border-4 border-white rounded-full"></div>
         </div>
         
         <div className="flex-1">
-            <div className="bg-amber-100 text-amber-700 text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
+            <div className="bg-aurora/20 text-aurora-dark text-[10px] font-bold px-3 py-1 rounded-full inline-block mb-3 uppercase tracking-wider">
                 {role === 'admin' ? 'Strategic Admin' : 'Premium Partner'}
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-1 capitalize">
+            <h3 className="text-2xl font-bold text-neural mb-1 capitalize">
                 {role === 'admin' ? 'Alex Neural' : 'DCS Corporation'}
             </h3>
             <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
@@ -142,13 +142,13 @@ export function ProfileCard({ role, tenders }: { role: string, tenders?: any[] }
                 <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">
                     {role === 'admin' ? 'Pipeline' : 'Active'}
                 </div>
-                <div className="text-xl font-bold text-gray-900">{activeTasks}</div>
+                <div className="text-xl font-bold text-neural">{activeTasks}</div>
             </div>
             <div className="bg-gray-50 p-4 rounded-3xl">
                 <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">
                     {role === 'admin' ? 'Success' : 'Rating'}
                 </div>
-                <div className="text-xl font-bold text-amber-500 flex items-center gap-1">{rating}</div>
+                <div className="text-xl font-bold text-aurora flex items-center gap-1">{rating}</div>
             </div>
         </div>
       </div>
@@ -170,10 +170,10 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
             <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
                 <div className="flex justify-between items-start mb-6">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900">Tender Activity</h3>
+                        <h3 className="text-lg font-bold text-neural">Tender Activity</h3>
                         <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Your Submissions</p>
                     </div>
-                    <div className="bg-indigo-100 text-indigo-600 p-2 rounded-2xl">
+                    <div className="bg-passion-light/30 text-passion p-2 rounded-2xl">
                         <RiArrowRightUpLine size={20} />
                     </div>
                 </div>
@@ -182,19 +182,19 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                     <div>
                         <div className="flex justify-between text-[10px] font-black mb-2 uppercase tracking-widest text-gray-400">
                             <span>PROPOSALS RECEIVED</span>
-                            <span className="text-green-600">{receivedProposals}/{totalSubmitted}</span>
+                            <span className="text-verdant">{receivedProposals}/{totalSubmitted}</span>
                         </div>
                         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-green-500 rounded-full shadow-sm shadow-green-200" style={{ width: `${responseRate}%` }} />
+                            <div className="h-full bg-verdant rounded-full shadow-sm shadow-green-200" style={{ width: `${responseRate}%` }} />
                         </div>
                     </div>
                     <div>
                         <div className="flex justify-between text-[10px] font-black mb-2 uppercase tracking-widest text-gray-400">
                             <span>AWAITING RESPONSE</span>
-                            <span className="text-amber-600">{awaitingResponse}</span>
+                            <span className="text-aurora">{awaitingResponse}</span>
                         </div>
                         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-amber-500 rounded-full shadow-sm shadow-amber-200" style={{ width: `${totalSubmitted > 0 ? (awaitingResponse / totalSubmitted) * 100 : 0}%` }} />
+                            <div className="h-full bg-aurora/100 rounded-full shadow-sm shadow-aurora/20" style={{ width: `${totalSubmitted > 0 ? (awaitingResponse / totalSubmitted) * 100 : 0}%` }} />
                         </div>
                     </div>
                 </div>
@@ -205,7 +205,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                     </div>
                     <button 
                         onClick={onViewAll}
-                        className="text-[10px] font-black text-gray-900 underline uppercase tracking-widest hover:text-indigo-600 transition-colors"
+                        className="text-[10px] font-black text-neural underline uppercase tracking-widest hover:text-passion transition-colors"
                     >
                         View All
                     </button>
@@ -219,10 +219,10 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900">Proposal Efficacy</h3>
+                    <h3 className="text-lg font-bold text-neural">Proposal Efficacy</h3>
                     <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">Win Rate vs Submission</p>
                 </div>
-                <div className="bg-green-100 text-green-600 p-2 rounded-2xl">
+                <div className="bg-verdant/20 text-verdant p-2 rounded-2xl">
                     <RiArrowRightUpLine size={20} />
                 </div>
             </div>
@@ -231,28 +231,28 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                 <div>
                     <div className="flex justify-between text-[10px] font-black mb-2 uppercase tracking-widest text-gray-400">
                         <span>WIN RATE</span>
-                        <span className="text-green-600">78%</span>
+                        <span className="text-verdant">78%</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-green-500 rounded-full shadow-sm shadow-green-200" style={{ width: '78%' }} />
+                        <div className="h-full bg-verdant rounded-full shadow-sm shadow-green-200" style={{ width: '78%' }} />
                     </div>
                 </div>
                 <div>
                     <div className="flex justify-between text-[10px] font-black mb-2 uppercase tracking-widest text-gray-400">
                         <span>RESPONSE TIME</span>
-                        <span className="text-blue-600">4.2h</span>
+                        <span className="text-passion">4.2h</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 rounded-full shadow-sm shadow-blue-200" style={{ width: '92%' }} />
+                        <div className="h-full bg-passion rounded-full shadow-sm shadow-blue-200" style={{ width: '92%' }} />
                     </div>
                 </div>
             </div>
 
             <div className="mt-6 pt-6 border-t border-dashed flex justify-between items-center">
                 <div className="flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                    <RiPulseLine className="text-green-500" /> +12% this month
+                    <RiPulseLine className="text-verdant" /> +12% this month
                 </div>
-                <button className="text-[10px] font-black text-gray-900 underline uppercase tracking-widest">View Report</button>
+                <button className="text-[10px] font-black text-neural underline uppercase tracking-widest">View Report</button>
             </div>
         </Card>
     );
@@ -260,7 +260,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
 
 export function ProjectProgressCard({ tender }: { tender?: Tender }) {
     if (!tender) return (
-        <Card className="p-6 rounded-[32px] bg-indigo-600 text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
+        <Card className="p-6 rounded-[32px] bg-passion text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
             <RiFlashlightLine size={48} className="mb-4 opacity-30" />
             <h3 className="text-xl font-bold mb-2">No Active Projects</h3>
             <p className="text-indigo-100 text-sm">Submit your first tender to track progress here.</p>
@@ -278,10 +278,10 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <div className="bg-indigo-100 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
-                    <h3 className="text-lg font-bold truncate max-w-[200px] text-gray-900">{tender.title}</h3>
+                    <div className="bg-passion-light/30 text-passion text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
+                    <h3 className="text-lg font-bold truncate max-w-[200px] text-neural">{tender.title}</h3>
                 </div>
-                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-indigo-600">
+                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-passion">
                     <RiTimeLine />
                 </div>
             </div>
@@ -292,13 +292,13 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
                     {steps.map((step, i) => (
                         <div key={i} className="flex flex-col items-center gap-2 relative z-10">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
-                                step.completed ? 'bg-green-500 text-white shadow-sm shadow-green-200' : 
-                                step.active ? 'bg-indigo-600 text-white ring-4 ring-indigo-50 shadow-sm shadow-indigo-200' : 'bg-gray-100 text-gray-400'
+                                step.completed ? 'bg-verdant text-white shadow-sm shadow-green-200' : 
+                                step.active ? 'bg-passion text-white ring-4 ring-indigo-50 shadow-sm shadow-indigo-200' : 'bg-gray-100 text-gray-400'
                             }`}>
                                 {step.completed ? '✓' : i + 1}
                             </div>
                             <span className={`text-[10px] font-black uppercase tracking-tighter ${
-                                step.active ? 'text-indigo-600' : 'text-gray-400'
+                                step.active ? 'text-passion' : 'text-gray-400'
                             }`}>{step.name}</span>
                         </div>
                     ))}
@@ -307,7 +307,7 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
                 <div className="mt-8 bg-gray-50 rounded-3xl p-4 flex items-center justify-between">
                     <div>
                         <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-widest">Status</div>
-                        <div className="text-sm font-bold capitalize text-gray-900">{tender.proposal?.status || tender.status}</div>
+                        <div className="text-sm font-bold capitalize text-neural">{tender.proposal?.status || tender.status}</div>
                     </div>
                     <Button variant="ghost" size="sm" className="rounded-full bg-white shadow-sm border border-gray-100 h-8 text-[10px] font-black uppercase tracking-widest">
                         View
@@ -323,11 +323,11 @@ export function StatusDistributionCard({ data }: { data: { name: string; value: 
     <Card className="p-5 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans overflow-hidden">
       <div className="flex justify-between items-start mb-3 flex-shrink-0">
         <div>
-            <h3 className="text-base font-bold text-gray-900">Pipeline Alpha</h3>
+            <h3 className="text-base font-bold text-verdant">Pipeline Alpha</h3>
             <p className="text-[9px] text-gray-400 mt-0.5 uppercase font-bold tracking-widest">Global Distribution</p>
         </div>
-        <div className="bg-gray-50 p-1.5 rounded-full">
-            <RiArrowRightUpLine className="text-gray-900" size={16} />
+        <div className="bg-verdant/10 p-1.5 rounded-full">
+            <RiArrowRightUpLine className="text-verdant" size={16} />
         </div>
       </div>
       
@@ -340,14 +340,14 @@ export function StatusDistributionCard({ data }: { data: { name: string; value: 
 
 export function AIAnalysisCard({ score }: { score: number }) {
   return (
-    <Card className="p-5 rounded-[32px] bg-gray-900 text-white border-none shadow-xl h-full flex flex-col font-sans overflow-hidden">
+    <Card className="p-5 rounded-[32px] bg-neural text-white border-none shadow-xl h-full flex flex-col font-sans overflow-hidden">
       <div className="flex justify-between items-start mb-3 flex-shrink-0">
         <div>
             <h3 className="text-base font-bold text-white">Neural Core</h3>
-            <p className="text-[9px] text-amber-300 mt-0.5 uppercase font-bold tracking-widest">AI Match Engine</p>
+            <p className="text-[9px] text-aurora mt-0.5 uppercase font-bold tracking-widest">AI Match Engine</p>
         </div>
         <div className="bg-white/10 p-1.5 rounded-full">
-            <RiRobot2Line className="text-amber-300" size={16} />
+            <RiRobot2Line className="text-aurora" size={16} />
         </div>
       </div>
       
@@ -357,7 +357,7 @@ export function AIAnalysisCard({ score }: { score: number }) {
       
       <div className="mt-3 pt-3 border-t border-white/10 flex justify-between items-center text-[9px] font-bold text-white/40 uppercase tracking-widest flex-shrink-0">
         <span>AUTO-ANALYSIS</span>
-        <span className="text-green-400 animate-pulse">LIVE</span>
+        <span className="text-verdant animate-pulse">LIVE</span>
       </div>
     </Card>
   );
@@ -373,18 +373,18 @@ export function RecentTendersWidget({ tenders, onSelect }: { tenders: Tender[], 
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm">
             <div className="flex justify-between mb-4">
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900">Velocity</h3>
+                    <h3 className="text-lg font-bold text-neural">Velocity</h3>
                     <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Total thru-put</p>
                 </div>
-                <span className="text-3xl font-light text-gray-900">{Math.round(progress)}<span className="text-sm font-bold">%</span></span>
+                <span className="text-3xl font-light text-neural">{Math.round(progress)}<span className="text-sm font-bold">%</span></span>
             </div>
             <div className="flex gap-1 h-12 bg-gray-50 rounded-2xl p-1">
-                <div className="bg-amber-300 rounded-xl flex items-center justify-center text-[10px] font-black uppercase tracking-tighter shadow-sm" style={{ width: `${Math.max(progress, 20)}%` }}>Closed</div>
+                <div className="bg-aurora rounded-xl flex items-center justify-center text-[10px] font-black uppercase tracking-tighter shadow-sm" style={{ width: `${Math.max(progress, 20)}%` }}>Closed</div>
                 <div className="flex-1" />
             </div>
         </Card>
 
-        <Card className="p-6 rounded-[32px] bg-gray-900 text-white border-none shadow-sm flex-1 flex flex-col overflow-hidden">
+        <Card className="p-6 rounded-[32px] bg-neural text-white border-none shadow-sm flex-1 flex flex-col overflow-hidden">
             <div className="flex justify-between items-center mb-6 px-1">
                 <div>
                     <h3 className="text-lg font-bold text-white">Stream</h3>
@@ -420,18 +420,18 @@ export function RecentTendersWidget({ tenders, onSelect }: { tenders: Tender[], 
 function TenderItem({ icon, title, subtitle, time, completed = false, onClick }: { icon: any, title: string, subtitle: string, time: string, completed?: boolean, onClick: () => void }) {
     return (
         <div className="flex items-center gap-4 group cursor-pointer" onClick={onClick}>
-            <div className={`p-2 rounded-xl transition-all ${completed ? 'bg-gray-800 text-gray-500' : 'bg-white text-gray-900 group-hover:scale-110'}`}>
+            <div className={`p-2 rounded-xl transition-all ${completed ? 'bg-neural-light text-gray-500' : 'bg-white text-neural group-hover:scale-110'}`}>
                 {icon}
             </div>
             <div className="flex-1 min-w-0">
-                <h4 className={`text-sm font-bold truncate transition-colors ${completed ? 'text-gray-500 line-through' : 'text-white group-hover:text-amber-300'}`}>{title}</h4>
+                <h4 className={`text-sm font-bold truncate transition-colors ${completed ? 'text-gray-500 line-through' : 'text-white group-hover:text-aurora'}`}>{title}</h4>
                 <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest">{subtitle}</p>
             </div>
             <div className="text-[10px] text-gray-500 font-bold">{time}</div>
             {completed ? (
-                <RiCheckboxCircleLine className="text-amber-300 text-xl" />
+                <RiCheckboxCircleLine className="text-aurora text-xl" />
             ) : (
-                <div className="w-4 h-4 rounded-full border-2 border-gray-700 group-hover:border-amber-300 transition-colors" />
+                <div className="w-4 h-4 rounded-full border-2 border-gray-700 group-hover:border-aurora transition-colors" />
             )}
         </div>
     )
@@ -449,7 +449,7 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tighter">Radar</h3>
+                    <h3 className="text-xl font-bold text-neural uppercase tracking-tighter">Radar</h3>
                     <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">{currentMonth}</p>
                 </div>
                 <div className="flex gap-2">
@@ -470,15 +470,15 @@ export function CalendarWidget({ tenders, onSelectTender }: { tenders: Tender[],
                             <div className="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest">
                                 {format(new Date(tender.submissionDeadline), 'EEEE')}
                             </div>
-                            <div className="text-5xl font-black text-gray-900 mb-1 tracking-tighter">
+                            <div className="text-5xl font-black text-neural mb-1 tracking-tighter">
                                 {format(new Date(tender.submissionDeadline), 'dd')}
                             </div>
-                            <div className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">
+                            <div className="text-[10px] font-black text-aurora uppercase tracking-[0.2em]">
                                 {format(new Date(tender.submissionDeadline), 'MMM')}
                             </div>
                         </div>
                         <div className="mt-8">
-                            <div className="text-xs font-bold text-gray-900 truncate mb-1 uppercase tracking-tight">{tender.title}</div>
+                            <div className="text-xs font-bold text-neural truncate mb-1 uppercase tracking-tight">{tender.title}</div>
                             <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Submission Deadline</div>
                         </div>
                     </div>
@@ -498,7 +498,7 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
         <div className="space-y-4 font-sans">
              {role === 'client' && (
                <Card 
-                  className="p-5 rounded-[28px] bg-indigo-600 text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-indigo-700 transition-all hover:scale-[1.02] shadow-indigo-100"
+                  className="p-5 rounded-[28px] bg-passion text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-passion-dark transition-all hover:scale-[1.02] shadow-passion/10"
                   onClick={() => onAction('new')}
               >
                   <div className="flex items-center gap-4">
@@ -516,7 +516,7 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
 
              {role === 'admin' && (
                <Card 
-                  className="p-5 rounded-[28px] bg-indigo-600 text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-indigo-700 transition-all hover:scale-[1.02] shadow-indigo-100"
+                  className="p-5 rounded-[28px] bg-passion text-white border-none shadow-xl flex justify-between items-center cursor-pointer hover:bg-passion-dark transition-all hover:scale-[1.02] shadow-passion/10"
                   onClick={() => onAction('proposals')}
               >
                   <div className="flex items-center gap-4">
@@ -538,11 +538,11 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
                     className="p-4 rounded-[24px] bg-white border-none shadow-sm flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => onAction('tenders')}
                  >
-                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shadow-sm shadow-amber-100">
+                    <div className="w-10 h-10 bg-aurora/20 rounded-xl flex items-center justify-center text-aurora shadow-sm shadow-aurora/10">
                         <RiSearchLine size={20} />
                     </div>
                     <div>
-                        <div className="font-bold text-sm text-gray-900 uppercase tracking-tight">View All Tenders</div>
+                        <div className="font-bold text-sm text-neural uppercase tracking-tight">View All Tenders</div>
                         <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Browse opportunities</div>
                     </div>
                     <RiMore2Fill className="ml-auto text-gray-300" />
@@ -554,15 +554,15 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
                onClick={() => onAction('settings')}
              >
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center text-green-600 shadow-sm shadow-green-50">
+                    <div className="w-10 h-10 bg-verdant/10 rounded-xl flex items-center justify-center text-verdant shadow-sm shadow-green-50">
                         <RiPulseLine size={20} />
                     </div>
                     <div>
-                        <div className="font-bold text-sm text-gray-900 uppercase tracking-tight">System Status</div>
-                        <div className="text-[9px] text-green-600 font-bold uppercase tracking-widest">Optimal Sync</div>
+                        <div className="font-bold text-sm text-neural uppercase tracking-tight">System Status</div>
+                        <div className="text-[9px] text-verdant font-bold uppercase tracking-widest">Optimal Sync</div>
                     </div>
                 </div>
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <div className="w-2 h-2 rounded-full bg-verdant animate-pulse"></div>
              </Card>
              
              <Card 
@@ -573,7 +573,7 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
                     <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
                         <RiSettings4Line size={20} />
                     </div>
-                    <div className="font-bold text-sm text-gray-900 uppercase tracking-tight">Configuration</div>
+                    <div className="font-bold text-sm text-neural uppercase tracking-tight">Configuration</div>
                 </div>
                 <RiMore2Fill className="text-gray-300" />
              </Card>

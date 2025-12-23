@@ -12,21 +12,21 @@ export function StatsView({ tenders }: { tenders: Tender[] }) {
     const awardedCount = tenders.filter(t => t.status === 'awarded').length;
     
     const chartData = [
-        { name: 'Open', value: openCount, color: '#FCD34D' }, // Amber-300
-        { name: 'Closed', value: closedCount, color: '#1F2937' }, // Gray-900
-        { name: 'Awarded', value: awardedCount, color: '#9CA3AF' }, // Gray-400
+        { name: 'Open', value: openCount, color: '#E8C4A8' }, // Muted peachy beige
+        { name: 'Closed', value: closedCount, color: '#3D4A4A' }, // Muted dark teal
+        { name: 'Awarded', value: awardedCount, color: '#A599C4' }, // Muted lavender
     ];
 
     return (
         <div className="space-y-6 animate-in fade-in duration-300">
             <div>
-               <h2 className="text-3xl font-bold text-gray-900">Analysis & Reports</h2>
+               <h2 className="text-3xl font-bold text-neural">Analysis & Reports</h2>
                <p className="text-gray-500">System-wide performance metrics</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
                 {/* Stats Grid Card */}
-                <Card className="p-8 rounded-[32px] border-none shadow-sm bg-[#1F2937] text-white flex flex-col">
+                <Card className="p-8 rounded-[32px] border-none shadow-sm bg-neural text-white flex flex-col">
                     <div className="flex justify-between items-start mb-8">
                         <div>
                             <h3 className="text-xl font-medium">Activity Report</h3>
@@ -91,7 +91,7 @@ export function StatsView({ tenders }: { tenders: Tender[] }) {
                         </ResponsiveContainer>
                         {/* Center Text */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span className="text-4xl font-bold text-gray-900">{tenders.length}</span>
+                            <span className="text-4xl font-bold text-neural">{tenders.length}</span>
                             <span className="text-sm text-gray-500">Total</span>
                         </div>
                     </div>

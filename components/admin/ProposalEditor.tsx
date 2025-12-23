@@ -24,8 +24,37 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
   const generateWithAI = useMutation({
     mutationFn: async () => {
       setIsGenerating(true);
-      const response = await axios.post(`/api/tenders/${tenderId}/generate-proposal`);
-      return response.data;
+      
+      // Create AI log entry before regeneration
+      const logResponse = await axios.post(`/api/tenders/${tenderId}/ai-logs`, {
+        regenerated_by: '22222222-2222-2222-2222-222222222222', // Admin user ID
+        reason: 'Manual regeneration requested by admin',
+        old_proposal_snapshot: formData,
+        status: 'in_progress'
+      });
+      
+      const logId = logResponse.data.log.id;
+      
+      try {
+        const response = await axios.post(`/api/tenders/${tenderId}/generate-proposal`);
+        
+        // Update log as completed
+        await axios.patch(`/api/tenders/${tenderId}/ai-logs`, {
+          log_id: logId,
+          status: 'completed',
+          new_proposal_snapshot: response.data.proposal
+        });
+        
+        return response.data;
+      } catch (error) {
+        // Update log as failed
+        await axios.patch(`/api/tenders/${tenderId}/ai-logs`, {
+          log_id: logId,
+          status: 'failed',
+          error_message: error instanceof Error ? error.message : 'Unknown error'
+        });
+        throw error;
+      }
     },
     onSuccess: (data) => {
       setFormData(prev => ({
@@ -33,11 +62,13 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
         ...data.proposal
       }));
       queryClient.invalidateQueries({ queryKey: ['tenders'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-logs', tenderId] });
       setIsGenerating(false);
       alert('✅ AI proposal generated successfully! Review and edit as needed.');
     },
     onError: (error: any) => {
       setIsGenerating(false);
+      queryClient.invalidateQueries({ queryKey: ['ai-logs', tenderId] });
       alert(`⚠️ AI generation had issues. Using template fallback.\n${error.response?.data?.details || ''}`);
     }
   });
@@ -71,7 +102,7 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
 
   if (!isAnalysisComplete) {
     return (
-      <div className="bg-blue-50 text-blue-800 p-6 rounded-lg flex items-center gap-3">
+      <div className="bg-drift/10 text-passion-dark p-6 rounded-lg flex items-center gap-3">
         <RiInformationLine className="w-6 h-6" />
         <div>
           <p className="font-semibold">Analysis Pending</p>
@@ -84,7 +115,7 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
   if (proposal.status === 'submitted') {
      return (
        <div className="space-y-6">
-         <div className="bg-green-50 text-green-800 p-6 rounded-lg flex items-center gap-3">
+         <div className="bg-verdant/10 text-verdant-dark p-6 rounded-lg flex items-center gap-3">
            <RiCheckLine className="w-6 h-6" />
            <div>
              <p className="font-semibold">Proposal Submitted</p>
@@ -98,7 +129,7 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
 
   return (
     <div className="space-y-6">
-      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-lg flex items-center justify-between gap-3">
+      <div className="bg-aurora/10 border border-aurora-light/50 text-aurora-dark p-4 rounded-lg flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <RiFileEditLine className="w-5 h-5" />
           <p className="text-sm font-medium">Review and edit the AI-generated proposal below. Add commercial details before submitting.</p>
@@ -107,7 +138,7 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
           size="sm"
           onClick={() => generateWithAI.mutate()}
           disabled={isGenerating}
-          className="rounded-full bg-indigo-600 hover:bg-indigo-700 text-white gap-2 text-xs font-bold px-4 flex-shrink-0"
+          className="rounded-full bg-passion hover:bg-passion-dark text-white gap-2 text-xs font-bold px-4 flex-shrink-0"
         >
           {isGenerating ? (
             <>
@@ -123,12 +154,12 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
       </div>
 
       {isGenerating && (
-        <div className="bg-indigo-50 border-2 border-indigo-200 text-indigo-800 p-6 rounded-lg">
+        <div className="bg-passion-light/10 border-2 border-indigo-200 text-passion-dark p-6 rounded-lg">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 border-3 border-indigo-300 border-t-indigo-600 rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-3 border-passion-light border-t-indigo-600 rounded-full animate-spin"></div>
             <p className="font-bold">AI is analyzing the tender and generating proposal...</p>
           </div>
-          <p className="text-sm text-indigo-600">
+          <p className="text-sm text-passion">
             Using reference websites: <code className="bg-white px-2 py-0.5 rounded">ipc.he2.ai</code> and <code className="bg-white px-2 py-0.5 rounded">ers.he2.ai</code>
           </p>
           <p className="text-xs text-indigo-500 mt-2">This may take 10-30 seconds...</p>
@@ -168,7 +199,7 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
 function EditorSection({ label, value, onChange, placeholder }: { label: string, value: string, onChange: (v: string) => void, placeholder?: string }) {
   return (
     <div className="space-y-2">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <label className="text-sm font-semibold text-neural-light">{label}</label>
       <Textarea 
         value={value} 
         onChange={(e) => onChange(e.target.value)} 
@@ -182,7 +213,7 @@ function EditorSection({ label, value, onChange, placeholder }: { label: string,
 function ProposalPreview({ proposal }: { proposal: Proposal }) {
   return (
     <div className="space-y-8 bg-gray-50 p-8 rounded-xl border">
-      <h3 className="text-xl font-bold text-gray-900 border-b pb-4">Submitted Proposal</h3>
+      <h3 className="text-xl font-bold text-neural border-b pb-4">Submitted Proposal</h3>
       <PreviewSection title="Executive Summary" content={proposal.executiveSummary} />
       <PreviewSection title="Understanding of Requirements" content={proposal.requirementsUnderstanding} />
       <PreviewSection title="Technical Approach" content={proposal.technicalApproach} />
@@ -198,8 +229,8 @@ function ProposalPreview({ proposal }: { proposal: Proposal }) {
 function PreviewSection({ title, content }: { title: string, content: string }) {
   return (
     <div>
-      <h4 className="font-semibold text-gray-900 mb-2">{title}</h4>
-      <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">{content}</div>
+      <h4 className="font-semibold text-neural mb-2">{title}</h4>
+      <div className="text-neural-light whitespace-pre-wrap leading-relaxed">{content}</div>
     </div>
   );
 }

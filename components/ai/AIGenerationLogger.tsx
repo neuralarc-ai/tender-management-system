@@ -61,7 +61,7 @@ export function AIGenerationLogger({ tenderId, isGenerating }: { tenderId: strin
   if (logs.length === 0) return null;
 
   return (
-    <Card className="p-4 rounded-2xl bg-gray-900 text-white border-none shadow-lg mb-4">
+    <Card className="p-4 rounded-2xl bg-neural text-white border-none shadow-lg mb-4">
       <div className="flex items-center gap-2 mb-3">
         <RiRobot2Line className="w-5 h-5 text-indigo-400" />
         <h3 className="font-bold text-sm uppercase tracking-wider">AI Generation Log</h3>

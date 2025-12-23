@@ -66,7 +66,7 @@ export default function PinScreen() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white antialiased selection:bg-white/20 selection:text-white font-sans">
+    <div className="min-h-screen bg-neural text-white antialiased selection:bg-white/20 selection:text-white font-sans">
       {/* Background from the template */}
       <div className="fixed inset-0 -z-10">
         <img 
@@ -93,7 +93,7 @@ export default function PinScreen() {
                   className="absolute inset-0 h-full w-full object-cover" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-black/30 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-lg border border-white/10 bg-black/30 px-3 py-2 backdrop-blur-md">
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-lg border border-white/10 bg-neural/30 px-3 py-2 backdrop-blur-md">
                   <div className="flex items-center gap-2 text-xs text-white/75">
                     <ImageIcon className="h-3.5 w-3.5" />
                     Visual channel
@@ -139,7 +139,7 @@ export default function PinScreen() {
                           className={`
                             w-12 h-14 bg-white/5 border border-white/10 rounded-xl text-center text-xl font-bold text-white 
                             focus:outline-none focus:border-orange-400/50 focus:bg-white/10 focus:ring-1 focus:ring-orange-400/25 transition-all duration-200
-                            ${error ? 'border-red-500/50 text-red-200 animate-shake' : ''}
+                            ${error ? 'border-passion/50 text-red-200 animate-shake' : ''}
                           `}
                         />
                       </div>

@@ -167,13 +167,13 @@ export function DashboardView() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F2EE] p-6 font-sans text-gray-900 selection:bg-gray-200">
+    <div className="min-h-screen bg-background p-6 font-sans text-neural selection:bg-passion/20">
       <div className="max-w-[1600px] mx-auto space-y-8">
         {/* Top Navigation */}
         <header className="flex justify-between items-center bg-transparent py-2">
           <div className="flex items-center gap-12">
             <div className="text-2xl font-black tracking-tighter rounded-full border border-gray-300 px-6 py-2 bg-white/50 backdrop-blur-sm shadow-sm">
-              VECTOR<span className="text-indigo-600">.</span>
+              VECTOR<span className="text-passion">.</span>
             </div>
             
             <nav className="hidden lg:flex items-center gap-4 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200/50 shadow-sm">
@@ -181,13 +181,19 @@ export function DashboardView() {
                 icon={<RiDashboardLine />} 
                 label="Home" 
                 active={activeView === 'dashboard'} 
-                onClick={() => setActiveView('dashboard')} 
+                onClick={() => {
+                  setActiveView('dashboard');
+                  setSelectedTenderId(null); // Close any open tender modal
+                }} 
               />
               <NavLink 
                 icon={<RiTeamLine />} 
                 label="Tenders" 
                 active={activeView === 'tenders'} 
-                onClick={() => setActiveView('tenders')}
+                onClick={() => {
+                  setActiveView('tenders');
+                  setSelectedTenderId(null); // Close any open tender modal
+                }}
               />
               {role === 'admin' && (
                 <NavLink 
@@ -201,7 +207,10 @@ export function DashboardView() {
                 icon={<RiApps2Line />} 
                 label="Intelligence" 
                 active={activeView === 'analysis'} 
-                onClick={() => setActiveView('analysis')}
+                onClick={() => {
+                  setActiveView('analysis');
+                  setSelectedTenderId(null); // Close any open tender modal
+                }}
               />
             </nav>
           </div>
@@ -226,7 +235,7 @@ export function DashboardView() {
                     <RiNotification3Line className="h-5 w-5" />
                 </Button>
                 {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 border-2 border-[#F3F2EE] rounded-full flex items-center justify-center text-white text-[9px] font-bold">
+                  <span className="absolute top-0 right-0 w-5 h-5 bg-passion border-2 border-[#F3F2EE] rounded-full flex items-center justify-center text-white text-[9px] font-bold">
                     {unreadCount}
                   </span>
                 )}
@@ -235,7 +244,7 @@ export function DashboardView() {
                 onClick={logout}
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 h-12 w-12 text-red-500 hover:text-white hover:bg-red-500 transition-all shadow-sm"
+                className="rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 h-12 w-12 text-passion hover:text-white hover:bg-passion transition-all shadow-sm"
                 title="Logout"
              >
                 <RiLogoutBoxRLine className="h-5 w-5" />
@@ -361,7 +370,7 @@ export function DashboardView() {
           <div className="p-6">
             <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
               <div>
-                <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900">Activity</h2>
+                <h2 className="text-2xl font-black uppercase tracking-tight text-neural">Activity</h2>
                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">Recent Updates</p>
               </div>
               <button 
@@ -383,7 +392,7 @@ export function DashboardView() {
                       key={notification.id} 
                       className={`p-4 rounded-2xl transition-all cursor-pointer border ${
                         isUnread 
-                          ? 'bg-indigo-50 border-indigo-200 hover:bg-indigo-100' 
+                          ? 'bg-passion-light/10 border-indigo-200 hover:bg-passion-light/30' 
                           : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
                       }`}
                       onClick={async () => {
@@ -394,15 +403,15 @@ export function DashboardView() {
                     >
                       <div className="flex items-start gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                          isUnread ? 'bg-indigo-600' : 'bg-gray-300'
+                          isUnread ? 'bg-passion' : 'bg-gray-300'
                         }`}>
                           <RiTimeLine className="text-white" size={18} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className="font-bold text-sm text-gray-900">{notification.title}</h3>
+                            <h3 className="font-bold text-sm text-neural">{notification.title}</h3>
                             {isUnread && (
-                              <div className="w-2 h-2 bg-indigo-600 rounded-full flex-shrink-0 mt-1 animate-pulse"></div>
+                              <div className="w-2 h-2 bg-passion rounded-full flex-shrink-0 mt-1 animate-pulse"></div>
                             )}
                           </div>
                           <p className="text-xs text-gray-600 font-medium mb-2 leading-relaxed">
@@ -419,12 +428,12 @@ export function DashboardView() {
                         </div>
                         <div className={`px-2.5 py-1 rounded-full text-[8px] font-bold uppercase tracking-wider flex-shrink-0 ${
                           notification.type === 'tender_created' 
-                            ? 'bg-blue-100 text-blue-700' 
+                            ? 'bg-drift/20 text-passion-dark' 
                             : notification.type === 'proposal_submitted'
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-verdant/20 text-verdant-dark'
                             : notification.type === 'proposal_accepted'
                             ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-red-100 text-red-700'
+                            : 'bg-passion-light/30 text-passion-dark'
                         }`}>
                           {notification.type.split('_').join(' ')}
                         </div>
@@ -446,7 +455,7 @@ export function DashboardView() {
             {notifications.length > 0 && (
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <button 
-                  className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 transition-colors bg-gray-50 rounded-2xl hover:bg-gray-100"
+                  className="w-full py-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-neural transition-colors bg-gray-50 rounded-2xl hover:bg-gray-100"
                   onClick={markAllAsRead}
                 >
                   Mark All As Read
@@ -463,7 +472,7 @@ export function DashboardView() {
           <div className="p-8">
             <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-100">
               <div>
-                <h2 className="text-3xl font-black uppercase tracking-tight text-gray-900">Settings</h2>
+                <h2 className="text-3xl font-black uppercase tracking-tight text-neural">Settings</h2>
                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">System Configuration</p>
               </div>
               <button 
@@ -478,8 +487,8 @@ export function DashboardView() {
               {/* Account Section */}
               <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
-                  <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <span className="text-indigo-600 font-black">A</span>
+                  <div className="w-6 h-6 bg-passion-light/30 rounded-lg flex items-center justify-center">
+                    <span className="text-passion font-black">A</span>
                   </div>
                   Account Information
                 </h3>
@@ -494,8 +503,8 @@ export function DashboardView() {
               {/* Preferences Section */}
               <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
-                  <div className="w-6 h-6 bg-amber-100 rounded-lg flex items-center justify-center">
-                    <RiNotification3Line className="text-amber-600" size={14} />
+                  <div className="w-6 h-6 bg-aurora/20 rounded-lg flex items-center justify-center">
+                    <RiNotification3Line className="text-aurora" size={14} />
                   </div>
                   Notifications
                 </h3>
@@ -526,8 +535,8 @@ export function DashboardView() {
               {/* System Section */}
               <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
-                  <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center">
-                    <span className="text-green-600 font-black text-xs">✓</span>
+                  <div className="w-6 h-6 bg-verdant/20 rounded-lg flex items-center justify-center">
+                    <span className="text-verdant font-black text-xs">✓</span>
                   </div>
                   System Status
                 </h3>
@@ -549,7 +558,7 @@ export function DashboardView() {
                   Cancel
                 </Button>
                 <Button 
-                  className="flex-1 rounded-full h-12 bg-gray-900 hover:bg-gray-800 font-black text-[11px] uppercase tracking-wider shadow-xl"
+                  className="flex-1 rounded-full h-12 bg-neural hover:bg-neural-light font-black text-[11px] uppercase tracking-wider shadow-xl"
                   onClick={saveSettings}
                 >
                   Save Changes
@@ -571,7 +580,11 @@ export function DashboardView() {
                 >
                   <RiCloseLine size={20} className="text-gray-600" />
                 </button>
-                <TenderDetail tender={selectedTender} role={role} />
+                <TenderDetail 
+                  tender={selectedTender} 
+                  role={role} 
+                  currentUserId={role === 'admin' ? '22222222-2222-2222-2222-222222222222' : '11111111-1111-1111-1111-111111111111'}
+                />
              </div>
           )}
         </DialogContent>
@@ -586,8 +599,8 @@ function NavLink({ icon, label, active = false, onClick }: { icon: any, label: s
             onClick={onClick}
             className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all px-6 py-2 rounded-full ${
                 active 
-                ? 'text-white bg-gray-900 shadow-lg scale-105' 
-                : 'text-gray-400 hover:text-gray-900 hover:bg-gray-100'
+                ? 'text-white bg-neural shadow-lg scale-105' 
+                : 'text-gray-400 hover:text-neural hover:bg-gray-100'
             }`}
         >
             {icon}
@@ -601,9 +614,9 @@ function SettingRow({ label, value, badge }: { label: string, value: string, bad
     <div className="flex justify-between items-center py-2">
       <span className="text-sm font-bold text-gray-600 uppercase tracking-tight">{label}</span>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-black text-gray-900">{value}</span>
+        <span className="text-sm font-black text-neural">{value}</span>
         {badge === 'green' && (
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-verdant rounded-full animate-pulse"></div>
         )}
       </div>
     </div>
@@ -617,7 +630,7 @@ function SettingToggle({ label, enabled, onToggle }: { label: string, enabled: b
       <button 
         onClick={onToggle}
         className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
-          enabled ? 'bg-green-500 shadow-lg shadow-green-100' : 'bg-gray-300'
+          enabled ? 'bg-verdant shadow-lg shadow-green-100' : 'bg-gray-300'
         }`}
       >
         <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${

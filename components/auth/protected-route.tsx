@@ -34,8 +34,8 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       <div className="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
         <div className="bg-white rounded-2xl p-8 shadow-xl">
           <div className="flex items-center gap-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-            <span className="text-lg font-semibold text-gray-700">Authenticating...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-passion"></div>
+            <span className="text-lg font-semibold text-neural-light">Authenticating...</span>
           </div>
         </div>
       </div>
