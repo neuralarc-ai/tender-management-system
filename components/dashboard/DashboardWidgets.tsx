@@ -6,6 +6,7 @@ import {
   RiArrowRightUpLine, 
   RiCheckboxCircleLine, 
   RiFileListLine,
+  RiFileTextLine,
   RiBriefcaseLine, 
   RiCalendarLine,
   RiRobot2Line,
@@ -109,14 +110,9 @@ function StatsPill({ label, value, color, width = "w-32", striped = false }: { l
   );
 }
 
-export function ProfileCard({ role }: { role: string }) {
+export function ProfileCard({ role, activeTasks }: { role: string; activeTasks?: number }) {
   return (
     <Card className="p-6 rounded-[40px] bg-white border-none shadow-xl h-full relative overflow-hidden group font-sans">
-      <div className="absolute top-6 right-6 z-10">
-        <button className="bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-colors">
-            <RiMore2Fill className="text-neural" />
-        </button>
-      </div>
       <div className="h-full flex flex-col">
         <div className="relative mb-6">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
@@ -137,14 +133,18 @@ export function ProfileCard({ role }: { role: string }) {
             </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-auto">
-            <div className="bg-gray-50 p-4 rounded-3xl">
-                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">Tasks</div>
-                <div className="text-xl font-bold text-neural">12</div>
+        <div className="bg-gradient-to-br from-passion-light/10 to-verdant-light/10 p-5 rounded-3xl border-2 border-gray-100">
+            <div className="flex items-center justify-between">
+                <div>
+                    <div className="text-[10px] text-gray-500 mb-1 uppercase font-bold tracking-widest">Active Tasks</div>
+                    <div className="text-3xl font-black text-neural">{activeTasks ?? 0}</div>
+                </div>
+                <div className="w-14 h-14 bg-passion rounded-2xl flex items-center justify-center">
+                    <RiCheckboxCircleLine className="text-white w-7 h-7" />
+                </div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-3xl">
-                <div className="text-[10px] text-gray-400 mb-1 uppercase font-bold tracking-widest">Rating</div>
-                <div className="text-xl font-bold text-aurora flex items-center gap-1">4.9</div>
+            <div className="mt-3 text-xs text-gray-600 font-medium">
+                {role === 'admin' ? 'Proposals & Analysis pending' : 'Tenders & Decisions pending'}
             </div>
         </div>
       </div>
@@ -181,7 +181,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                             <span className="text-verdant">{receivedProposals}/{totalSubmitted}</span>
                         </div>
                         <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-verdant rounded-full shadow-sm shadow-green-200" style={{ width: `${responseRate}%` }} />
+                            <div className="h-full bg-verdant rounded-full shadow-sm shadow-verdant/20" style={{ width: `${responseRate}%` }} />
                         </div>
                     </div>
                     <div>
@@ -197,7 +197,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
 
                 <div className="mt-6 pt-6 border-t border-dashed flex justify-between items-center">
                     <div className="flex items-center gap-2 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                        <RiPulseLine className="text-indigo-500" /> {totalSubmitted} Total
+                        <RiPulseLine className="text-drift" /> {totalSubmitted} Total
                     </div>
                     <button 
                         onClick={onViewAll}
@@ -230,7 +230,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                         <span className="text-verdant">78%</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-verdant rounded-full shadow-sm shadow-green-200" style={{ width: '78%' }} />
+                        <div className="h-full bg-verdant rounded-full shadow-sm shadow-verdant/20" style={{ width: '78%' }} />
                     </div>
                 </div>
                 <div>
@@ -239,7 +239,7 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
                         <span className="text-passion">4.2h</span>
                     </div>
                     <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-passion rounded-full shadow-sm shadow-blue-200" style={{ width: '92%' }} />
+                        <div className="h-full bg-passion rounded-full shadow-sm shadow-passion/20" style={{ width: '92%' }} />
                     </div>
                 </div>
             </div>
@@ -256,10 +256,10 @@ export function PerformanceMetricsCard({ tenders, role, onViewAll }: { tenders?:
 
 export function ProjectProgressCard({ tender }: { tender?: Tender }) {
     if (!tender) return (
-        <Card className="p-6 rounded-[32px] bg-indigo-600 text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
+        <Card className="p-6 rounded-[32px] bg-drift text-white border-none shadow-xl h-full flex flex-col items-center justify-center text-center font-sans">
             <RiFlashlightLine size={48} className="mb-4 opacity-30" />
             <h3 className="text-xl font-bold mb-2">No Active Projects</h3>
-            <p className="text-indigo-100 text-sm">Submit your first tender to track progress here.</p>
+            <p className="text-drift-light text-sm">Submit your first tender to track progress here.</p>
         </Card>
     );
 
@@ -274,10 +274,10 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
         <Card className="p-6 rounded-[32px] bg-white border-none shadow-sm h-full flex flex-col font-sans">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <div className="bg-indigo-100 text-indigo-600 text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
+                    <div className="bg-drift/20 text-drift-dark text-[10px] font-black px-3 py-1 rounded-full uppercase mb-2 inline-block tracking-widest">Current Project</div>
                     <h3 className="text-lg font-bold truncate max-w-[200px] text-neural">{tender.title}</h3>
                 </div>
-                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-indigo-600">
+                <div className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-drift">
                     <RiTimeLine />
                 </div>
             </div>
@@ -288,13 +288,13 @@ export function ProjectProgressCard({ tender }: { tender?: Tender }) {
                     {steps.map((step, i) => (
                         <div key={i} className="flex flex-col items-center gap-2 relative z-10">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black ${
-                                step.completed ? 'bg-verdant text-white shadow-sm shadow-green-200' : 
-                                step.active ? 'bg-passion text-white ring-4 ring-indigo-50 shadow-sm shadow-indigo-200' : 'bg-gray-100 text-gray-400'
+                                step.completed ? 'bg-verdant text-white shadow-sm shadow-verdant/20' : 
+                                step.active ? 'bg-passion text-white ring-4 ring-passion/10 shadow-sm shadow-passion/20' : 'bg-gray-100 text-gray-400'
                             }`}>
                                 {step.completed ? '✓' : i + 1}
                             </div>
                             <span className={`text-[10px] font-black uppercase tracking-tighter ${
-                                step.active ? 'text-indigo-600' : 'text-gray-400'
+                                step.active ? 'text-passion' : 'text-gray-400'
                             }`}>{step.name}</span>
                         </div>
                     ))}
@@ -528,7 +528,7 @@ export function QuickActions({ role, onAction }: { role: string, onAction: (acti
                onClick={() => onAction('settings')}
              >
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-verdant/10 rounded-xl flex items-center justify-center text-verdant shadow-sm shadow-green-50">
+                    <div className="w-10 h-10 bg-verdant/10 rounded-xl flex items-center justify-center text-verdant shadow-sm shadow-verdant/5">
                         <RiPulseLine size={20} />
                     </div>
                     <div>

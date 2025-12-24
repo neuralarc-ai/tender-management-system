@@ -66,7 +66,7 @@ export default function PinAuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex font-sans relative overflow-hidden">
+    <div className="min-h-full flex font-sans relative overflow-hidden">
       {/* Full Screen Neural Arc Background - Latest PNG */}
       <div 
         className="absolute inset-0 bg-cover bg-center"

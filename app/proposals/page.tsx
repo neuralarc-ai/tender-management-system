@@ -524,7 +524,7 @@ export default function AIProposalGeneratorPage() {
 
   return (
     <ProtectedRoute allowedRoles={['admin']}>
-      <div className="min-h-screen bg-gradient-to-br from-[#F8F7F4] via-[#FFF9F0] to-[#FFFAF2] p-4 md:p-6">
+      <div className="min-h-full bg-gradient-to-br from-[#F8F7F4] via-[#FFF9F0] to-[#FFFAF2] p-4 md:p-6">
         <div className="max-w-[1800px] mx-auto">
           {/* Keep existing header - don't change navbar */}
           <header className="flex justify-between items-center bg-transparent py-2 mb-6">
@@ -561,7 +561,7 @@ export default function AIProposalGeneratorPage() {
               {/* Header Card */}
               <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-5 border border-gray-200/50 shadow-lg">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-drift to-quantum flex items-center justify-center text-white shadow-lg">
                     <RiRobot2Line size={20} />
                   </div>
                   <div className="flex-1">
@@ -584,7 +584,7 @@ export default function AIProposalGeneratorPage() {
                       onClick={() => selectTender(t)}
                       className={`w-full text-left p-4 rounded-2xl transition-all duration-200 group ${
                         selectedTenderId === t.id 
-                          ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-400 shadow-md scale-[1.02]' 
+                          ? 'bg-gradient-to-br from-drift/10 to-quantum/10 border-2 border-drift shadow-md scale-[1.02]' 
                           : 'bg-gray-50/80 border border-gray-200/60 hover:border-passion-light hover:bg-passion-light/10/30 hover:shadow-sm'
                       }`}
                     >
@@ -639,7 +639,7 @@ export default function AIProposalGeneratorPage() {
                         <Button
                           onClick={() => generateProposal(selectedTender.id)}
                           disabled={isGenerating}
-                          className="rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 h-11 font-bold gap-2 px-6 shadow-lg hover:shadow-xl transition-all"
+                          className="rounded-2xl bg-gradient-to-r from-passion to-aurora hover:from-passion-dark hover:to-aurora-dark h-11 font-bold gap-2 px-6 shadow-lg hover:shadow-xl transition-all"
                         >
                           {isGenerating ? (
                             <>
@@ -670,7 +670,7 @@ export default function AIProposalGeneratorPage() {
                       
                       {chatMessages.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full">
-                          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center mb-5 shadow-xl">
+                          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-drift/20 to-quantum/20 flex items-center justify-center mb-5 shadow-xl">
                             <RiRobot2Line className="w-12 h-12 text-passion" />
                           </div>
                           <p className="text-xl font-black text-neural mb-2">AI Proposal Assistant</p>
@@ -691,7 +691,7 @@ export default function AIProposalGeneratorPage() {
                           onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
                           placeholder={currentThreadId ? "Ask AI to modify the proposal..." : "Generate proposal first to enable chat..."}
                           disabled={isGenerating}
-                          className="flex-1 px-5 py-3.5 rounded-2xl border-2 border-gray-200/80 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed transition-all font-medium text-sm placeholder:text-gray-400"
+                          className="flex-1 px-5 py-3.5 rounded-2xl border-2 border-gray-200/80 outline-none focus:border-drift focus:ring-4 focus:ring-drift/10 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed transition-all font-medium text-sm placeholder:text-gray-400"
                         />
                         <Button 
                           onClick={sendChatMessage}
@@ -764,7 +764,7 @@ export default function AIProposalGeneratorPage() {
                     <Button
                       onClick={() => window.open(`/api/tenders/${selectedTender.id}/proposal-website`, '_blank')}
                       variant="outline"
-                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
+                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-solar font-bold text-sm py-5 gap-2 transition-all"
                       disabled={!selectedTender.proposal?.executiveSummary}
                     >
                       <RiGlobalLine size={18} />
@@ -773,7 +773,7 @@ export default function AIProposalGeneratorPage() {
                     <Button
                       onClick={() => window.open(`/api/tenders/${selectedTender.id}/proposal-pdf`, '_blank')}
                       variant="outline"
-                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-yellow-300 font-bold text-sm py-5 gap-2 transition-all"
+                      className="w-full rounded-xl bg-white/80 border-2 border-solar-light/50 hover:bg-solar/10 hover:border-solar font-bold text-sm py-5 gap-2 transition-all"
                       disabled={!selectedTender.proposal?.executiveSummary}
                     >
                       <RiDownloadLine size={18} />
@@ -784,14 +784,14 @@ export default function AIProposalGeneratorPage() {
               )}
 
               {/* Info Card */}
-              <div className="flex-1 bg-gradient-to-br from-indigo-50 to-purple-50 backdrop-blur-xl rounded-3xl p-5 border border-indigo-200/50 shadow-lg">
+              <div className="flex-1 bg-gradient-to-br from-drift/10 to-quantum/10 backdrop-blur-xl rounded-3xl p-5 border border-drift/20 shadow-lg">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-passion-dark mb-3">About</h3>
                 <div className="space-y-3 text-xs text-gray-600 leading-relaxed">
                   <p className="font-medium">
                     <span className="font-black text-passion">Real-time AI streaming</span> powered by Helium API
                   </p>
                   <p>Watch proposals generate live with instant feedback</p>
-                  <div className="pt-2 mt-2 border-t border-indigo-100">
+                  <div className="pt-2 mt-2 border-t border-drift/20">
                     <p className="text-[10px] text-gray-500">
                       References: <span className="font-mono text-passion">ipc.he2.ai</span>, <span className="font-mono text-passion">ers.he2.ai</span>
                     </p>
@@ -807,9 +807,9 @@ export default function AIProposalGeneratorPage() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFileViewerOpen(false)}>
             <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+              <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-drift/10 to-quantum/10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white">
+                  <div className="w-10 h-10 bg-gradient-to-br from-passion to-aurora rounded-xl flex items-center justify-center text-white">
                     <RiFileTextLine size={20} />
                   </div>
                   <div>
@@ -883,30 +883,30 @@ function ChatMessageBubble({ message, tenderId, onViewFile }: {
       if (message.fileType?.startsWith('image/')) {
         return {
           icon: <RiFileTextLine size={28} />,
-          gradient: 'from-blue-500 to-cyan-600',
-          bgGradient: 'from-blue-50 to-cyan-50',
-          borderColor: 'border-blue-200'
+          gradient: 'from-drift to-drift-dark',
+          bgGradient: 'from-drift/10 to-drift/5',
+          borderColor: 'border-drift/20'
         };
       } else if (message.fileName?.includes('html') || message.fileType === 'text/html') {
         return {
           icon: <RiGlobalLine size={28} />,
-          gradient: 'from-green-500 to-emerald-600',
-          bgGradient: 'from-green-50 to-emerald-50',
-          borderColor: 'border-green-200'
+          gradient: 'from-verdant to-verdant-dark',
+          bgGradient: 'from-verdant/10 to-verdant/5',
+          borderColor: 'border-verdant/20'
         };
       } else if (message.fileType === 'application/pdf') {
         return {
           icon: <RiFileTextLine size={28} />,
-          gradient: 'from-red-500 to-pink-600',
-          bgGradient: 'from-red-50 to-pink-50',
-          borderColor: 'border-red-200'
+          gradient: 'from-passion to-passion-dark',
+          bgGradient: 'from-passion/10 to-passion/5',
+          borderColor: 'border-passion/20'
         };
       } else {
         return {
           icon: <RiFileTextLine size={28} />,
-          gradient: 'from-purple-500 to-indigo-600',
-          bgGradient: 'from-purple-50 to-indigo-50',
-          borderColor: 'border-purple-200'
+          gradient: 'from-quantum to-quantum-dark',
+          bgGradient: 'from-quantum/10 to-quantum/5',
+          borderColor: 'border-quantum/20'
         };
       }
     };
@@ -970,7 +970,7 @@ function ChatMessageBubble({ message, tenderId, onViewFile }: {
   if (message.type === 'tool') {
     return (
       <div className="flex justify-center">
-        <div className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-quantum-light/50/60 text-quantum-dark text-xs font-bold max-w-2xl flex items-center gap-2 shadow-md">
+        <div className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-quantum/10 to-drift/10 border-2 border-quantum/20 text-quantum-dark text-xs font-bold max-w-2xl flex items-center gap-2 shadow-md">
           <div className="flex gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-quantum animate-bounce" style={{ animationDelay: '0ms' }}></span>
             <span className="w-1.5 h-1.5 rounded-full bg-passion animate-bounce" style={{ animationDelay: '150ms' }}></span>
@@ -1055,20 +1055,20 @@ function ChatMessageBubble({ message, tenderId, onViewFile }: {
     return (
       <div className="flex justify-start">
         <div className="flex gap-3 max-w-3xl">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+          <div className="w-10 h-10 bg-gradient-to-br from-passion to-aurora rounded-2xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
             <RiRobot2Line size={18} />
           </div>
           <div className={`rounded-3xl rounded-tl-md px-5 py-4 shadow-lg transition-all ${
             isStreaming 
-              ? 'bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border-2 border-passion-light' 
-              : 'bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100'
+              ? 'bg-gradient-to-br from-drift/10 via-quantum/10 to-passion/10 border-2 border-passion-light' 
+              : 'bg-gradient-to-br from-drift/10 to-quantum/10 border border-drift/20'
           }`}>
             {isStreaming && (
-              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-indigo-200/50">
+              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-drift/20">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 rounded-full bg-passion animate-bounce" style={{ animationDelay: '0ms' }}></span>
                   <span className="w-2 h-2 rounded-full bg-quantum animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  <span className="w-2 h-2 rounded-full bg-aurora animate-bounce" style={{ animationDelay: '300ms' }}></span>
                 </div>
                 <span className="text-xs font-black text-passion uppercase tracking-wider animate-pulse">Streaming...</span>
               </div>
@@ -1080,7 +1080,7 @@ function ChatMessageBubble({ message, tenderId, onViewFile }: {
               </div>
             </div>
             {!isStreaming && (
-              <p className="text-[10px] text-gray-400 mt-3 pt-2 border-t border-indigo-100/50 font-medium">
+              <p className="text-[10px] text-gray-400 mt-3 pt-2 border-t border-drift/10 font-medium">
                 {message.timestamp.toLocaleTimeString()}
               </p>
             )}

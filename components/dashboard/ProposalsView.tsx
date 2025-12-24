@@ -68,7 +68,7 @@ function ProposalCard({ tender }: { tender: Tender }) {
                     </div>
                     <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div 
-                            className="h-full bg-amber-300 rounded-full" 
+                            className="h-full bg-aurora rounded-full" 
                             style={{ width: `${matchRate}%` }}
                         />
                     </div>

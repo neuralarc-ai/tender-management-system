@@ -83,7 +83,7 @@ export function ScoreRadialChart({ score, label }: { score: number, label: strin
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4">
         <span className="text-3xl font-black text-white mb-1">{score}%</span>
-        <div className="text-[8px] font-bold text-amber-300 uppercase tracking-[0.15em] text-center leading-[1.3]">
+        <div className="text-[8px] font-bold text-aurora uppercase tracking-[0.15em] text-center leading-[1.3]">
           {label.split(' ').map((word, i) => (
             <div key={i}>{word}</div>
           ))}

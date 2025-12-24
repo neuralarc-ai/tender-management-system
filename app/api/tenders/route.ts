@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseTenderService } from '@/lib/supabaseTenderService';
+import axios from 'axios';
 
 /**
  * GET /api/tenders
@@ -68,6 +69,11 @@ export async function POST(request: Request) {
       // Trigger AI analysis asynchronously
       supabaseTenderService.triggerAIAnalysis(newTender.id, tenderForAnalysis as any)
         .catch(err => console.error('AI analysis failed:', err));
+      
+      // ✨ NEW: Trigger automatic tender document generation
+      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tenders/${newTender.id}/generate-document`, {
+        documentType: 'full'
+      }).catch(err => console.error('Document generation failed:', err));
     }
     
     return NextResponse.json(newTender, { status: 201 });

@@ -25,7 +25,7 @@ export default function APITestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F2EE] p-8">
+    <div className="min-h-full bg-[#F3F2EE] p-8">
       <div className="max-w-4xl mx-auto">
         <Card className="p-8 rounded-[32px] bg-white shadow-lg">
           <h1 className="text-3xl font-black mb-2">🧪 API Connection Test</h1>

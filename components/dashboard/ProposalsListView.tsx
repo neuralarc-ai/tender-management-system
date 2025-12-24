@@ -114,7 +114,7 @@ export function ProposalsListView({ tenders, role, onSelect }: {
             <input 
               type="text" 
               placeholder="Search proposals..." 
-              className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-indigo-200 outline-none text-sm w-64"
+              className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-drift/20 outline-none text-sm w-64"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -252,10 +252,10 @@ function ProposalCard({ tender, role, onSelect, onQuickSubmit, isSubmitting, sta
   const aiScore = tender.aiAnalysis?.overallScore || 0;
   
   const colorClasses = {
-    amber: 'hover:border-amber-300',
-    blue: 'hover:border-blue-300',
-    green: 'hover:border-green-300',
-    red: 'hover:border-red-300'
+    amber: 'hover:border-aurora',
+    blue: 'hover:border-drift',
+    green: 'hover:border-verdant',
+    red: 'hover:border-passion'
   };
 
   return (

@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Footer } from "@/components/ui/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Tender Management System",
-  description: "AI-assisted Tender Intake and Proposal Submission System",
+  title: "Vector - Tender Management System",
+  description: "AI-assisted Tender Intake and Proposal Submission System by Neural Arc Inc.",
 };
 
 export default function RootLayout({
@@ -16,9 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full`}>
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-1">
+            <Providers>{children}</Providers>
+          </main>
+          <Footer variant="light" />
+        </div>
       </body>
     </html>
   );

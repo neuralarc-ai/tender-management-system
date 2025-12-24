@@ -42,13 +42,13 @@ export function PlansView() {
 
                 {/* Pro Plan (Dark) */}
                 <Card className="p-8 rounded-[32px] border-none shadow-xl bg-neural text-white flex flex-col relative overflow-hidden transform scale-105 z-10">
-                    <div className="absolute top-0 right-0 bg-amber-300 text-neural text-xs font-bold px-4 py-1 rounded-bl-xl">
+                    <div className="absolute top-0 right-0 bg-aurora text-neural text-xs font-bold px-4 py-1 rounded-bl-xl">
                         Best Deal
                     </div>
                     
                     <div className="mb-6">
                         <div className="flex items-center gap-2 mb-2">
-                            <RiVipCrownLine className="text-amber-300" />
+                            <RiVipCrownLine className="text-aurora" />
                             <h3 className="text-xl font-medium text-white">Talent Pro</h3>
                         </div>
                         <p className="text-gray-400 text-sm">Advanced AI for growing agencies</p>
@@ -70,7 +70,7 @@ export function PlansView() {
                         <FeatureItem text="Export to PDF/Excel" light />
                     </div>
 
-                    <Button className="w-full rounded-full bg-amber-300 text-neural hover:bg-aurora-light h-12 font-semibold">
+                    <Button className="w-full rounded-full bg-aurora text-neural hover:bg-aurora-light h-12 font-semibold">
                         Upgrade Now
                     </Button>
                 </Card>
@@ -109,7 +109,7 @@ export function PlansView() {
 function FeatureItem({ text, light = false }: { text: string, light?: boolean }) {
     return (
         <div className="flex items-center gap-3">
-            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${light ? 'bg-gray-700 text-amber-300' : 'bg-gray-100 text-neural'}`}>
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center ${light ? 'bg-gray-700 text-aurora' : 'bg-gray-100 text-neural'}`}>
                 <RiCheckLine size={12} />
             </div>
             <span className={`text-sm ${light ? 'text-gray-300' : 'text-gray-600'}`}>{text}</span>

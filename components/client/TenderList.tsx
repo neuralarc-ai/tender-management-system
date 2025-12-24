@@ -46,7 +46,7 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
   };
 
   return (
-    <Card className="hover:border-blue-300 transition-colors">
+    <Card className="hover:border-drift transition-colors">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -83,13 +83,13 @@ function TenderCard({ tender, onReview }: { tender: Tender, onReview: () => void
             </div>
 
             {tender.proposal.status === 'submitted' && (
-              <div className="bg-aurora/10 p-4 rounded-lg border border-amber-100 mb-4">
+              <div className="bg-solar/10 p-4 rounded-lg border border-solar/20 mb-4">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-3">
-                    <RiAlertLine className="text-aurora w-5 h-5 mt-0.5" />
+                    <RiAlertLine className="text-solar-dark w-5 h-5 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-aurora-dark">Action Required</p>
-                      <p className="text-sm text-aurora-dark">A proposal has been submitted and is awaiting your review.</p>
+                      <p className="font-semibold text-neural">Action Required</p>
+                      <p className="text-sm text-neural">A proposal has been submitted and is awaiting your review.</p>
                     </div>
                   </div>
                   <Button onClick={onReview} className="bg-passion hover:bg-passion-dark text-white">

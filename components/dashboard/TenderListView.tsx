@@ -160,7 +160,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
              </>
            ) : (
              <>
-               <div className="flex items-center gap-2 px-4 py-2 bg-amber-300 text-neural rounded-full">
+               <div className="flex items-center gap-2 px-4 py-2 bg-aurora text-neural rounded-full">
                   <span className="font-bold">{tenders.filter(t => t.status === 'open').length}</span> Open
                </div>
                <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-500 rounded-full">
@@ -233,7 +233,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                         <Button 
                           size="icon" 
                           onClick={onAddTender}
-                          className="rounded-full bg-aurora/20 text-aurora-dark hover:bg-amber-200 h-10 w-10"
+                          className="rounded-full bg-aurora/20 text-aurora-dark hover:bg-aurora/30 h-10 w-10"
                         >
                             <RiAddLine />
                         </Button>
@@ -321,7 +321,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                         {tender.title.substring(0, 2).toUpperCase()}
                         {role === 'admin' && index < 2 && tender.status === 'open' && (
                           <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-passion/50 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-3 w-3 bg-passion"></span>
                           </span>
                         )}
@@ -368,7 +368,7 @@ export function TenderListView({ tenders, role, onSelect, viewType, onAddTender 
                     <td className="py-4 px-4">
                       <span className={`text-sm font-bold ${
                         tender.aiAnalysis?.overallScore > 80 ? 'text-verdant' : 
-                        tender.aiAnalysis?.overallScore > 50 ? 'text-aurora' : 'text-passion'
+                        tender.aiAnalysis?.overallScore > 50 ? 'text-solar-dark' : 'text-passion'
                       }`}>
                         {tender.aiAnalysis?.overallScore || 0}%
                       </span>

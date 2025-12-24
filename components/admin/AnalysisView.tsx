@@ -6,8 +6,8 @@ export function AnalysisView({ analysis }: { analysis: AIAnalysis }) {
   if (analysis.status === 'pending') {
     return (
       <div className="bg-drift/10 border-2 border-drift-light/50 rounded-xl p-8 text-center">
-        <RiBrainLine className="w-16 h-16 mx-auto text-blue-500 mb-4" />
-        <h3 className="text-lg font-semibold text-blue-900 mb-2">Analysis Pending</h3>
+        <RiBrainLine className="w-16 h-16 mx-auto text-drift mb-4" />
+        <h3 className="text-lg font-semibold text-neural mb-2">Analysis Pending</h3>
         <p className="text-passion-dark">The system will automatically analyze this tender shortly.</p>
       </div>
     );
@@ -16,8 +16,8 @@ export function AnalysisView({ analysis }: { analysis: AIAnalysis }) {
   if (analysis.status === 'analyzing') {
     return (
       <div className="bg-drift/10 border-2 border-drift-light/50 rounded-xl p-8 text-center">
-        <div className="w-16 h-16 mx-auto border-4 border-drift-light/50 border-t-blue-600 rounded-full animate-spin mb-4" />
-        <h3 className="text-lg font-semibold text-blue-900 mb-2">Analyzing Requirements...</h3>
+        <div className="w-16 h-16 mx-auto border-4 border-drift-light/50 border-t-drift rounded-full animate-spin mb-4" />
+        <h3 className="text-lg font-semibold text-neural mb-2">Analyzing Requirements...</h3>
         <p className="text-passion-dark">Please wait while our AI engine processes the tender documents.</p>
       </div>
     );

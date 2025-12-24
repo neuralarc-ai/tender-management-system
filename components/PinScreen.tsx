@@ -138,8 +138,8 @@ export default function PinScreen() {
                           disabled={loading}
                           className={`
                             w-12 h-14 bg-white/5 border border-white/10 rounded-xl text-center text-xl font-bold text-white 
-                            focus:outline-none focus:border-orange-400/50 focus:bg-white/10 focus:ring-1 focus:ring-orange-400/25 transition-all duration-200
-                            ${error ? 'border-passion/50 text-red-200 animate-shake' : ''}
+                            focus:outline-none focus:border-passion/50 focus:bg-white/10 focus:ring-1 focus:ring-passion/25 transition-all duration-200
+                            ${error ? 'border-passion/50 text-passion-light animate-shake' : ''}
                           `}
                         />
                       </div>
@@ -147,7 +147,7 @@ export default function PinScreen() {
                   </div>
 
                   {error && (
-                    <p className="text-center text-red-400 text-xs font-medium animate-pulse -mt-4">
+                    <p className="text-center text-passion text-xs font-medium animate-pulse -mt-4">
                       Access Denied. Invalid Credentials.
                     </p>
                   )}

@@ -1,0 +1,628 @@
+NEURAL ARC
+IPC System Implementation
+Proposal
+Recovery, Completion & Deployment
+
+RFQ 651105000156
+
+Pioneering Generative AI Solutions for Enterprise Excellence
+
+December 2025
+
+About Neural Arc
+Who We Are
+Neural Arc is a specialized technology consultancy at the forefront of generative AI
+innovation, dedicated to delivering cutting-edge artificial intelligence solutions for businesses
+and enterprises worldwide. We are a team of expert AI engineers, data scientists, software
+architects, and domain specialists who share a common vision: to make advanced AI
+capabilities accessible, practical, and transformative for organizations of all sizes.
+Founded on the principle that artificial intelligence should augment human capabilities rather
+than replace them, Neural Arc has established itself as a trusted partner for organizations
+seeking to leverage generative AI for operational excellence, innovation, and competitive
+advantage. Our expertise spans the full spectrum of AI technologies, from natural language
+processing and computer vision to predictive analytics and autonomous agents.
+
+Our Generative AI Expertise
+At Neural Arc, we specialize in generative AI—the transformative technology that enables
+machines to create, reason, and solve problems with human-like intelligence. Our work goes
+beyond traditional automation and rule-based systems. We design and implement AI solutions
+that can understand context, learn from data, generate insights, and execute complex
+workflows autonomously.
+
+OUR GENERATIVE AI CAPABILITIES
+Domain
+
+Capabilities
+
+Natural
+
+Conversational AI and chatbots, Document understanding and
+
+Language
+
+extraction, Multilingual content generation, Sentiment analysis and
+
+Processing
+
+classification
+
+Intelligent
+Automation
+
+Predictive
+Analytics
+
+Workflow orchestration and optimization, Autonomous decisionmaking systems, Process mining and improvement, Robotic process
+automation (RPA)
+Demand forecasting and planning, Risk assessment and mitigation,
+Anomaly detection and alerting, Performance prediction and
+optimization
+
+Computer
+
+Document and image analysis, Object detection and classification,
+
+Vision
+
+Medical imaging interpretation, Quality inspection automation
+
+Introducing Helium AI
+At the heart of our generative AI capabilities is Helium AI, our proprietary autonomous deep
+agent platform that represents a breakthrough in intelligent automation. Helium is not just
+another AI tool—it's a full-spectrum autonomous agent capable of understanding complex
+requirements, planning multi-step workflows, and executing tasks across diverse domains
+with minimal human intervention.
+
+What Makes Helium Unique
+Helium AI combines advanced reasoning capabilities with practical execution power, enabling
+it to:
+Understand Context: Helium comprehends nuanced requirements, interprets
+ambiguous instructions, and asks clarifying questions when needed
+Plan Intelligently: It breaks down complex tasks into logical steps, identifies
+dependencies, and creates efficient execution plans
+Execute Autonomously: Helium can perform research, analyze data, generate content,
+write code, interact with systems, and deliver results—all without constant supervision
+Learn and Adapt: The platform continuously improves its performance based on
+feedback and outcomes
+Integrate Seamlessly: Helium connects with existing enterprise systems through APIs,
+databases, and standard protocols
+
+Helium for Business & Enterprise
+Helium AI is specifically designed for business and enterprise environments where reliability,
+security, and compliance are paramount. Unlike consumer-focused AI tools, Helium is built
+with enterprise requirements in mind:
+Feature
+Category
+
+Capabilities
+
+Enterprise
+
+End-to-end encryption, Role-based access control, Audit logging and
+
+Security
+
+compliance, Data sovereignty support
+
+Scalability
+
+Integration
+
+Customization
+
+Handle thousands of concurrent tasks, Cloud-native architecture,
+Horizontal scaling capabilities, High availability design
+RESTful API interfaces, Webhook support, Database connectivity,
+Legacy system integration
+Domain-specific training, Custom workflow templates, Branded
+interfaces, Configurable business rules
+
+Helium for End Users
+While Helium is powerful enough for complex enterprise workflows, it's also designed to be
+accessible to end users. Through natural language interfaces, users can interact with Helium
+conversationally, asking questions, requesting information, and delegating tasks without
+needing technical expertise. This dual capability—enterprise-grade power with consumergrade simplicity—makes Helium uniquely valuable for organizations serving diverse
+
+stakeholder groups.
+
+Our Track Record
+Neural Arc has successfully deployed generative AI solutions across multiple industries and
+geographies. Our experience spans healthcare, finance, government, manufacturing, and
+professional services, with implementations ranging from intelligent document processing to
+autonomous customer service agents.
+
+5
+Pilot Projects
+Deployed
+
+4
+Active
+Implementations
+
+4
+Global
+Markets
+
+100%
+Client
+Satisfaction
+
+Why Neural Arc for the IPC System
+Our unique combination of generative AI expertise, enterprise deployment experience, and
+proven track record makes Neural Arc the ideal partner for the Department of Health's IPC
+System project. We bring:
+Deep AI Expertise: Cutting-edge generative AI capabilities through Helium AI platform
+Enterprise Focus: Purpose-built solutions for business and government environments
+Proven Delivery: Five successful pilot projects and four active implementations
+Global Experience: Deployments across UK, Singapore, US, and India
+Healthcare Domain Knowledge: Specific experience in healthcare automation and
+patient care systems
+Security & Compliance: Deep understanding of regulatory requirements and data
+protection
+OutSystems Expertise: Certified architects and developers with government
+implementation experience
+Innovation Mindset: Continuous investment in R&D and emerging AI technologies
+
+Our Commitment to Excellence
+
+At Neural Arc, we don't just deliver technology—we deliver transformation. Every project is
+an opportunity to push the boundaries of what's possible with AI, while maintaining the
+highest standards of quality, security, and user experience. Our success is measured not by
+the sophistication of our technology, but by the tangible value we create for our clients and
+their stakeholders.
+
+Understanding the RFQ
+Project Context
+The Department of Health (DoH) seeks a qualified technology partner to recover, complete,
+and deploy the partially developed International Patient Care (IPC) System built on the
+OutSystems platform. This is a critical system that manages the complete lifecycle of
+international patient treatment, from initial request through treatment completion and followup.
+
+Current Situation
+The IPC system is currently under development but has encountered delivery challenges that
+require additional expertise to bring the system to full completion. DoH requires a partner
+who can:
+Assess the current state of the partially developed system
+Identify salvageable components versus those requiring rework
+Complete remaining functional requirements
+Integrate with multiple internal and external systems
+Ensure security, compliance, and performance standards are met
+Deliver an MVP as quickly as possible
+Provide comprehensive training and knowledge transfer
+
+Key Stakeholders
+The IPC system serves multiple stakeholder groups, each with distinct needs:
+Stakeholder
+Group
+
+Patients &
+Families
+
+Key Needs
+
+Submit treatment requests online, Track application status in real-time,
+Access medical documents and approvals, Receive notifications and
+updates, Request certificates and support
+Medical committee evaluation, Case coordination and management, Travel
+
+DoH Staff
+
+and logistics coordination, Financial authorization and tracking,
+Performance monitoring and reporting
+
+Healthcare
+
+Receive treatment referrals, Schedule appointments, Submit medical
+
+Providers
+
+reports, Coordinate with DoH, Track patient progress
+
+Service
+
+Travel agents for booking services, Insurance companies for coverage,
+
+Providers
+
+Banking partners for payments, Government agencies for data exchange
+
+Scope of Work - Our Understanding
+Based on our comprehensive analysis of the RFQ document, we have mapped the
+requirements into the following scope of work:
+
+1. System Recovery & Assessment
+WHAT WE UNDERSTAND
+The IPC system is partially developed on OutSystems platform
+Business Requirements Documents (BRDs) are already prepared and validated
+Some components are functional while others require remediation or completion
+DoH resources are embedded in the project and will work alongside the vendor
+This is a co-delivery engagement, not a complete rebuild
+
+OUR APPROACH
+Conduct comprehensive assessment within first 2 weeks
+Apply salvage vs. rebuild framework to each component
+Prioritize quick wins and accelerate MVP delivery
+Leverage existing BRDs and DoH business analysts
+Integrate seamlessly with DoH embedded resources
+
+2. Core Functional Requirements
+The IPC system must support the complete patient treatment journey with the following key
+capabilities:
+
+PATIENT TREATMENT JOURNEY
+1. Registration & Authentication - Multi-role access with UAE Pass, Active
+Directory, and OTP verification
+2. Treatment Request Submission - Online forms with document upload, autopopulation from government sources, multilingual support
+3. Medical Committee Evaluation - Review by DoH medical experts, integration
+with Malaffi/DHA/MOHAP for medical history, approval/rejection workflow
+4. Case Coordination - Assignment to coordinators, hospital appointment scheduling,
+document preparation
+5. Travel Coordination - Visa processing, flight and hotel booking, transportation
+arrangements through approved agents
+6. Treatment & Support - Per-diem management, prepaid card issuance, escort
+coordination, ongoing communication
+7. Post-Treatment - Medical report collection, certificate generation, follow-up
+notifications, complaint handling
+
+3. Integration Requirements
+The IPC system must integrate with 10+ external systems to enable seamless data exchange
+and workflow automation:
+Integration
+
+Systems
+
+Category
+Government
+
+TAMM OS, UAE Pass, ICP, Tawtheeq, Family Book, Passport
+
+Platforms
+
+System
+
+Healthcare
+
+Malaffi, DHA, MOHAP, International Hospitals, IPP Payment
+
+Systems
+
+System
+
+Support Services
+
+Travel Agents, Banking Partners, Insurance Companies,
+Communication Services
+
+4. Technical Requirements
+Key technical requirements that shape our solution approach:
+Category
+
+Platform &
+Infrastructure
+
+Requirements
+OutSystems platform (existing), Microsoft Azure Sovereign Cloud,
+Microsoft SQL Server database, Power BI for analytics, TAMM OS
+frontend framework
+
+Performance
+
+99.9% system uptime, High-volume data handling (4.7TB+), Real-time
+
+& Scalability
+
+data synchronization, Horizontal and vertical scaling, 24/7 availability
+
+Security &
+
+UAE Sovereign requirements, MCAF compliance, End-to-end encryption,
+
+Compliance
+
+OWASP security standards, DoH security policies
+
+User
+
+Multilingual (Arabic/English), Mobile-responsive design, Accessibility
+
+Experience
+
+compliance, DoH UI/UX guidelines, 6-minute service completion target
+
+5. Data Migration Support
+The system contains over 4.7TB of historical patient data that must be migrated securely. Our
+understanding:
+DoH will lead the migration effort
+Neural Arc will provide technical support and expertise
+Data cleansing and mapping assistance required
+Validation and integrity checks throughout migration
+Secure handling with full auditability
+
+6. Training & Knowledge Transfer
+Comprehensive training programs required for multiple user groups:
+
+DoH Technical Teams: 5-day program covering OutSystems, architecture, development,
+and support
+Business Users: 3-day program covering workflows, case management, and reporting
+System Administrators: 3-day program covering user management, monitoring, and
+security
+External Entities: 1-day program covering provider portals and communication
+
+Implementation Timeline & Approach
+5-Month Delivery Plan
+Neural Arc proposes a structured 5-month implementation timeline that balances speed with
+quality, delivering an MVP by Month 3 while ensuring comprehensive testing, training, and
+production readiness.
+Month
+
+Phase
+
+Key Activities
+
+Project
+
+Project kickoff, Comprehensive
+
+Month
+
+Initiation &
+
+assessment, Requirements validation,
+
+1
+
+System
+
+Architecture review, Development
+
+Assessment
+
+environment setup, Security onboarding
+
+Remediation of existing components, Core
+Month
+2
+
+Core
+
+patient journey workflows, User
+
+Development
+
+authentication, Treatment request
+
+- Sprint 1
+
+submission, Medical committee interface,
+Basic integrations
+
+Design, Project
+Charter
+Core workflows,
+Authentication
+system, Basic
+integrations,
+Demo
+environment
+
+TAMM OS
+
+management, Provider management, Basic
+
+frontend,
+
+dashboards, TAMM OS frontend, MVP
+
+Integration layer,
+
+deployment
+
+UAT report
+
+Escort management, Per-diem calculation,
+
+Complete feature
+
+Enhancement
+
+Complaint handling, Quality monitoring,
+
+set, All
+
+& Complete
+
+Advanced dashboards, Complete
+
+integrations, BRE,
+
+Integration
+
+integrations, Business Rules Engine,
+
+Enhanced AI
+
+Enhanced AI features
+
+capabilities
+
+3
+
+- Sprint 2 &
+MVP
+
+5
+
+Plan, Architecture
+
+Functional MVP,
+
+Development
+
+Month
+
+Report, Recovery
+
+coordination module, Document
+
+Month
+
+4
+
+Assessment
+
+Case coordinator workflows, Travel
+
+Core
+
+Month
+
+Deliverables
+
+Testing,
+Training &
+Go-Live
+
+Security testing, Performance testing, Final
+UAT, Defect resolution, Training programs,
+Documentation, Knowledge transfer,
+Production deployment
+
+Production-ready
+system, Training
+materials,
+Documentation,
+Go-live support
+
+Commercial Proposal
+Pricing Philosophy
+Neural Arc's pricing is based on a transparent, value-driven model that reflects the actual
+effort required to deliver a high-quality IPC system. We believe in fair pricing that aligns our
+success with yours—when you succeed, we succeed.
+
+Rate Structure
+Base Development Cost: $35/hour per resource (as specified)
+Overhead & Management: 40% (covers project management, quality assurance,
+infrastructure)
+Profit Margin: 20% (ensures sustainability and continued innovation)
+Effective Billing Rate: $58.80/hour per resource
+
+Total Project Investment
+INVESTMENT SUMMARY
+
+Approximately AED 3,195,000
+(at current exchange rate)
+
+Payment Schedule
+We propose a milestone-based payment structure that aligns payments with tangible
+deliverables:
+Milestone
+
+Deliverable
+
+Payment %
+
+Milestone 1
+
+Assessment completion and recovery plan approval
+
+25%
+
+Milestone 2
+
+MVP delivery and UAT sign-off
+
+30%
+
+Milestone 3
+
+Feature completion and integration testing
+
+25%
+
+Milestone 4
+
+Go-live and knowledge transfer completion
+
+20%
+
+Conclusion & Next Steps
+Why Neural Arc is Your Ideal Partner
+Neural Arc brings a unique combination of capabilities that make us the ideal partner for the
+IPC System recovery and implementation:
+Generative AI Leadership: Cutting-edge capabilities that transform the IPC system into
+an intelligent, self-improving platform
+Proven Track Record: 5 completed pilot projects and 4 active implementations across
+global markets
+Enterprise Focus: Purpose-built for enterprise and government environments with
+security and compliance as core principles
+OutSystems Expertise: Certified architects and developers with government healthcare
+implementation experience
+Global Experience: Deployments across UK, Singapore, US, and India
+Transparent Approach: Clear pricing, realistic timelines, and honest communication
+
+Our Commitment to DoH
+Neural Arc commits to:
+Accelerated Delivery: MVP in Month 3, full system in Month 5
+Senior Resources: Experienced team members from day one
+Quality Excellence: Rigorous testing and quality assurance throughout
+Security Compliance: Full adherence to UAE Sovereign and DoH requirements
+Knowledge Transfer: Comprehensive training enabling DoH self-sufficiency
+Transparent Communication: Regular updates and proactive issue escalation
+Partnership Mindset: Collaborative approach with DoH embedded resources
+
+Expected Outcomes
+Upon successful completion of this project, the Department of Health will have:
+
+Stakeholder
+
+For Patients
+
+For DoH
+Staff
+
+For
+Healthcare
+Providers
+
+Benefits
+Streamlined online request submission, Real-time status tracking, Secure
+document access, Faster processing times, Improved communication
+30-40% reduction in manual work, AI-powered decision support,
+Comprehensive dashboards, Automated workflows, Better resource
+utilization
+
+Simplified coordination with DoH, Faster approval turnaround,
+Streamlined documentation, Better communication, Improved scheduling
+
+For DoH
+
+99.9% system availability, Full regulatory compliance, Real-time analytics
+
+Organization
+
+and insights, Scalable infrastructure, Reduced operational costs
+
+FOR QUESTIONS OR CLARIFICATIONS
+EMAIL ADDRESS
+nyra@neuralarc.ai
+
+PHONE NUMBER
++971 554800720
+
+WEBSITE
+www.neuralarc.ai
+
+PRIMARY CONTACT
+Aniket Tapre
+Founder, Neural Arc
+
+Thank You
+We appreciate the opportunity to submit this proposal and look forward to partnering with
+the Department of Health to deliver a world-class International Patient Care system that
+serves the citizens of Abu Dhabi with excellence.
+
+© 2025 Neural Arc. All rights reserved.
+Confidential and Proprietary
+This proposal is submitted in response to RFQ 651105000156 and is valid for 90 days from the date of submission.
+
+

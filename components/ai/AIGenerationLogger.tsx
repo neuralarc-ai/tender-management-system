@@ -63,11 +63,11 @@ export function AIGenerationLogger({ tenderId, isGenerating }: { tenderId: strin
   return (
     <Card className="p-4 rounded-2xl bg-neural text-white border-none shadow-lg mb-4">
       <div className="flex items-center gap-2 mb-3">
-        <RiRobot2Line className="w-5 h-5 text-indigo-400" />
+        <RiRobot2Line className="w-5 h-5 text-drift" />
         <h3 className="font-bold text-sm uppercase tracking-wider">AI Generation Log</h3>
         {isPolling && (
           <div className="ml-auto">
-            <div className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-drift border-t-transparent rounded-full animate-spin" />
           </div>
         )}
       </div>
@@ -84,17 +84,17 @@ export function AIGenerationLogger({ tenderId, isGenerating }: { tenderId: strin
 
 function LogEntry({ log }: { log: AILog }) {
   const icons = {
-    info: <RiLoaderLine className="w-4 h-4 text-blue-400 animate-spin" />,
-    success: <RiCheckLine className="w-4 h-4 text-green-400" />,
-    error: <RiErrorWarningLine className="w-4 h-4 text-red-400" />,
-    progress: <RiLoaderLine className="w-4 h-4 text-indigo-400" />
+    info: <RiLoaderLine className="w-4 h-4 text-drift animate-spin" />,
+    success: <RiCheckLine className="w-4 h-4 text-verdant" />,
+    error: <RiErrorWarningLine className="w-4 h-4 text-passion" />,
+    progress: <RiLoaderLine className="w-4 h-4 text-drift" />
   };
 
   const colors = {
-    info: 'text-blue-300',
-    success: 'text-green-300',
-    error: 'text-red-300',
-    progress: 'text-indigo-300'
+    info: 'text-drift-light',
+    success: 'text-verdant-light',
+    error: 'text-passion-light',
+    progress: 'text-drift-light'
   };
 
   return (

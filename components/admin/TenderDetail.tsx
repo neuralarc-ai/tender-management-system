@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Tender } from '@/types';
-import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine, RiCheckLine, RiCloseLine, RiMessage3Line } from 'react-icons/ri';
+import { RiFileTextLine, RiBrainLine, RiEditLine, RiCalendarLine, RiUserLine, RiTimeLine, RiCheckLine, RiCloseLine, RiFileList3Line } from 'react-icons/ri';
 import { AnalysisView } from './AnalysisView';
 import { ProposalEditor } from './ProposalEditor';
-import { CommunicationTab } from './CommunicationTab';
+import { DocumentsTab } from './DocumentsTab';
 import { formatDistanceToNow } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, role?: string, currentUserId?: string }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'proposal' | 'communication'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analysis' | 'proposal' | 'documents'>('overview');
   const [isReviewing, setIsReviewing] = useState(false);
   const queryClient = useQueryClient();
 
@@ -104,11 +104,18 @@ export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, 
           label={isClient ? "Received Proposal" : "Proposal Draft"} 
         />
         <TabButton 
+          active={activeTab === 'documents'} 
+          onClick={() => setActiveTab('documents')} 
+          icon={<RiFileList3Line />} 
+          label="Generated Documents" 
+        />
+        {/* Commented out: Communication tab */}
+        {/* <TabButton 
           active={activeTab === 'communication'} 
           onClick={() => setActiveTab('communication')} 
           icon={<RiMessage3Line />} 
           label="Communication" 
-        />
+        /> */}
       </div>
 
       {/* Content */}
@@ -167,7 +174,7 @@ export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, 
                                 <button 
                                   onClick={handleAccept}
                                   disabled={isReviewing}
-                                  className="px-8 py-3 bg-verdant text-white rounded-full hover:bg-verdant-dark font-black text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-8 py-3 bg-verdant text-white rounded-full hover:bg-verdant-dark font-black text-[11px] uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-verdant/20 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {isReviewing ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -204,7 +211,18 @@ export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, 
           </div>
         )}
 
-        {activeTab === 'communication' && currentUserId && (
+        {activeTab === 'documents' && currentUserId && (
+          <div className="animate-in fade-in duration-300">
+            <DocumentsTab
+              tenderId={tender.id}
+              currentUserId={currentUserId}
+              currentUserRole={role as 'admin' | 'client'}
+            />
+          </div>
+        )}
+
+        {/* Commented out: Communication tab content */}
+        {/* {activeTab === 'communication' && currentUserId && (
           <div className="animate-in fade-in duration-300">
             <CommunicationTab 
               tenderId={tender.id}
@@ -212,7 +230,7 @@ export function TenderDetail({ tender, role, currentUserId }: { tender: Tender, 
               currentUserRole={role as 'admin' | 'client'}
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

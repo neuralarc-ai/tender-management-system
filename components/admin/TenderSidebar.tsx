@@ -29,11 +29,11 @@ export function TenderSidebar({ tenders, selectedId, onSelect }: TenderSidebarPr
             onClick={() => onSelect(tender.id)}
             className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
               isSelected 
-                ? 'border-blue-500 bg-drift/10 ring-1 ring-blue-500' 
-                : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                ? 'border-drift bg-drift/10 ring-1 ring-drift' 
+                : 'border-gray-200 hover:border-drift/50 hover:bg-gray-50'
             }`}
           >
-            <h3 className={`font-semibold mb-2 line-clamp-2 ${isSelected ? 'text-blue-900' : 'text-neural'}`}>
+            <h3 className={`font-semibold mb-2 line-clamp-2 ${isSelected ? 'text-neural' : 'text-neural'}`}>
               {tender.title}
             </h3>
             <div className="flex flex-col gap-1 text-xs text-gray-500">

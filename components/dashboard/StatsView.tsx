@@ -45,14 +45,14 @@ export function StatsView({ tenders }: { tenders: Tender[] }) {
                         {Array.from({ length: 40 }).map((_, i) => (
                             <div 
                                 key={i} 
-                                className={`w-2 h-2 rounded-full ${i < (openCount * 2) ? 'bg-amber-300' : 'bg-gray-600'}`}
+                                className={`w-2 h-2 rounded-full ${i < (openCount * 2) ? 'bg-aurora' : 'bg-gray-600'}`}
                             />
                         ))}
                     </div>
 
                     <div className="mt-8 flex gap-8">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-amber-300" />
+                            <div className="w-2 h-2 rounded-full bg-aurora" />
                             <span className="text-sm text-gray-400">Active</span>
                         </div>
                          <div className="flex items-center gap-2">

@@ -165,7 +165,7 @@ export function CommunicationTab({ tenderId, currentUserId, currentUserRole }: C
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {loadingMessages ? (
               <div className="flex items-center justify-center h-full">
-                <div className="w-8 h-8 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 border-drift-light border-t-drift rounded-full animate-spin"></div>
               </div>
             ) : messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-300">
@@ -264,7 +264,7 @@ export function CommunicationTab({ tenderId, currentUserId, currentUserRole }: C
                     <span className="text-xs">{file.file_name}</span>
                     <button
                       onClick={() => setUploadedFiles(prev => prev.filter((_, i) => i !== idx))}
-                      className="text-red-400 hover:text-passion"
+                      className="text-passion/60 hover:text-passion"
                     >
                       <RiCloseLine />
                     </button>
@@ -287,7 +287,7 @@ export function CommunicationTab({ tenderId, currentUserId, currentUserRole }: C
                 className="px-4 py-3 bg-white border-2 border-gray-200 rounded-2xl hover:border-passion-light text-gray-600 hover:text-passion transition-all disabled:opacity-50"
               >
                 {uploadingFiles ? (
-                  <div className="w-5 h-5 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-passion rounded-full animate-spin" />
                 ) : (
                   <RiAttachmentLine size={20} />
                 )}
@@ -329,7 +329,7 @@ export function CommunicationTab({ tenderId, currentUserId, currentUserRole }: C
         <div className="flex-1 overflow-y-auto p-6">
           {loadingLogs ? (
             <div className="flex items-center justify-center h-full">
-              <div className="w-8 h-8 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 border-drift-light border-t-drift rounded-full animate-spin"></div>
             </div>
           ) : aiLogs.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-300">

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Proposal } from '@/types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { RiSaveLine, RiSendPlaneLine, RiFileEditLine, RiInformationLine, RiCheckLine, RiSparklingLine } from 'react-icons/ri';
+import { RiSaveLine, RiSendPlaneLine, RiFileEditLine, RiInformationLine, RiCheckLine, RiSparklingLine, RiAttachmentLine, RiFileTextLine } from 'react-icons/ri';
 
 interface ProposalEditorProps {
   tenderId: string;
@@ -15,7 +15,21 @@ interface ProposalEditorProps {
 export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: ProposalEditorProps) {
   const [formData, setFormData] = useState(proposal);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showDocuments, setShowDocuments] = useState(false);
   const queryClient = useQueryClient();
+
+  // Fetch generated documents for this tender
+  const { data: documentsData } = useQuery({
+    queryKey: ['tender-documents', tenderId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/tenders/${tenderId}/generate-document`);
+      return response.data.documents || [];
+    }
+  });
+
+  const approvedDocuments = (documentsData || []).filter(
+    (doc: any) => doc.status === 'completed' && doc.approval_status === 'approved'
+  );
 
   useEffect(() => {
     setFormData(proposal);
@@ -154,15 +168,15 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
       </div>
 
       {isGenerating && (
-        <div className="bg-passion-light/10 border-2 border-indigo-200 text-passion-dark p-6 rounded-lg">
+        <div className="bg-passion-light/10 border-2 border-passion/20 text-passion-dark p-6 rounded-lg">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 border-3 border-passion-light border-t-indigo-600 rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-3 border-passion-light border-t-passion rounded-full animate-spin"></div>
             <p className="font-bold">AI is analyzing the tender and generating proposal...</p>
           </div>
           <p className="text-sm text-passion">
             Using reference websites: <code className="bg-white px-2 py-0.5 rounded">ipc.he2.ai</code> and <code className="bg-white px-2 py-0.5 rounded">ers.he2.ai</code>
           </p>
-          <p className="text-xs text-indigo-500 mt-2">This may take 10-30 seconds...</p>
+          <p className="text-xs text-passion mt-2">This may take 10-30 seconds...</p>
         </div>
       )}
 
@@ -181,6 +195,73 @@ export function ProposalEditor({ tenderId, proposal, isAnalysisComplete }: Propo
           placeholder="Add pricing, payment terms, and other commercial details..."
         />
       </div>
+
+      {/* Attach Generated Document Section */}
+      {approvedDocuments.length > 0 && (
+        <div className="bg-verdant-light/10 border-2 border-verdant-light rounded-3xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h4 className="font-bold text-neural flex items-center gap-2">
+                <RiFileTextLine className="text-verdant" />
+                Include Generated Tender Document
+              </h4>
+              <p className="text-sm text-gray-600 mt-1">
+                Attach the approved RFQ document to this proposal
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDocuments(!showDocuments)}
+              className="rounded-full"
+            >
+              <RiAttachmentLine className="mr-2" />
+              {showDocuments ? 'Hide' : 'Show'} Documents ({approvedDocuments.length})
+            </Button>
+          </div>
+
+          {showDocuments && (
+            <div className="space-y-2 mt-4">
+              {approvedDocuments.map((doc: any) => (
+                <div key={doc.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-verdant-light">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-verdant rounded-xl flex items-center justify-center">
+                      <RiFileTextLine className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-neural text-sm">{doc.title}</p>
+                      <p className="text-xs text-gray-600">
+                        {doc.page_count} pages • Approved by Neural Arc Inc
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Add document reference to proposal
+                        const currentDetails = formData.commercialDetails || '';
+                        const docReference = `\n\n**Attached Document:**\nTender Document: ${doc.title}\nReference: ${doc.id}\nPages: ${doc.page_count}\n\nThis proposal is in response to the attached tender document which contains complete requirements and specifications.`;
+                        handleChange('commercialDetails', currentDetails + docReference);
+                        alert('✓ Document reference added to proposal!');
+                      }}
+                      className="rounded-full text-xs"
+                    >
+                      <RiAttachmentLine className="mr-1" />
+                      Attach Reference
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p className="text-xs text-gray-500 mt-4 italic">
+            💡 Tip: Including the generated tender document ensures vendors have complete context
+          </p>
+        </div>
+      )}
 
       <div className="flex justify-end gap-4 pt-6 border-t">
         <Button variant="secondary" onClick={() => saveDraft.mutate(formData)} disabled={saveDraft.isPending}>

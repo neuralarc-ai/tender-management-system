@@ -33,6 +33,7 @@ import { StatsView } from './StatsView';
 import { PlansView } from './PlansView';
 import { TenderListView } from './TenderListView';
 import { ProposalsListView } from './ProposalsListView';
+import { DocumentGenerationView } from './DocumentGenerationView';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/auth-context';
 import { useSettings } from '@/contexts/settings-context';
@@ -171,7 +172,7 @@ export function DashboardView() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 font-sans text-neural selection:bg-passion/20">
+    <div className="min-h-full bg-background p-6 font-sans text-neural selection:bg-passion/20">
       <div className="max-w-[1600px] mx-auto space-y-8">
         {/* Top Navigation */}
         <header className="flex justify-between items-center bg-transparent py-2">
@@ -199,23 +200,26 @@ export function DashboardView() {
                   setSelectedTenderId(null); // Close any open tender modal
                 }}
               />
-              {role === 'admin' && (
+              {/* Commented out: AI Proposals navigation */}
+              {/* {role === 'admin' && (
                 <NavLink 
                   icon={<RiUserAddLine />} 
                   label="Proposals" 
                   active={false}
                   onClick={() => router.push('/proposals')}
                 />
+              )} */}
+              {role === 'admin' && (
+                <NavLink 
+                  icon={<RiApps2Line />} 
+                  label="Intelligence" 
+                  active={activeView === 'analysis'} 
+                  onClick={() => {
+                    setActiveView('analysis');
+                    setSelectedTenderId(null); // Close any open tender modal
+                  }}
+                />
               )}
-              <NavLink 
-                icon={<RiApps2Line />} 
-                label="Intelligence" 
-                active={activeView === 'analysis'} 
-                onClick={() => {
-                  setActiveView('analysis');
-                  setSelectedTenderId(null); // Close any open tender modal
-                }}
-              />
             </nav>
           </div>
 
@@ -258,7 +262,14 @@ export function DashboardView() {
                 {/* Column 1: Profile & Actions */}
                 <div className="col-span-12 lg:col-span-3 flex flex-col">
                     <div className="h-[400px] flex-shrink-0">
-                        <ProfileCard role={role} tenders={displayTenders} />
+                        <ProfileCard 
+                          role={role} 
+                          activeTasks={
+                            role === 'admin' 
+                              ? displayTenders.filter(t => !t.proposal || t.proposal.status === 'draft').length 
+                              : displayTenders.filter(t => t.status === 'open' || (t.proposal?.status === 'submitted' && !t.proposal.acceptedAt && !t.proposal.rejectedAt)).length
+                          } 
+                        />
                     </div>
                     <div className="flex-1 mt-6 overflow-hidden">
                         <QuickActions role={role} onAction={handleAction} />
@@ -344,7 +355,7 @@ export function DashboardView() {
         )}
 
         {activeView === 'analysis' && (
-           <StatsView tenders={displayTenders} />
+           <DocumentGenerationView tenders={displayTenders} />
         )}
 
         {activeView === 'plans' && (
@@ -387,7 +398,7 @@ export function DashboardView() {
                       key={notification.id} 
                       className={`p-4 rounded-2xl transition-all cursor-pointer border ${
                         isUnread 
-                          ? 'bg-passion-light/10 border-indigo-200 hover:bg-passion-light/30' 
+                          ? 'bg-passion-light/10 border-passion/20 hover:bg-passion-light/30' 
                           : 'bg-gray-50 border-gray-100 hover:bg-gray-100'
                       }`}
                       onClick={async () => {
@@ -625,7 +636,7 @@ function SettingToggle({ label, enabled, onToggle }: { label: string, enabled: b
       <button 
         onClick={onToggle}
         className={`relative w-14 h-7 rounded-full transition-all duration-300 ${
-          enabled ? 'bg-verdant shadow-lg shadow-green-100' : 'bg-gray-300'
+          enabled ? 'bg-verdant shadow-lg shadow-verdant/20' : 'bg-gray-300'
         }`}
       >
         <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${
