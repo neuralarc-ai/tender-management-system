@@ -64,6 +64,11 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
 
   const documents: TenderDocument[] = documentsData || [];
 
+  // Filter documents based on user role
+  const filteredDocuments = currentUserRole === 'client' 
+    ? documents.filter(doc => doc.approval_status === 'approved' && doc.status === 'completed')
+    : documents; // Admins see all documents
+
   // Approval mutation
   const approveDocument = useMutation({
     mutationFn: async ({ documentId, action, reason }: { documentId: string; action: 'approve' | 'reject'; reason?: string }) => {
@@ -90,13 +95,17 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
     );
   }
 
-  if (documents.length === 0) {
+  if (filteredDocuments.length === 0) {
     return (
       <div className="text-center py-12 bg-gray-50 rounded-3xl">
         <RiFileTextLine className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="font-bold text-neural mb-2">No Documents Generated Yet</h3>
+        <h3 className="font-bold text-neural mb-2">
+          {currentUserRole === 'client' ? 'No Approved Documents Yet' : 'No Documents Generated Yet'}
+        </h3>
         <p className="text-sm text-gray-600">
-          Documents will be automatically generated when the tender is submitted.
+          {currentUserRole === 'client' 
+            ? 'Neural Arc Inc will share documents here once they are approved.'
+            : 'Documents will be automatically generated when the tender is submitted.'}
         </p>
       </div>
     );
@@ -104,7 +113,7 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
 
   return (
     <div className="space-y-4">
-      {documents.map((doc) => (
+      {filteredDocuments.map((doc) => (
         <div key={doc.id} className="bg-white border-2 border-gray-100 rounded-3xl p-6 hover:shadow-md transition-shadow">
           {/* Document Header */}
           <div className="flex items-start gap-4 mb-4">

@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tender } from '@/types';
 import { TenderPDFGenerator } from '@/lib/tenderPDFGenerator';
+import { VisualDocumentEditor } from '@/components/admin/VisualDocumentEditor';
 import axios from 'axios';
 import { 
   RiFileTextLine, 
@@ -19,7 +20,11 @@ import {
   RiFileList3Line,
   RiTimeLine,
   RiCloseLine,
-  RiFilePdfLine
+  RiFilePdfLine,
+  RiEditLine,
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiShareLine
 } from 'react-icons/ri';
 
 interface TenderDocument {
@@ -33,12 +38,17 @@ interface TenderDocument {
   page_count: number | null;
   word_count: number | null;
   created_at: string;
+  updated_at: string;
   metadata: any;
+  approval_status?: 'pending' | 'approved' | 'rejected';
+  approved_at?: string | null;
 }
 
 export function DocumentGenerationView({ tenders }: { tenders: Tender[] }) {
   const [selectedTender, setSelectedTender] = useState<string | null>(null);
   const [previewDocument, setPreviewDocument] = useState<TenderDocument | null>(null);
+  const [editingDocument, setEditingDocument] = useState<TenderDocument | null>(null);
+  const [justEditedDocId, setJustEditedDocId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch all documents
@@ -81,13 +91,75 @@ export function DocumentGenerationView({ tenders }: { tenders: Tender[] }) {
     }
   });
 
+  // Save edited document
+  const handleSaveDocument = async (content: string): Promise<void> => {
+    if (!editingDocument) return;
+    
+    try {
+      await axios.patch(
+        `/api/tenders/${editingDocument.tender_id}/documents/${editingDocument.id}`,
+        { content }
+      );
+      
+      // Mark as just edited so we can show "Send Updated PDF" button
+      setJustEditedDocId(editingDocument.id);
+      
+      // Refresh documents
+      queryClient.invalidateQueries({ queryKey: ['tender-documents'] });
+      
+      // Close editor
+      setEditingDocument(null);
+      
+      // Show success message
+      alert('✓ Document saved successfully! Click "Send Updated PDF to Partner" to share the changes.');
+    } catch (error) {
+      console.error('Error saving document:', error);
+      throw error;
+    }
+  };
+
+  // Approve document mutation
+  const approveDocument = useMutation({
+    mutationFn: async ({ documentId, tenderId, approval_status, sendUpdate }: { 
+      documentId: string; 
+      tenderId: string; 
+      approval_status: 'approved' | 'pending' | 'rejected';
+      sendUpdate?: boolean;
+    }) => {
+      const response = await axios.patch(
+        `/api/tenders/${tenderId}/documents/${documentId}/approve`,
+        { approval_status }
+      );
+      return { ...response.data, sendUpdate };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['tender-documents'] });
+      
+      // Clear the just-edited flag
+      setJustEditedDocId(null);
+      
+      const message = data.sendUpdate
+        ? '✓ Updated PDF sent to partner! The old version has been replaced.'
+        : data.approval_status === 'approved' 
+        ? '✓ Document approved! Partners can now see this document.'
+        : data.approval_status === 'rejected'
+        ? '✓ Document rejected.'
+        : '✓ Approval revoked. Document is now pending.';
+      alert(message);
+    },
+    onError: () => {
+      alert('✗ Failed to update approval status. Please try again.');
+    }
+  });
+
   // Group documents by status
   const generatingDocs = documents.filter(d => d.status === 'generating');
   const completedDocs = documents.filter(d => d.status === 'completed');
   const failedDocs = documents.filter(d => d.status === 'failed');
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <>
+      <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
@@ -202,6 +274,18 @@ export function DocumentGenerationView({ tenders }: { tenders: Tender[] }) {
                 key={doc.id} 
                 document={doc}
                 onPreview={() => setPreviewDocument(doc)}
+                onEdit={() => {
+                  setJustEditedDocId(null); // Clear flag when opening editor
+                  setEditingDocument(doc);
+                }}
+                onApprove={(status, sendUpdate) => approveDocument.mutate({ 
+                  documentId: doc.id, 
+                  tenderId: doc.tender_id, 
+                  approval_status: status,
+                  sendUpdate 
+                })}
+                isApproving={approveDocument.isPending}
+                wasJustEdited={doc.id === justEditedDocId}
               />
             ))}
           </div>
@@ -261,7 +345,19 @@ export function DocumentGenerationView({ tenders }: { tenders: Tender[] }) {
           onClose={() => setPreviewDocument(null)}
         />
       )}
+
+      {/* Document Editor */}
+      {editingDocument && (
+        <VisualDocumentEditor
+          documentId={editingDocument.id}
+          initialContent={editingDocument.content || ''}
+          title={editingDocument.title}
+          onSave={handleSaveDocument}
+          onClose={() => setEditingDocument(null)}
+        />
+      )}
     </div>
+    </>
   );
 }
 
@@ -325,22 +421,59 @@ function GeneratingDocumentCard({ document }: { document: TenderDocument }) {
 // Completed Document Card
 function CompletedDocumentCard({ 
   document: doc, 
-  onPreview 
+  onPreview,
+  onEdit,
+  onApprove,
+  isApproving,
+  wasJustEdited
 }: { 
   document: TenderDocument;
   onPreview: () => void;
+  onEdit: () => void;
+  onApprove: (status: 'approved' | 'pending' | 'rejected', sendUpdate?: boolean) => void;
+  isApproving: boolean;
+  wasJustEdited: boolean;
 }) {
+  const isApproved = doc.approval_status === 'approved';
+  const isRejected = doc.approval_status === 'rejected';
+  const isPending = !doc.approval_status || doc.approval_status === 'pending';
+  
+  // Check if document was edited after approval
+  const wasEditedAfterApproval = isApproved && doc.approved_at && doc.updated_at && 
+    new Date(doc.updated_at) > new Date(doc.approved_at);
+
   return (
-    <Card className="p-6 rounded-3xl hover:shadow-lg transition-shadow">
+    <Card className={`p-6 rounded-3xl hover:shadow-lg transition-shadow ${
+      isApproved ? 'ring-2 ring-verdant/30 bg-verdant/5' : 
+      isRejected ? 'ring-2 ring-red-300/30 bg-red-50/30' : ''
+    }`}>
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 bg-verdant rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+          isApproved ? 'bg-verdant' : isRejected ? 'bg-red-500' : 'bg-gray-400'
+        }`}>
           <RiFileTextLine className="text-white w-6 h-6" />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-bold text-neural mb-1 text-sm truncate">{doc.title}</h4>
-          <div className="flex items-center gap-2 text-xs text-gray-600">
-            <RiCheckLine className="text-verdant" />
-            <span>Ready</span>
+          <div className="flex items-center gap-2 text-xs">
+            {isApproved && (
+              <>
+                <RiCheckboxCircleLine className="text-verdant" />
+                <span className="text-verdant font-semibold">Approved & Shared</span>
+              </>
+            )}
+            {isRejected && (
+              <>
+                <RiCloseCircleLine className="text-red-500" />
+                <span className="text-red-500 font-semibold">Rejected</span>
+              </>
+            )}
+            {isPending && (
+              <>
+                <RiCheckLine className="text-gray-400" />
+                <span className="text-gray-600">Pending Approval</span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -356,47 +489,135 @@ function CompletedDocumentCard({
         </div>
       </div>
 
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onPreview}
-          className="flex-1 rounded-full text-xs"
-        >
-          <RiEyeLine className="mr-1" />
-          Preview
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => {
-            try {
-              // Generate PDF from markdown content
-              const pdfBlob = TenderPDFGenerator.generatePDF({
-                title: doc.title,
-                content: doc.content || '',
-                metadata: {
-                  author: 'DCS Corporation',
-                  subject: 'Tender Document',
-                  keywords: 'tender, rfp, procurement'
-                }
-              });
+      <div className="space-y-2">
+        <div className="grid grid-cols-3 gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPreview();
+            }}
+            className="rounded-full text-xs"
+          >
+            <RiEyeLine className="mr-1" />
+            Preview
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="rounded-full text-xs bg-aurora/10 hover:bg-aurora/20 border-aurora/30"
+          >
+            <RiEditLine className="mr-1" />
+            Edit
+          </Button>
+          <Button
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              try {
+                // Generate PDF from markdown content
+                const pdfBlob = TenderPDFGenerator.generatePDF({
+                  title: doc.title,
+                  content: doc.content || '',
+                  metadata: {
+                    author: 'Neural Arc Inc',
+                    subject: 'Tender Document',
+                    keywords: 'tender, rfp, procurement'
+                  }
+                });
 
-              // Download PDF
-              TenderPDFGenerator.downloadPDF(pdfBlob, `${doc.title}.pdf`);
-            } catch (error) {
-              console.error('PDF generation error:', error);
-              alert('Failed to generate PDF. Please try again.');
-            }
-          }}
-          className="flex-1 rounded-full bg-passion hover:bg-passion-dark text-xs"
-        >
-          <RiFilePdfLine className="mr-1" />
-          PDF
-        </Button>
+                // Download PDF
+                TenderPDFGenerator.downloadPDF(pdfBlob, `${doc.title}.pdf`);
+              } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Failed to generate PDF. Please try again.');
+              }
+            }}
+            className="rounded-full bg-passion hover:bg-passion-dark text-xs"
+          >
+            <RiFilePdfLine className="mr-1" />
+            PDF
+          </Button>
+        </div>
+
+        {/* Approval Actions */}
+        <div className="pt-2 border-t">
+          {/* Show "Send Updated PDF" button if just edited or edited after approval */}
+          {(wasJustEdited || wasEditedAfterApproval) && isApproved ? (
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (confirm('Send updated PDF to partner? This will replace the existing document.')) {
+                  onApprove('approved', true);
+                }
+              }}
+              disabled={isApproving}
+              className="w-full rounded-full bg-passion hover:bg-passion-dark text-white text-xs font-bold animate-pulse"
+            >
+              <RiShareLine className="mr-1" />
+              {isApproving ? 'Sending...' : '📤 Send Updated PDF to Partner'}
+            </Button>
+          ) : !isApproved ? (
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (confirm('Send this PDF to partner? They will be able to view and download it.')) {
+                  onApprove('approved', false);
+                }
+              }}
+              disabled={isApproving}
+              className="w-full rounded-full bg-verdant hover:bg-verdant-dark text-white text-xs font-bold"
+            >
+              <RiShareLine className="mr-1" />
+              {isApproving ? 'Approving...' : 'Send PDF to Partner'}
+            </Button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm('Revoke access? Partner will no longer see this document.')) {
+                    onApprove('pending', false);
+                  }
+                }}
+                disabled={isApproving}
+                className="rounded-full text-xs"
+              >
+                <RiCloseCircleLine className="mr-1" />
+                Revoke
+              </Button>
+              <div className="flex items-center justify-center text-xs text-verdant font-semibold">
+                <RiCheckboxCircleLine className="mr-1" />
+                Sent
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Warning if edited after approval */}
+        {wasEditedAfterApproval && !wasJustEdited && (
+          <div className="text-xs text-orange-600 font-semibold text-center bg-orange-50 py-2 px-3 rounded-lg">
+            ⚠️ Document edited after sending. Click button above to update partner's PDF.
+          </div>
+        )}
       </div>
 
       <p className="text-xs text-gray-500 mt-3 text-center">
         {new Date(doc.created_at).toLocaleString()}
+        {isApproved && doc.approved_at && (
+          <span className="block text-verdant mt-1">
+            ✓ Approved {new Date(doc.approved_at).toLocaleDateString()}
+          </span>
+        )}
       </p>
     </Card>
   );
