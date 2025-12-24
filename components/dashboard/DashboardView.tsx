@@ -172,7 +172,7 @@ export function DashboardView() {
   };
 
   return (
-    <div className="min-h-full bg-background p-6 font-sans text-neural selection:bg-passion/20">
+    <div className="min-h-[calc(100vh-80px)] bg-background p-6 pb-20 font-sans text-neural selection:bg-passion/20">
       <div className="max-w-[1600px] mx-auto space-y-8">
         {/* Top Navigation */}
         <header className="flex justify-between items-center bg-transparent py-2">
