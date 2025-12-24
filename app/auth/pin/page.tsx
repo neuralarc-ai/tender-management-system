@@ -66,12 +66,12 @@ export default function PinAuthPage() {
   };
 
   return (
-    <div className="min-h-full flex font-sans relative overflow-hidden">
+    <div className="flex font-sans relative overflow-hidden h-full">
       {/* Full Screen Neural Arc Background - Latest PNG */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url("/Neural_Arc_httpss.mj.runQtO32uqLcu8_remove_all_these_sharpnes_b8a6df75-6679-4bdb-a171-44774f5fbdd3_3.png")`
+          backgroundImage: `url("/Neural_Arc_httpss.mj.runQtO32uqLcu8_remove_all_these_sharpnes_b8a6df75-6679-4bdb-a171-44774f5fbdd3_0.png")`
         }}
       />
 
