@@ -53,9 +53,9 @@ export default function PinAuthPage() {
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 800));
 
-    if (pinString === '1111') {
+    if (pinString === '7531') {
       login('client', '11111111-1111-1111-1111-111111111111', 'partner@dcs.com', 'DCS Corporation');
-    } else if (pinString === '2222') {
+    } else if (pinString === '1978') {
       login('admin', '22222222-2222-2222-2222-222222222222', 'admin@neuralarc.com', 'Neural Arc Inc.');
     } else {
       setError(true);
