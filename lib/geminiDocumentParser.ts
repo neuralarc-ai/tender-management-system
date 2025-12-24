@@ -35,14 +35,7 @@ class GeminiDocumentParserService {
       // Using Gemini 3 Pro - most intelligent model for complex document parsing
       // See: https://ai.google.dev/gemini-api/docs/gemini-3
       this.model = this.genAI.getGenerativeModel({ 
-        model: 'gemini-3-pro-preview',
-        generationConfig: {
-          // Gemini 3 uses dynamic thinking by default
-          // Set thinking level to 'high' for maximum reasoning depth on complex documents
-          thinkingConfig: {
-            thinkingLevel: 'high'
-          }
-        }
+        model: 'gemini-3-pro-preview'
       });
     }
   }
@@ -327,7 +320,7 @@ Begin extraction:`;
       });
 
       // Merge warnings
-      merged.warnings = [...new Set([...merged.warnings, ...result.warnings])];
+      merged.warnings = Array.from(new Set([...merged.warnings, ...result.warnings]));
     });
 
     // Average confidence

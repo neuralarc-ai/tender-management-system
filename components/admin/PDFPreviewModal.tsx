@@ -9,7 +9,7 @@ interface PDFPreviewModalProps {
   document: {
     id: string;
     title: string;
-    content: string;
+    content: string | null;
     page_count: number | null;
     word_count: number | null;
   };
@@ -22,6 +22,11 @@ export function PDFPreviewModal({ document, onClose }: PDFPreviewModalProps) {
 
   useEffect(() => {
     // Generate PDF and create URL for preview
+    if (!document.content) {
+      console.warn('Document content is null, cannot generate PDF');
+      return;
+    }
+
     try {
       const pdfBlob = TenderPDFGenerator.generatePDF({
         title: document.title,
@@ -106,7 +111,13 @@ export function PDFPreviewModal({ document, onClose }: PDFPreviewModalProps) {
 
         {/* PDF Viewer */}
         <div className="flex-1 overflow-auto bg-gray-100 p-4">
-          {pdfUrl ? (
+          {!document.content ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <p className="text-gray-600 font-medium">Document content not available</p>
+              </div>
+            </div>
+          ) : pdfUrl ? (
             <div 
               className="mx-auto bg-white shadow-2xl"
               style={{ 

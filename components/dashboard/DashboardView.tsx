@@ -267,7 +267,7 @@ export function DashboardView() {
                           activeTasks={
                             role === 'admin' 
                               ? displayTenders.filter(t => !t.proposal || t.proposal.status === 'draft').length 
-                              : displayTenders.filter(t => t.status === 'open' || (t.proposal?.status === 'submitted' && !t.proposal.acceptedAt && !t.proposal.rejectedAt)).length
+                              : displayTenders.filter(t => t.status === 'open' || (t.proposal?.status === 'submitted')).length
                           } 
                         />
                     </div>
@@ -289,7 +289,7 @@ export function DashboardView() {
                                 </div>
                             </div>
                             <div className="flex-1 overflow-hidden">
-                                <CalendarWidget tenders={tenders} onSelectTender={setSelectedTenderId} />
+                                <CalendarWidget tenders={tenders} />
                             </div>
                         </>
                     ) : (
@@ -307,7 +307,7 @@ export function DashboardView() {
                                 </div>
                             </div>
                             <div className="flex-1 overflow-hidden">
-                                <CalendarWidget tenders={displayTenders} onSelectTender={setSelectedTenderId} />
+                                <CalendarWidget tenders={displayTenders} />
                             </div>
                         </>
                     )}

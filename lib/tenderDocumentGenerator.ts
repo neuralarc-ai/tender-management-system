@@ -32,12 +32,7 @@ class TenderDocumentGeneratorService {
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
       this.model = this.genAI.getGenerativeModel({ 
-        model: 'gemini-3-pro-preview',
-        generationConfig: {
-          thinkingConfig: {
-            thinkingLevel: 'high'
-          }
-        }
+        model: 'gemini-3-pro-preview'
       });
     }
   }
