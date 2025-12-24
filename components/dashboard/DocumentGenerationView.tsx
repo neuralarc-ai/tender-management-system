@@ -159,7 +159,7 @@ export function DocumentGenerationView({ tenders }: { tenders: Tender[] }) {
 
   return (
     <>
-      <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-6 animate-in fade-in duration-300">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
@@ -491,18 +491,18 @@ function CompletedDocumentCard({
 
       <div className="space-y-2">
         <div className="grid grid-cols-3 gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <Button
+          variant="outline"
+          size="sm"
             onClick={(e) => {
               e.stopPropagation();
               onPreview();
             }}
             className="rounded-full text-xs"
-          >
-            <RiEyeLine className="mr-1" />
-            Preview
-          </Button>
+        >
+          <RiEyeLine className="mr-1" />
+          Preview
+        </Button>
           <Button
             variant="outline"
             size="sm"
@@ -515,34 +515,34 @@ function CompletedDocumentCard({
             <RiEditLine className="mr-1" />
             Edit
           </Button>
-          <Button
-            size="sm"
+        <Button
+          size="sm"
             onClick={(e) => {
               e.stopPropagation();
-              try {
-                // Generate PDF from markdown content
-                const pdfBlob = TenderPDFGenerator.generatePDF({
-                  title: doc.title,
-                  content: doc.content || '',
-                  metadata: {
+            try {
+              // Generate PDF from markdown content
+              const pdfBlob = TenderPDFGenerator.generatePDF({
+                title: doc.title,
+                content: doc.content || '',
+                metadata: {
                     author: 'Neural Arc Inc',
-                    subject: 'Tender Document',
-                    keywords: 'tender, rfp, procurement'
-                  }
-                });
+                  subject: 'Tender Document',
+                  keywords: 'tender, rfp, procurement'
+                }
+              });
 
-                // Download PDF
-                TenderPDFGenerator.downloadPDF(pdfBlob, `${doc.title}.pdf`);
-              } catch (error) {
-                console.error('PDF generation error:', error);
-                alert('Failed to generate PDF. Please try again.');
-              }
-            }}
+              // Download PDF
+              TenderPDFGenerator.downloadPDF(pdfBlob, `${doc.title}.pdf`);
+            } catch (error) {
+              console.error('PDF generation error:', error);
+              alert('Failed to generate PDF. Please try again.');
+            }
+          }}
             className="rounded-full bg-passion hover:bg-passion-dark text-xs"
-          >
-            <RiFilePdfLine className="mr-1" />
-            PDF
-          </Button>
+        >
+          <RiFilePdfLine className="mr-1" />
+          PDF
+        </Button>
         </div>
 
         {/* Approval Actions */}

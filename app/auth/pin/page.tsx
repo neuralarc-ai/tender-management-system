@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
-import { RiArrowRightLine } from 'react-icons/ri';
+import { RiArrowRightLine, RiShieldKeyholeLine } from 'react-icons/ri';
+import { LiquidGlassCard } from '@/components/ui/liquid-glass';
 
 export default function PinAuthPage() {
   const [pin, setPin] = useState(['', '', '', '']);
@@ -66,41 +67,47 @@ export default function PinAuthPage() {
   };
 
   return (
-    <div className="flex font-sans relative overflow-hidden h-full">
-      {/* Full Screen Neural Arc Background - Latest PNG */}
+    <div className="relative h-full overflow-hidden">
+      {/* Full Page Background Image - Covers entire screen including footer */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
+        className="fixed inset-0 z-0"
         style={{
-          backgroundImage: `url("/Neural_Arc_httpss.mj.runQtO32uqLcu8_remove_all_these_sharpnes_b8a6df75-6679-4bdb-a171-44774f5fbdd3_0.png")`
+          backgroundImage: `url("/Neural_Arc_VECTOR_TENDER_PORTAL_--ar_169_--sref_httpss.mj.run_62839520-e672-43da-ba5d-e0bdb87365cf_3.png")`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
       />
 
-      {/* Left Side - Glassmorphism Card */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 relative z-10">
-        {/* Proper Glassmorphism Container - Thin Border Like Reference */}
-        <div className="w-full max-w-sm bg-white/10 backdrop-blur-3xl p-8 rounded-[36px] border border-white/30 relative">
-          {/* Glass reflection effects */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent pointer-events-none rounded-[36px]" />
-          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-[36px]" />
-          
-          {/* Content */}
-          <div className="relative z-10">
+      {/* Overlay for better contrast */}
+      <div className="fixed inset-0 bg-black/20 z-0" />
+
+      {/* Login Card - Left Side */}
+      <div className="relative z-10 w-full lg:w-1/2 flex items-center justify-center p-8 h-full">
+        <LiquidGlassCard 
+          glowIntensity="md" 
+          shadowIntensity="lg" 
+          borderRadius="32px" 
+          blurIntensity="lg"
+          className="p-8 w-full max-w-md"
+        >
+          <div className="relative z-30">
             {/* Logo */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-passion to-aurora rounded-xl flex items-center justify-center shadow-lg">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="text-white drop-shadow-lg">
-                    <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/>
+            <div className="mb-8 text-center">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-white/90 rounded-xl flex items-center justify-center shadow-lg p-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 256 256" fill="none">
+                    <path d="M 128 192 L 0 256 L 0 192 L 128 128 Z M 256 192 L 128 256 L 128 192 L 256 128 Z M 128 64 L 128 128 L 0 64 L 0 0 Z M 256 64 L 256 128 L 128 64 L 128 0 Z" fill="rgb(84, 84, 84)"></path>
                   </svg>
                 </div>
-                <span className="text-xl font-black text-white tracking-tight drop-shadow-lg">VECTOR</span>
+                <span className="text-3xl font-black text-white tracking-tight drop-shadow-lg">VECTOR</span>
               </div>
+              <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6" />
             </div>
 
             {/* Heading */}
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
-                Welcome back
+            <div className="mb-8 text-center">
+              <h1 className="text-2xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
+                Welcome Back
               </h1>
               <p className="text-white/90 text-sm font-medium drop-shadow-md">
                 Enter your secure PIN to access the platform
@@ -110,10 +117,10 @@ export default function PinAuthPage() {
             {/* PIN Input Form */}
             <form onSubmit={(e) => { e.preventDefault(); if(pin.join('').length === 4) checkPin(pin.join('')); }}>
               <div className="mb-6">
-                <label className="text-xs font-bold text-neural uppercase tracking-wider mb-3 block drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">
+                <label className="text-xs font-bold text-white uppercase tracking-wider mb-3 block drop-shadow-md">
                   Security PIN
                 </label>
-                <div className="grid grid-cols-4 gap-2.5">
+                <div className="grid grid-cols-4 gap-3">
                   {pin.map((digit, index) => (
                     <input
                       key={index}
@@ -126,8 +133,8 @@ export default function PinAuthPage() {
                       disabled={loading}
                       autoComplete="off"
                       className={`
-                        w-full aspect-square h-14 rounded-2xl border-2 bg-white/20 backdrop-blur-md
-                        text-center text-xl font-bold text-white drop-shadow-lg
+                        w-full aspect-square h-16 rounded-2xl border-2 bg-white/20 backdrop-blur-md
+                        text-center text-2xl font-bold text-white drop-shadow-lg
                         focus:border-white focus:outline-none focus:ring-4 focus:ring-white/30 focus:bg-white/30
                         transition-all duration-300
                       ${error ? 'border-passion bg-passion/30 text-passion animate-shake' : 'border-white/30'}
@@ -140,17 +147,17 @@ export default function PinAuthPage() {
               </div>
 
               {error && (
-                <div className="mb-4 flex items-center gap-2 text-white text-sm font-semibold bg-passion/30 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/30">
+                <div className="mb-4 flex items-center gap-2 text-white text-sm font-semibold bg-passion/30 backdrop-blur-md px-4 py-3 rounded-2xl border border-passion/50">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                   <span className="drop-shadow-md">Invalid PIN. Please try again.</span>
                 </div>
               )}
 
-              {/* Pure Glassmorphism Button */}
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={pin.join('').length !== 4 || loading}
-                className="w-full h-12 bg-white/20 backdrop-blur-md border-2 border-white/25 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/30 hover:border-white/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-14 bg-white/20 backdrop-blur-md border-2 border-white/30 text-white rounded-2xl font-bold text-base flex items-center justify-center gap-3 hover:bg-white/30 hover:border-white/50 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -165,6 +172,35 @@ export default function PinAuthPage() {
                 )}
               </button>
             </form>
+
+            {/* Footer hint */}
+            <div className="mt-8 text-center text-xs text-white/70 drop-shadow-md">
+              <p>Powered by <span className="font-bold text-white">Neural Arc Inc.</span></p>
+            </div>
+          </div>
+        </LiquidGlassCard>
+      </div>
+
+      {/* Simple Liquid Glass Footer for PIN Page */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-transparent backdrop-blur-xl py-6">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-3">
+            {/* Product Name & Copyright */}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-sm text-white drop-shadow-lg">
+              <span className="font-black tracking-tight">VECTOR</span>
+              <span className="text-white/40">•</span>
+              <span className="text-white/90">© {new Date().getFullYear()}</span>
+              <span className="text-white/90">All rights reserved by</span>
+              <span className="font-bold">Neural Arc Inc.</span>
+            </div>
+
+            {/* Divider for desktop */}
+            <div className="hidden md:block w-px h-4 bg-white/20"></div>
+
+            {/* Product info */}
+            <div className="text-xs text-white/80 font-medium drop-shadow-lg">
+              Tender Management System
+            </div>
           </div>
         </div>
       </div>

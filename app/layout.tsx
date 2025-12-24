@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Footer } from "@/components/ui/footer";
+import { ConditionalFooter } from "@/components/ui/conditional-footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Vector - Tender Management System",
   description: "AI-assisted Tender Intake and Proposal Submission System by Neural Arc Inc.",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -23,7 +26,7 @@ export default function RootLayout({
           <main className="flex-1">
             <Providers>{children}</Providers>
           </main>
-          <Footer variant="light" />
+          <ConditionalFooter />
         </div>
       </body>
     </html>
