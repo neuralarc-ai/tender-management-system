@@ -98,3 +98,4 @@ AI_API_KEY=he-8Bhk8e9zAvoF3eYWZyQX7XtXZybkGulKqbW9
 
 **Your API key is already correct. Just add it to `.env.local` and restart!** 🎯
 
+

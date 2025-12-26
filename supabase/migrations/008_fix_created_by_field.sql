@@ -72,3 +72,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Grant execute permission
 GRANT EXECUTE ON FUNCTION get_tenders_with_details TO authenticated;
 
+

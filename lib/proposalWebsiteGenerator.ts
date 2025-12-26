@@ -233,3 +233,4 @@ export function generateProposalWebsite(tender: Tender): string {
 </html>`;
 }
 
+

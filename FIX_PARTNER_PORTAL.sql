@@ -80,3 +80,4 @@ GRANT EXECUTE ON FUNCTION get_tenders_with_details TO authenticated;
 -- SELECT * FROM get_tenders_with_details('client', '11111111-1111-1111-1111-111111111111'::uuid);
 -- SELECT * FROM get_tenders_with_details('admin', '22222222-2222-2222-2222-222222222222'::uuid);
 
+

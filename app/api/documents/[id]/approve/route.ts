@@ -58,20 +58,23 @@ export async function PATCH(
 
     // Create notification for partner
     if (document && document.tenders) {
+      const tender = document.tenders as any;
+      const notificationTitle = action === 'approve' 
+        ? '✅ Document Approved!' 
+        : '❌ Document Rejected';
+      
       const notificationMessage = action === 'approve'
-        ? `Your tender document "${document.title}" has been approved by Neural Arc Inc.`
-        : `Your tender document "${document.title}" was rejected. ${rejectionReason || 'Please review and resubmit.'}`;
+        ? `Your tender document "${document.title}" has been approved by Neural Arc Inc. You can now download it!`
+        : `Your tender document "${document.title}" was rejected. ${rejectionReason || 'Please review and make necessary changes.'}`;
 
-      await supabase
-        .from('notifications')
-        .insert({
-          user_id: document.tenders.created_by,
-          tender_id: document.tender_id,
-          type: action === 'approve' ? 'document_approved' : 'document_rejected',
-          title: action === 'approve' ? 'Document Approved' : 'Document Rejected',
-          message: notificationMessage,
-          read: false
-        });
+      await supabase.rpc('create_notification', {
+        p_type: action === 'approve' ? 'document_approved' : 'document_rejected',
+        p_title: notificationTitle,
+        p_message: notificationMessage,
+        p_tender_id: document.tender_id,
+        p_created_by: 'admin',
+        p_target_roles: ['client']
+      });
     }
 
     return NextResponse.json({

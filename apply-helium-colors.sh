@@ -28,3 +28,4 @@ echo "   1. Restart server: npm run dev"
 echo "   2. Hard refresh browser: Cmd+Shift+R"
 echo ""
 
+
