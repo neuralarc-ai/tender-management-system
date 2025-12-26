@@ -79,6 +79,27 @@ export const supabaseTenderService = {
 
       if (tenderError) throw tenderError;
 
+      // Save uploaded documents to uploaded_files table
+      if (tenderData.documents && tenderData.documents.length > 0) {
+        const fileRecords = tenderData.documents.map(doc => ({
+          tender_id: tender.id,
+          file_name: doc.name,
+          file_url: doc.url,
+          file_size: doc.size,
+          file_type: doc.type || 'application/octet-stream',
+          uploaded_by: tenderData.createdBy
+        }));
+
+        const { error: filesError } = await serviceClient
+          .from('uploaded_files')
+          .insert(fileRecords);
+
+        if (filesError) {
+          console.error('Error saving uploaded files:', filesError);
+          // Don't fail tender creation if file save fails
+        }
+      }
+
       // Trigger will auto-create ai_analysis and proposals
       // Create notification for admin
       await serviceClient.rpc('create_notification', {

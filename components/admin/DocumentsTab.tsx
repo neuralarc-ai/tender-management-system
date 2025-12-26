@@ -64,10 +64,9 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
 
   const documents: TenderDocument[] = documentsData || [];
 
-  // Filter documents based on user role
-  const filteredDocuments = currentUserRole === 'client' 
-    ? documents.filter(doc => doc.approval_status === 'approved' && doc.status === 'completed')
-    : documents; // Admins see all documents
+  // Partners see all their documents (with approval status indicators)
+  // Admins see all documents
+  const filteredDocuments = documents;
 
   // Approval mutation
   const approveDocument = useMutation({
@@ -223,6 +222,12 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
               <Button
                 size="sm"
                 onClick={() => {
+                  // Partners can only download approved documents
+                  if (currentUserRole === 'client' && doc.approval_status !== 'approved') {
+                    alert('This document is pending approval from Neural Arc Inc. You will be able to download it once it is approved.');
+                    return;
+                  }
+                  
                   try {
                     const pdfBlob = TenderPDFGenerator.generatePDF({
                       title: doc.title,
@@ -238,10 +243,17 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
                     alert('Failed to generate PDF');
                   }
                 }}
-                className="flex-1 rounded-full bg-passion hover:bg-passion-dark"
+                disabled={currentUserRole === 'client' && doc.approval_status !== 'approved'}
+                className={`flex-1 rounded-full ${
+                  currentUserRole === 'client' && doc.approval_status !== 'approved'
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'bg-passion hover:bg-passion-dark'
+                }`}
               >
                 <RiFilePdfLine className="mr-2" />
-                Download PDF
+                {currentUserRole === 'client' && doc.approval_status !== 'approved' 
+                  ? '🔒 Awaiting Approval' 
+                  : 'Download PDF'}
               </Button>
 
               {/* Admin Approval Actions */}

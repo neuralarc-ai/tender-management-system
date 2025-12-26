@@ -101,6 +101,16 @@ class TenderDocumentGeneratorService {
 
     return `You are a professional proposal writer for Neural Arc Inc, a leading generative AI consultancy. Create a comprehensive, professionally formatted business proposal document.
 
+⚠️ CRITICAL FORMATTING RULES:
+1. ALL TABLES must use proper markdown format with pipes (|)
+2. ALWAYS include a separator row with dashes (|---|---|)
+3. Keep table cells on SINGLE LINES (no line breaks within cells)
+4. Use commas to separate multiple items in a cell
+5. Example of correct table format:
+   | Column 1 | Column 2 |
+   |----------|----------|
+   | Data 1   | Data 2   |
+
 CONTEXT:
 Project Title: ${tender.title}
 Project Description: ${tender.description || 'Enterprise AI Solution'}
@@ -183,20 +193,21 @@ Write 2-3 paragraphs explaining:
 
 3.3 Core Capabilities
 
-Create a properly formatted table:
+IMPORTANT: Create a properly formatted markdown table with proper pipe separators:
 
-Domain                          | Capabilities & Solutions
-------------------------------- | ------------------------------------------------------------
-Natural Language Processing     | Conversational AI, Document Intelligence, Content Generation,
-                                 | Semantic Search, Sentiment Analysis, Translation Services
-Intelligent Automation          | Workflow Orchestration, Process Mining, Intelligent RPA,
-                                 | Decision Automation, Business Process Optimization  
-Predictive Analytics           | Demand Forecasting, Risk Assessment, Anomaly Detection,
-                                 | Performance Optimization, Predictive Maintenance
-Computer Vision                | Document Analysis, Object Recognition, Quality Inspection,
-                                 | Visual Search, Image Classification
-Data Engineering               | Data Pipeline Design, ETL/ELT Development, Data Lake
-                                 | Architecture, Real-time Processing, Data Governance
+| Domain | Capabilities & Solutions |
+|--------|--------------------------|
+| Natural Language Processing | Conversational AI, Document Intelligence, Content Generation, Semantic Search, Sentiment Analysis, Translation Services |
+| Intelligent Automation | Workflow Orchestration, Process Mining, Intelligent RPA, Decision Automation, Business Process Optimization |
+| Predictive Analytics | Demand Forecasting, Risk Assessment, Anomaly Detection, Performance Optimization, Predictive Maintenance |
+| Computer Vision | Document Analysis, Object Recognition, Quality Inspection, Visual Search, Image Classification |
+| Data Engineering | Data Pipeline Design, ETL/ELT Development, Data Lake Architecture, Real-time Processing, Data Governance |
+
+RULES FOR TABLES:
+- MUST use pipes (|) to separate columns
+- MUST have separator row with dashes (|---|---|)
+- MUST align pipes vertically
+- Keep cell content concise but informative
 
 3.4 Our Track Record
 
@@ -307,45 +318,30 @@ Write 3-4 paragraphs describing:
 
 6.2 Project Phases
 
-Create a detailed timeline table:
+IMPORTANT: Create a properly formatted markdown table (use proper | separators):
 
-Phase      | Duration | Key Activities                           | Deliverables
----------- | -------- | ---------------------------------------- | ---------------------------
-Discovery  | Week 1-2 | Requirements analysis, Technical design, | Requirements document,
-& Planning |          | Architecture planning, Project setup     | Technical specification,
-           |          |                                          | Project plan
----------------------------------------------------------------------------
-Design &   | Week 3-4 | System architecture, Database design,    | Architecture diagrams,
-Architecture|         | API specifications, UI/UX design         | Design mockups,
-           |          |                                          | API documentation
----------------------------------------------------------------------------
-Development| Week     | Sprint-based development, Feature        | Working system modules,
-Phase 1    | 5-8      | implementation, Unit testing             | Code repositories,
-           |          |                                          | Test reports
----------------------------------------------------------------------------
-Development| Week     | Advanced features, System integration,   | Integrated system,
-Phase 2    | 9-12     | Performance optimization                 | Integration tests
----------------------------------------------------------------------------
-Testing &  | Week     | UAT, Performance testing, Security       | Test reports, Bug fixes,
-QA         | 13-14    | testing, Bug fixing                      | UAT sign-off
----------------------------------------------------------------------------
-Deployment | Week     | Production deployment, Data migration,   | Live system,
-& Go-Live  | 15-16    | Training, Documentation, Go-live support | Training materials,
-           |          |                                          | Support documentation
+| Phase | Duration | Key Activities | Deliverables |
+|-------|----------|----------------|--------------|
+| Discovery & Planning | Week 1-2 | Requirements analysis, Technical design, Architecture planning, Project setup | Requirements document, Technical specification, Project plan |
+| Design & Architecture | Week 3-4 | System architecture, Database design, API specifications, UI/UX design | Architecture diagrams, Design mockups, API documentation |
+| Development Phase 1 | Week 5-8 | Sprint-based development, Feature implementation, Unit testing | Working system modules, Code repositories, Test reports |
+| Development Phase 2 | Week 9-12 | Advanced features, System integration, Performance optimization | Integrated system, Integration tests |
+| Testing & QA | Week 13-14 | UAT, Performance testing, Security testing, Bug fixing | Test reports, Bug fixes, UAT sign-off |
+| Deployment & Go-Live | Week 15-16 | Production deployment, Data migration, Training, Documentation, Go-live support | Live system, Training materials, Support documentation |
 
 6.3 Team Structure
 
-Create team table:
+Create team table with proper markdown format:
 
-Role                    | Responsibilities                    | Allocation
------------------------ | ----------------------------------- | -----------
-Project Manager        | Overall coordination, Client comms  | 50%
-Solution Architect     | Technical design, Code reviews      | 75%
-Senior AI/ML Engineer  | AI model development, Training      | 100%
-Full-Stack Developers  | Feature development, Integration    | 200% (2 devs)
-QA Engineer           | Testing, Quality assurance          | 75%
-DevOps Engineer       | Infrastructure, Deployment          | 50%
-UI/UX Designer        | Interface design, User experience   | 25%
+| Role | Responsibilities | Allocation |
+|------|------------------|------------|
+| Project Manager | Overall coordination, Client communications | 50% |
+| Solution Architect | Technical design, Code reviews | 75% |
+| Senior AI/ML Engineer | AI model development, Training | 100% |
+| Full-Stack Developers | Feature development, Integration | 200% (2 devs) |
+| QA Engineer | Testing, Quality assurance | 75% |
+| DevOps Engineer | Infrastructure, Deployment | 50% |
+| UI/UX Designer | Interface design, User experience | 25% |
 
 ---------------------------------------------------
 SECTION 7: COMMERCIAL PROPOSAL
@@ -360,31 +356,30 @@ Write 2-3 paragraphs about:
 
 7.2 Cost Breakdown
 
-Create detailed cost table:
+Create detailed cost table with proper markdown format:
 
-Cost Component              | Description                        | Amount (USD)
---------------------------- | ---------------------------------- | ------------
-Professional Services       | Development, Design, Architecture  | [Calculate]
-AI/ML Development          | Model training, Integration        | [Calculate]
-Project Management         | Coordination, Reporting            | [Calculate]
-Quality Assurance          | Testing, QA processes              | [Calculate]
-Infrastructure Setup       | Cloud setup, DevOps                | [Calculate]
-Documentation & Training   | User guides, Training sessions     | [Calculate]
-Post-Launch Support (3mo)  | Bug fixes, Optimization            | [Calculate]
---------------------------- | ---------------------------------- | ------------
-TOTAL PROJECT INVESTMENT   |                                    | [Total]
+| Cost Component | Description | Amount (USD) |
+|----------------|-------------|--------------|
+| Professional Services | Development, Design, Architecture | $XXX,XXX |
+| AI/ML Development | Model training, Integration | $XX,XXX |
+| Project Management | Coordination, Reporting | $XX,XXX |
+| Quality Assurance | Testing, QA processes | $XX,XXX |
+| Infrastructure Setup | Cloud setup, DevOps | $XX,XXX |
+| Documentation & Training | User guides, Training sessions | $XX,XXX |
+| Post-Launch Support (3mo) | Bug fixes, Optimization | $XX,XXX |
+| **TOTAL PROJECT INVESTMENT** | | **$XXX,XXX** |
 
 7.3 Payment Schedule
 
-Create payment milestone table:
+Create payment milestone table with proper markdown format:
 
-Milestone  | Deliverable                    | Payment | Timeline
----------- | ------------------------------ | ------- | ----------
-Milestone 1| Project Kickoff & Design       | 25%     | Week 2
-Milestone 2| Development Phase 1 Complete   | 25%     | Week 8  
-Milestone 3| Development Phase 2 Complete   | 25%     | Week 12
-Milestone 4| UAT Sign-off & Go-Live        | 20%     | Week 16
-Milestone 5| Post-Launch Support Complete   | 5%      | Week 28
+| Milestone | Deliverable | Payment | Timeline |
+|-----------|-------------|---------|----------|
+| Milestone 1 | Project Kickoff & Design | 25% | Week 2 |
+| Milestone 2 | Development Phase 1 Complete | 25% | Week 8 |
+| Milestone 3 | Development Phase 2 Complete | 25% | Week 12 |
+| Milestone 4 | UAT Sign-off & Go-Live | 20% | Week 16 |
+| Milestone 5 | Post-Launch Support Complete | 5% | Week 28 |
 
 ---------------------------------------------------
 SECTION 8: WHY CHOOSE NEURAL ARC
@@ -547,17 +542,32 @@ Generate the complete, professionally formatted proposal document now:`;
   }
 
   /**
-   * Calculate document metadata
+   * Calculate document metadata with accurate page count
    */
   private calculateMetadata(content: string): { wordCount: number; pageCount: number } {
     const words = content.split(/\s+/).filter(word => word.length > 0);
     const wordCount = words.length;
-    const pageCount = Math.ceil(wordCount / 500);
-
-    return {
-      wordCount,
-      pageCount
-    };
+    
+    // Calculate accurate page count by generating actual PDF
+    try {
+      // Dynamic import to avoid circular dependency
+      const { TenderPDFGenerator } = require('./tenderPDFGenerator');
+      const pageCount = TenderPDFGenerator.calculatePageCount(content, 'Document', true);
+      
+      return {
+        wordCount,
+        pageCount
+      };
+    } catch (error) {
+      console.error('Error calculating accurate page count:', error);
+      // Fallback to estimation: ~400 words per page for dense content
+      const estimatedPageCount = Math.max(1, Math.ceil(wordCount / 400));
+      
+      return {
+        wordCount,
+        pageCount: estimatedPageCount
+      };
+    }
   }
 
   /**

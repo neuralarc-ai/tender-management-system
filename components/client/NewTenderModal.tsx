@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { RiUploadLine, RiCloseLine, RiSendPlaneLine, RiFileLine, RiDeleteBinLine, RiCheckLine, RiMagicLine, RiEditLine, RiAlertLine } from 'react-icons/ri';
+import { RiUploadLine, RiCloseLine, RiSendPlaneLine, RiFileLine, RiDeleteBinLine, RiCheckLine, RiMagicLine, RiEditLine, RiAlertLine, RiDownloadLine } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,6 +32,9 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
   const [parsedData, setParsedData] = useState<any>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const [showDetailedForm, setShowDetailedForm] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [pdfGenerated, setPdfGenerated] = useState(false);
+  const [generatedTenderId, setGeneratedTenderId] = useState<string | null>(null);
   const queryClient = useQueryClient();
   
   const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm<TenderFormData>();
@@ -55,16 +58,18 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
       });
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (newTender) => {
       queryClient.invalidateQueries({ queryKey: ['tenders'] });
       setShowSuccess(true);
       
+      // PDF generation happens automatically in background
+      // User can check status in tender list later
+      
+      // Auto-close modal after 3 seconds
       setTimeout(() => {
-      reset();
-      setUploadedFiles([]);
-        setShowSuccess(false);
-      onClose();
-      }, 2000);
+        handleReset();
+        onClose();
+      }, 3000);
     },
     onError: (error: any) => {
       console.error('Tender submission error:', error);
@@ -219,12 +224,51 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
     });
   };
 
+  const handleDownloadPDF = async () => {
+    if (!generatedTenderId) return;
+    
+    try {
+      // Fetch document
+      const docsResponse = await axios.get(`/api/tenders/${generatedTenderId}/documents`);
+      const documents = docsResponse.data;
+      const fullDoc = documents.find((doc: any) => doc.document_type === 'full');
+      
+      if (!fullDoc || !fullDoc.content) {
+        alert('PDF content not available yet. Please try again in a moment.');
+        return;
+      }
+      
+      // Import PDF generator dynamically
+      const { TenderPDFGenerator } = await import('@/lib/tenderPDFGenerator');
+      
+      // Generate and download PDF
+      const pdfBlob = TenderPDFGenerator.generatePDF({
+        title: fullDoc.title,
+        content: fullDoc.content,
+        metadata: {
+          author: 'Neural Arc Inc',
+          subject: 'Tender Document'
+        },
+        includeTOC: true
+      });
+      
+      TenderPDFGenerator.downloadPDF(pdfBlob, `${fullDoc.title}.pdf`);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      alert('Failed to download PDF. Please try again.');
+    }
+  };
+
   const handleReset = () => {
     reset();
     setUploadedFiles([]);
     setParsedData(null);
     setParseError(null);
     setShowDetailedForm(false);
+    setShowSuccess(false);
+    setIsGeneratingPDF(false);
+    setPdfGenerated(false);
+    setGeneratedTenderId(null);
   };
 
   if (!isOpen) return null;
@@ -237,8 +281,28 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
             <RiCheckLine className="text-white" size={48} />
           </div>
           <h3 className="text-2xl font-black text-neural mb-3 uppercase tracking-tight">Success!</h3>
-          <p className="text-sm text-gray-500 font-medium">
-            Your tender has been submitted successfully.<br />AI analysis will begin shortly.
+          <p className="text-sm text-gray-500 font-medium mb-6">
+            Your tender has been submitted successfully.<br />
+            AI analysis and PDF generation will begin shortly.
+          </p>
+          <div className="bg-oasis/30 rounded-2xl p-4 mb-6">
+            <p className="text-xs text-neural/70 font-bold">
+              💡 Your tender will appear in the dashboard.<br />
+              PDF will be ready in 10-15 seconds!
+            </p>
+          </div>
+          <Button
+            onClick={() => {
+              handleReset();
+              onClose();
+            }}
+            className="w-full rounded-full bg-passion hover:bg-passion-dark text-white font-bold py-4"
+          >
+            <RiCheckLine className="mr-2" size={20} />
+            Done
+          </Button>
+          <p className="text-xs text-gray-400 mt-4 font-medium">
+            Auto-closing in 3 seconds...
           </p>
         </div>
       </div>
@@ -287,10 +351,11 @@ export function NewTenderModal({ isOpen, onClose }: NewTenderModalProps) {
                 multiple 
                 accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
                 onChange={handleFileUpload}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                style={{ pointerEvents: 'auto' }}
                 disabled={isUploading || isParsing}
               />
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col items-center gap-3 pointer-events-none">
                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${
                   isParsing ? 'bg-passion animate-pulse' : 'bg-passion-light/30'
                 }`}>
