@@ -241,7 +241,7 @@ export class TenderPDFGenerator {
       const headerLength = headers[columnIndex]?.length || 0;
       const maxCellLength = Math.max(
         headerLength,
-        ...rows.map(row => (row[columnIndex] || '').length)
+        ...rows.map((row: string[]) => (row[columnIndex] || '').length)
       );
       
       // Base width on content length, with min/max bounds
@@ -251,7 +251,7 @@ export class TenderPDFGenerator {
     
     // Build column styles
     const columnStyles: any = {};
-    headers.forEach((_, index) => {
+    headers.forEach((_header: string, index: number) => {
       columnStyles[index] = {
         cellWidth: calculateColumnWidth(index),
         halign: index === 0 ? 'left' : 'left' // All left-aligned
@@ -334,11 +334,11 @@ export class TenderPDFGenerator {
       }
       
       // Render marker
-      doc.setFont('helvetica', 'bold');
+        doc.setFont('helvetica', 'bold');
       doc.text(marker, this.MARGIN, this.currentYPosition);
-      
+        
       // Render content with inline formatting
-      doc.setFont('helvetica', 'normal');
+        doc.setFont('helvetica', 'normal');
       const inlineNodes = MarkdownParser.parseInline(item.content);
       
       // Simple rendering for list items
@@ -374,8 +374,8 @@ export class TenderPDFGenerator {
     
     // Code text
     doc.setFont('courier', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(40, 40, 40);
+        doc.setFontSize(9);
+        doc.setTextColor(40, 40, 40);
     
     lines.forEach((line, index) => {
       doc.text(line, this.MARGIN + 3, this.currentYPosition + (index * 5));
@@ -462,7 +462,7 @@ export class TenderPDFGenerator {
       doc.text(shortTitle, this.MARGIN + indent, yPos);
       
       // Page number (placeholder)
-      doc.setFont('helvetica', 'normal');
+        doc.setFont('helvetica', 'normal');
       doc.text(`${index + 3}`, this.PAGE_WIDTH - this.MARGIN - 10, yPos, { align: 'right' });
       
       yPos += fontSize * 0.6 + 4;

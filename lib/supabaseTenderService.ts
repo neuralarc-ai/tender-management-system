@@ -86,7 +86,7 @@ export const supabaseTenderService = {
           file_name: doc.name,
           file_url: doc.url,
           file_size: doc.size,
-          file_type: doc.type || 'application/octet-stream',
+          file_type: doc.url.split('.').pop() || 'unknown', // Extract extension from URL
           uploaded_by: tenderData.createdBy
         }));
 
