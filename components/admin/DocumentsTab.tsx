@@ -81,7 +81,8 @@ export function DocumentsTab({ tenderId, currentUserId, currentUserRole }: Docum
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['tender-documents', tenderId] });
       queryClient.invalidateQueries({ queryKey: ['tenders'] });
-      alert(`✓ Document ${variables.action === 'approve' ? 'approved' : 'rejected'} successfully!`);
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'client'] }); // Refresh partner notifications
+      alert(`✓ Document ${variables.action === 'approve' ? 'approved' : 'rejected'} successfully! Partner has been notified.`);
       setRejectionReason('');
     }
   });
