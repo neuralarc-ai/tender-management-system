@@ -478,8 +478,8 @@ export function DashboardView() {
           <div className="p-8">
             <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-100">
               <div>
-                <h2 className="text-3xl font-black uppercase tracking-tight text-neural">Settings</h2>
-                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">System Configuration</p>
+                <h2 className="text-3xl font-black uppercase tracking-tight text-neural">System Status</h2>
+                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mt-1">Application Information</p>
               </div>
               <button 
                 onClick={() => setShowSettings(false)}
@@ -490,67 +490,18 @@ export function DashboardView() {
             </div>
 
             <div className="space-y-6">
-              {/* Account Section */}
-              <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
-                  <div className="w-6 h-6 bg-passion-light/30 rounded-lg flex items-center justify-center">
-                    <span className="text-passion font-black">A</span>
-                  </div>
-                  Account Information
-                </h3>
-                <div className="space-y-4">
-                  <SettingRow label="User Role" value={role === 'admin' ? 'Administrator' : 'Client Partner'} />
-                  <SettingRow label="Organization" value="Neural Arc Inc." />
-                  <SettingRow label="Access Level" value={role === 'admin' ? 'Full Access' : 'Standard'} />
-                  <SettingRow label="Member Since" value={format(new Date(), 'MMM yyyy')} />
-                </div>
-              </div>
-
-              {/* Preferences Section */}
-              <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
-                  <div className="w-6 h-6 bg-aurora/20 rounded-lg flex items-center justify-center">
-                    <RiNotification3Line className="text-aurora" size={14} />
-                  </div>
-                  Notifications
-                </h3>
-                <div className="space-y-4">
-                  <SettingToggle 
-                    label="Email Notifications" 
-                    enabled={settings.emailNotifications} 
-                    onToggle={() => toggleSetting('emailNotifications')}
-                  />
-                  <SettingToggle 
-                    label="Desktop Alerts" 
-                    enabled={settings.desktopAlerts} 
-                    onToggle={() => toggleSetting('desktopAlerts')}
-                  />
-                  <SettingToggle 
-                    label="Weekly Reports" 
-                    enabled={settings.weeklyReports} 
-                    onToggle={() => toggleSetting('weeklyReports')}
-                  />
-                  <SettingToggle 
-                    label="SMS Updates" 
-                    enabled={settings.smsUpdates} 
-                    onToggle={() => toggleSetting('smsUpdates')}
-                  />
-                </div>
-              </div>
-
               {/* System Section */}
               <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-5 flex items-center gap-2">
                   <div className="w-6 h-6 bg-verdant/20 rounded-lg flex items-center justify-center">
                     <span className="text-verdant font-black text-xs">✓</span>
                   </div>
-                  System Status
+                  System Information
                 </h3>
                 <div className="space-y-4">
                   <SettingRow label="Version" value="v1.0.0" />
-                  <SettingRow label="Last Updated" value={format(new Date(), 'MMM dd, yyyy')} />
-                  <SettingRow label="API Status" value="Operational" badge="green" />
-                  <SettingRow label="Database" value="Connected" badge="green" />
+                  <SettingRow label="Session Started" value={format(new Date(), 'hh:mm a')} />
+                  <SettingRow label="Local Storage" value="Available" badge="green" />
                 </div>
               </div>
 
@@ -561,13 +512,7 @@ export function DashboardView() {
                   onClick={() => setShowSettings(false)}
                   className="flex-1 rounded-full h-12 font-black text-[11px] uppercase tracking-wider border-2 border-gray-200 hover:bg-gray-100"
                 >
-                  Cancel
-                </Button>
-                <Button 
-                  className="flex-1 rounded-full h-12 bg-neural hover:bg-neural-light font-black text-[11px] uppercase tracking-wider shadow-xl"
-                  onClick={saveSettings}
-                >
-                  Save Changes
+                  Close
                 </Button>
               </div>
             </div>

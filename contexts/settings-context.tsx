@@ -5,8 +5,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface SettingsState {
   emailNotifications: boolean;
   desktopAlerts: boolean;
-  weeklyReports: boolean;
-  smsUpdates: boolean;
+  // Note: Only local browser settings are supported
+  // weeklyReports and smsUpdates removed - not implemented
   theme: 'light' | 'dark';
   language: 'en' | 'es' | 'fr';
 }
@@ -21,8 +21,6 @@ interface SettingsContextType {
 const defaultSettings: SettingsState = {
   emailNotifications: true,
   desktopAlerts: true,
-  weeklyReports: false,
-  smsUpdates: false,
   theme: 'light',
   language: 'en'
 };

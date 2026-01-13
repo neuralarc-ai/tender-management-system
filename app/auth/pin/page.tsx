@@ -58,6 +58,8 @@ export default function PinAuthPage() {
       login('client', '11111111-1111-1111-1111-111111111111', 'partner@dcs.com', 'DCS Corporation');
     } else if (pinString === '1978') {
       login('admin', '22222222-2222-2222-2222-222222222222', 'admin@neuralarc.com', 'Neural Arc Inc.');
+    } else if (pinString === '8642') {
+      login('client', '33333333-3333-3333-3333-333333333333', 'selina@godaddy.com', 'GoDaddy');
     } else {
       setError(true);
       setLoading(false);

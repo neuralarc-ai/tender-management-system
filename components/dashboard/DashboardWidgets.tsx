@@ -22,6 +22,7 @@ import { Card } from '@/components/ui/card';
 import { SimpleBarChart, ScoreRadialChart } from './Charts';
 import { Tender } from '@/types';
 import { format } from 'date-fns';
+import { useAuth } from '@/contexts/auth-context';
 
 interface DashboardStats {
   totalTenders: number;
@@ -111,6 +112,12 @@ function StatsPill({ label, value, color, width = "w-32", striped = false }: { l
 }
 
 export function ProfileCard({ role, activeTasks }: { role: string; activeTasks?: number }) {
+  const { authState } = useAuth();
+  
+  // Get user info from auth context
+  const userName = authState.fullName || (role === 'admin' ? 'Alex Neural' : 'Partner User');
+  const organizationName = authState.organization || (role === 'admin' ? 'Neural Arc Inc.' : 'Partner Organization');
+  
   return (
     <Card className="p-6 rounded-[40px] bg-white border-none shadow-xl h-full relative overflow-hidden group font-sans">
       <div className="h-full flex flex-col">
@@ -126,7 +133,7 @@ export function ProfileCard({ role, activeTasks }: { role: string; activeTasks?:
                 {role === 'admin' ? 'Strategic Admin' : 'Premium Partner'}
             </div>
             <h3 className="text-2xl font-bold text-neural mb-1 capitalize">
-                {role === 'admin' ? 'Alex Neural' : 'DCS Corporation'}
+                {organizationName}
             </h3>
             <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
                 <RiBriefcaseLine /> {role === 'admin' ? 'Head of Operations' : 'Innovation Partner'}

@@ -43,10 +43,11 @@ export async function POST(request: Request) {
 
     // Check PIN against all users
     for (const user of users) {
-      // For demo: simple match (7531 for partner, 1978 for admin)
+      // For demo: simple match (7531 for partner, 1978 for admin, 8642 for Selina)
       // In production: use bcrypt.compare(pin, user.pin_hash)
-      const isMatch = (pin === '7531' && user.role === 'client') || 
-                      (pin === '1978' && user.role === 'admin');
+      const isMatch = (pin === '7531' && user.role === 'client' && user.email === 'partner@dcs.com') || 
+                      (pin === '1978' && user.role === 'admin') ||
+                      (pin === '8642' && user.email === 'selina@godaddy.com');
       
       if (isMatch) {
         // Update last login
